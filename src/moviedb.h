@@ -2,7 +2,7 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.16
+ *  Version: 3.17
  *
  *  Purpose: general constant and type definitions for movie database
  *
@@ -45,10 +45,12 @@
 /* TISTART should be the max needed, but it's not a catastrophe if it isn't */
 #define   TISTART              500000
 #define   TIGROW               100000
+/* Similarly for attributes */
+#define   ATTRSTART            300000
+#define   ATTRGROW             100000
 /* Following constants used only by mkdb (hence, more easily programmed out) */
 #define   MAXAKAENTRIES        150000
 #define   MAXNAKAENTRIES       250000
-#define   MAXATTRS             200000
 #define   MAXTITLEINFO         500000
 #define   MAXBIOENTRIES        250000
 #define   MAXLINKS             400000
