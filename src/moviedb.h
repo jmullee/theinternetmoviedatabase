@@ -2,7 +2,7 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.23
+ *  Version: 3.24
  *
  *  Purpose: general constant and type definitions for movie database
  *
@@ -24,7 +24,7 @@
 #define	  AKABYTES		    9
 /* Size of a naka record: name+name = 3+3 */
 #define	  NAKABYTES		    6
-#define   MXLINELEN               500
+#define   MXLINELEN               700
 #define   FSEP                    '|'
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
@@ -50,13 +50,15 @@
 /* and for akas */
 #define   AKASTART             200000
 #define   AKAGROW               50000
+/* and links */
+#define   LINKSTART            500000
+#define   LINKGROW             100000
 /* (under-)Estimate of movie ratings average line; assumes 1-letter titles */
 #define   MRRSIZE                  41
 /* Following constants used only by mkdb (hence, more easily programmed out) */
 #define   MAXNAKAENTRIES       250000
 #define   MAXTITLEINFO         500000
-#define   MAXBIOENTRIES        250000
-#define   MAXLINKS             400000
+#define   MAXBIOENTRIES        350000
 
 #ifndef DBDIR
 #define   DBDIR

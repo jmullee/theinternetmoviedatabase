@@ -2,7 +2,7 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.23
+ *  Version: 3.24
  *
  *  Purpose: make databases from list files
  *
@@ -90,6 +90,11 @@ static size_t sharedTitleIndexSize ;
 static struct attrIndexRec *attributeIndex ;
 static size_t attributeIndexSize ;
 
+int titleIndexRecSort (struct titleIndexRec *t1, struct titleIndexRec *t2)
+{
+  return ( caseCompare(t1->title, t2->title) ) ;
+}
+
 TitleID readMoviesList (struct titleIndexRec *titles)
 {
   FILE *listFp ;
@@ -142,6 +147,11 @@ TitleID readMoviesList (struct titleIndexRec *titles)
       }
 
   (void) fclose ( listFp ) ;
+
+  /* the movies.list is sorted slightly differently concerning special characters */
+  /* than the caseCompare-function that is used for binary search */
+  (void) qsort ( (void*) titles, (size_t) indexKey, sizeof ( struct titleIndexRec ), (int (*) (const void*, const void*)) titleIndexRecSort ) ;
+
   return ( indexKey ) ;
 }
 
@@ -428,6 +438,24 @@ TitleID titleKeyLookup (char *str, struct titleIndexRec *titles, TitleID *titleC
    }
 }
 
+TitleID titleKeyLookupReadOnly (char *str, struct titleIndexRec *titles, TitleID titleCount)
+{
+  struct titleIndexRec *matched ;
+  TitleID dummy, i ;
+  char *ptr ;
+
+  if ( ( ptr = strchr ( str, FSEP ) ) != NULL )
+    *ptr = '\0' ;
+
+  if ( titleCount == 0 )
+    return ( NOTITLE );
+
+  matched = findTitleKeyPos ( str, titles, titleCount, &dummy ) ;
+  if ( matched != NULL )
+    return ( matched -> titleKey ) ;
+  else
+    return ( NOTITLE );
+}
 
 struct attrIndexRec *findAttrKeyPos (char *attr, struct attrIndexRec *attributes, AttributeID attrCount, AttributeID *insert)
 {
@@ -1722,7 +1750,7 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
   for ( i = 0 ; i < count ; i++ )
   {
      putTitle ( titlesIndex [ i ] . titleKey, indexFp ) ;
-     putOffset ( titlesIndex [ i ] . offset, indexFp ) ;
+     putFullOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
   (void) fclose ( indexFp ) ;
@@ -1860,7 +1888,7 @@ TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
 NameID processBiographiesList ( NameID *nameCount )
 {
   FILE *dbFp, *listFp, *indexFp, *nameKeyFp, *tmpFp ;
-  struct nameKeyOffset namesIndex [ MAXBIOENTRIES ] ;
+  struct nameKeyOffset *namesIndex;
   char line [ MXLINELEN ] ;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
@@ -1868,6 +1896,11 @@ NameID processBiographiesList ( NameID *nameCount )
   int  inbio = FALSE, skipMode = FALSE, compare ;
   NameID count = 0, i ;
   long currentOffset ;
+
+  namesIndex = (struct nameKeyOffset*) calloc ( MAXBIOENTRIES, sizeof ( struct nameKeyOffset ) ) ;
+
+  if ( namesIndex == NULL )
+    moviedbError ( "mkdb: not enough memory to generate names index" ) ;
 
   prevName [ 0 ] = '\0' ;
 
@@ -1991,6 +2024,7 @@ NameID processBiographiesList ( NameID *nameCount )
   }
 
   (void) fclose ( indexFp ) ;
+  free ( (void*) namesIndex ) ;
   return ( count ) ;
 }
 
@@ -2102,13 +2136,18 @@ int voteDataSort (struct voteData *v1, struct voteData *v2)
 TitleID processVotesList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
-  struct voteData votes [ MAXTITLES ] ;
+  struct voteData *votes;
   char line [ MXLINELEN ] ;
   struct titleIndexRec *matched ;
   int compare ;
   TitleID count = 0, i = 1, insert ;
   int vote ;
   char *mrrtitle ;
+
+  votes = (struct voteData*) calloc ( MAXTITLES, sizeof ( struct voteData ) ) ;
+
+  if ( votes == NULL )
+    moviedbError ( "mkdb: not enough memory to generate votes index" ) ;
 
   listFp = openFile ( VOTELIST ) ;
 
@@ -2160,6 +2199,7 @@ TitleID processVotesList (struct titleIndexRec *titles, TitleID *titleCount)
 
   (void) fclose ( dbFp ) ;
   (void) fclose ( listFp ) ;
+  free ( (void *) votes ) ;
   return ( count ) ;
 }
 
@@ -2189,6 +2229,10 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
   TitleID count = 0, processed = 0, sortedTo = 0, i ;
   TitleID primaryKey = NOTITLE ;
   char *ptr ;
+
+  TitleID secondaryKey = NOTITLE ;
+  TitleID titleCountValid = *titleCount;
+  TitleID startSearchTitle = *titleCount;
 
   aka = malloc ( sizeof (struct akaData ) * akaIndexSize ) ;
   if ( isReadable ( AKADB ) )
@@ -2226,6 +2270,9 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
 	enddata = TRUE ;
       else if ( line [ 0 ] == ' ' )
       {
+	/* skip aka-lines for movies that are not in the movies.list */
+	if (NOTITLE == primaryKey)
+	  continue;
         stripEOL ( line ) ;
         if ( ( ptr = strchr ( line, '\t' ) ) != NULL )
         {
@@ -2241,7 +2288,33 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
         }
         if ( debugFlag )
            (void) printf ( "%s\n", line ) ;
-        aka [ count ] . aka = titleKeyLookup ( line + 8, titles, titleCount ) ;
+	secondaryKey = titleKeyLookupReadOnly ( line + 8, titles, titleCountValid ) ;
+	if (NOTITLE == secondaryKey)
+	  {
+	    /* binary search failed. Try to locate title in the appended akas */
+	    /* for this primary title (linear search) */
+	    TitleID i;
+	    for (i = startSearchTitle; i < *titleCount; i++)
+	      if (0 == caseCompare ( titles [ i ] . title, line + 8 ))
+		{
+		  secondaryKey = i;
+		  break;
+		}
+
+	    if (NOTITLE == secondaryKey)
+	      {
+		/* data is not in titleIndex. Append to titleIndex instead of insert */
+		/* We use titleCountValid for lookups so this should be no problem. */
+		secondaryKey = *titleCount;
+		titles [ secondaryKey ] . title = duplicateString ( line + 8 ) ;
+		titles [ secondaryKey ] . titleKey = secondaryKey ;
+		*titleCount = *titleCount + 1 ;
+		if ( *titleCount >= MAXTITLES )
+		  moviedbError ( "mkdb: too many titles -- increase MAXTITLES" ) ;
+	      }
+	  }
+
+	aka [ count ] . aka = secondaryKey;
         aka [ count ] . primary = primaryKey ;
         processed++ ;
         if ( sortedTo == 0 )
@@ -2262,7 +2335,10 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
       else
       {
         stripEOL ( line ) ;
-        primaryKey = titleKeyLookup ( line, titles, titleCount ) ;
+	primaryKey = titleKeyLookupReadOnly ( line, titles, titleCountValid ) ;
+	if (NOTITLE == primaryKey)
+	  printf ("WARNING: %s not in movies.list\n", line);
+	startSearchTitle = *titleCount;
       }
     }
     else
@@ -2274,6 +2350,17 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
       }
 
   (void) fclose ( listFp ) ;
+
+  /* now sort titles index */
+  (void) qsort ( (void*) titles, (size_t) *titleCount, sizeof ( struct titleIndexRec ), (int (*) (const void*, const void*)) titleIndexRecSort ) ;
+  /* sanity check */
+  if (1)
+    {
+      TitleID i;
+      for (i = 1; i < *titleCount; i++)
+	if (0 == caseCompare(titles [i-1].title, titles [i].title))
+	  printf ("WARNING: titles.key contains 2 identical movies (%s)\n", titles [i].title);
+    }
 
   (void) qsort ( (void*) aka, (size_t) count, sizeof ( struct akaData ), (int (*) (const void*, const void*)) akaDataSort ) ;
 
@@ -2326,7 +2413,7 @@ int akaNameIndexDataSort (struct akaNameData *a1, struct akaNameData *a2)
 NameID processAkaNamesList ( NameID *nameCount )
 {
   FILE *dbFp, *listFp, *nameKeyFp, *tmpFp ;
-  struct akaNameData naka [ MAXNAKAENTRIES ] ;
+  struct akaNameData *naka ;
   char line [ MXLINELEN ] ;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
@@ -2335,6 +2422,10 @@ NameID processAkaNamesList ( NameID *nameCount )
   NameID count = 0, i ;
   NameID primaryKey = NONAME ;
   char *ptr ;
+
+  naka = (struct akaNameData*) calloc ( MAXNAKAENTRIES, sizeof ( struct akaNameData ) ) ;
+  if ( naka == NULL )
+    moviedbError ( "mkdb: not enough memory to generate aka names list" ) ;
 
   prevName [ 0 ] = '\0' ;
 
@@ -2532,6 +2623,7 @@ NameID processAkaNamesList ( NameID *nameCount )
      putName ( naka [ i ] . primary, dbFp ) ;
   }
   (void) fclose ( dbFp ) ;
+  free ( (void *) naka ) ;
 
   return ( count ) ;
 }
@@ -2820,10 +2912,14 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
 {
   char  *tmptr ;
   FILE  *listFp, *dbFp ;
-  struct compCastRec list [ MAXTITLEINFO ] ;
+  struct compCastRec *list ;
   char  line [ MXLINELEN ] ;
   int   inMovie = FALSE ;
   TitleID   count = 0, i ;
+
+  list = (struct compCastRec*) calloc ( MAXTITLEINFO, sizeof ( struct compCastRec ) ) ;
+  if ( list == NULL )
+    moviedbError ( "mkdb: not enough memory to generate complete cast list" ) ;
 
   listFp = openFile ( CASTCOMLIST ) ;
 
@@ -2866,6 +2962,7 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
      putByte ( list [ i ] . status, dbFp ) ;
   }
   (void) fclose ( dbFp ) ;
+  free ( (void*) list ) ;
 
   return ( count ) ;
 }
@@ -2875,10 +2972,14 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
 {
   char  *tmptr ;
   FILE  *listFp, *dbFp ;
-  struct compCastRec list [ MAXTITLEINFO ] ;
+  struct compCastRec *list ;
   char  line [ MXLINELEN ] ;
   int   inMovie = FALSE ;
   TitleID   count = 0, i ;
+
+  list = (struct compCastRec*) calloc ( MAXTITLEINFO, sizeof ( struct compCastRec ) ) ;
+  if ( list == NULL )
+    moviedbError ( "mkdb: not enough memory to generate complete cast crew list" ) ;
 
   listFp = openFile ( CREWCOMLIST ) ;
 
@@ -2921,6 +3022,7 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
      putByte ( list [ i ] . status, dbFp ) ;
   }
   (void) fclose ( dbFp ) ;
+  free ( (void*) list ) ;
 
   return ( count ) ;
 }
@@ -2939,11 +3041,16 @@ int movieLinkRecSort ( struct movieLinkDbRec *ml1, struct movieLinkDbRec *ml2 )
 TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCount )
 {
   FILE  *listFp, *dbFp ;
-  struct movieLinkDbRec list [ MAXLINKS ] ;
+  struct movieLinkDbRec *list ;
+  size_t linkSize = LINKSTART ;
   char  line [ MXLINELEN ] ;
   char *ptr ;
   int   inMovie = FALSE, i, position = 0 ;
   TitleID   count = 0, currentTitleKey = NOTITLE ;
+
+  list = (struct movieLinkDbRec*) calloc ( LINKSTART, sizeof ( struct movieLinkDbRec ) ) ;
+  if ( list == NULL )
+    moviedbError ( "mkdb: not enough memory to generate movie links list" ) ;
 
   listFp = openFile ( LINKLIST ) ;
 
@@ -2975,8 +3082,15 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
                list [ count ] . toTitleKey = titleKeyLookup ( line + 4 + movieLinkDefs [ i ] . length, titles, titleCount ) ;
                list [ count ] . position = position++ ;
                count++ ;
-	       if (count >= MAXLINKS)
-		 moviedbError ( "mkdb: too many links -- increase MAXLINKS" ) ;
+	       if ( count >= linkSize )
+	       {
+		 struct movieLinkDbRec *links ;
+
+		 linkSize += LINKGROW ;
+		 links = realloc ( list, sizeof (struct movieLinkDbRec) * linkSize ) ;
+		 if ( links == NULL )
+		   moviedbError ( "mkdb: not enough memory to generate link index" ) ;
+	       }
              }
              break ;
            }
@@ -3000,6 +3114,7 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
      putTitle ( list [ i ] . toTitleKey, dbFp ) ;
   }
   (void) fclose ( dbFp ) ;
+  free ( (void*) list ) ;
 
   return ( count ) ;
 }

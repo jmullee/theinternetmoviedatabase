@@ -2,7 +2,7 @@
  *
  *  Program: trivia.c
  *
- *  Version: 3.2
+ *  Version: 3.24
  *
  *  Purpose: trivia procedures
  *
@@ -72,13 +72,13 @@ struct lineRec *findTitleTrivia ( FILE *dbFp, FILE *indexFp, TitleID titleKey )
   TitleID indexKey ;
 
   (void) fseek ( indexFp, 0, SEEK_END ) ;
-  upper = ftell ( indexFp ) / 6 ;
+  upper = ftell ( indexFp ) / 7 ;
   lower = 0 ;
   found = FALSE ;
   while ( !found && upper >= lower )
   {
     mid = ( upper + lower ) / 2 ;
-    (void) fseek ( indexFp, mid * 6, SEEK_SET ) ;
+    (void) fseek ( indexFp, mid * 7, SEEK_SET ) ;
     indexKey = getTitle ( indexFp ) ;
     if ( titleKey == indexKey )
       found = TRUE ;
@@ -89,7 +89,7 @@ struct lineRec *findTitleTrivia ( FILE *dbFp, FILE *indexFp, TitleID titleKey )
   }
   if ( found )
   {
-    offset = getOffset ( indexFp ) ;
+    offset = getFullOffset ( indexFp ) ;
     return ( readTrivia ( dbFp, offset ) ) ;
   }
   else
