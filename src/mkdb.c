@@ -1865,6 +1865,7 @@ NameID processBiographiesList ( NameID *nameCount )
          if ( strncmp ( line, "NM: ", 4 ) == 0 )
          {
            stripEOL ( line ) ;
+           stripSep ( line ) ;
            if ( debugFlag )
              (void) printf ( "%s\n", line + 4 ) ;
            if ( caseCompare ( prevName, line + 4 ) >= 0 )

@@ -93,9 +93,6 @@ LDFLAGS = $(CFLAGS)
 #
 # ZLISTEXT is the extension used to identify a compressed list file.
 #
-# ZLISTCOMPRESS is a command to recreate a compressed list file.
-# (ZLISTCOMPRESS is only used in the Makefile. You can depend on your path).
-#
 # The variables ZDBSCAT, ZDBSCATOPTS, ZDBSEXT and ZDBSCOMPRESS tell the system
 # how to compress the database files if you don't have enough disk-space to
 # hold them in their uncompressed form. If you have it, 'gzip' is preferable
@@ -116,7 +113,6 @@ LDFLAGS = $(CFLAGS)
 # If you don't want any support for compressed databases, remove the
 # definition COMPRESS from the CFLAGS variable
 
-ZLISTCOMPRESS = gzip
 ZLISTEXT = .gz
 ZLISTCAT = /usr/bin/gzip
 ZLISTCATOPTS = -cd
@@ -232,7 +228,7 @@ SHELL = /bin/sh
 # the following line. Leaving it does no harm.
 MAKE = make
 
-# If the sanity check insists on telling you that ZLISTCAT, ZLISTCOMPRESS
+# If the sanity check insists on telling you that ZLISTCAT, ZDBSCAT
 # and so on are invalid, and you are definitively sure they are ok,
 # set ZSANITYCHECK to the empty string.
 ZSANITYCHECK = sanity-check-z
@@ -350,6 +346,7 @@ maxcompress : $(ZSANITYCHECK)
 
 autouncompress : $(ZSANITYCHECK)
 	cd $(RAWDIR); $(MAKE) ZLISTEXT="$(ZLISTEXT)" ZLISTCAT="$(ZLISTCAT)" \
+        ZLISTCATOPTS="$(ZLISTCATOPTS)" \
         autouncompress
 
 #
@@ -389,7 +386,6 @@ veryclean : clean cleanlists cleandbs
 sanity-check-z :
 	@$(ETCDIR)/check-for-program ZLISTCAT "$(ZLISTCAT)"
 	@$(ETCDIR)/check-for-program ZDBSCAT "$(ZDBSCAT)"
-	@$(ETCDIR)/check-for-program ZLISTCOMPRESS "$(ZLISTCOMPRESS)"
 	@$(ETCDIR)/check-for-program ZDBSCOMPRESS "$(ZDBSCOMPRESS)"
 
 #

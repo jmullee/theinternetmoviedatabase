@@ -8,7 +8,7 @@
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1990-2000 The Internet Movie Database Ltd.
+ *  Copyright (c) 1990-2001 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -527,7 +527,7 @@ void displayNameSearchResults ( struct nameSearchRec *chain, int tidy )
             displayTitleAttrPairs ( nrec -> lists [ i ] -> entries, nrec -> lists [ i ] -> count, tidy, nrec -> searchparams . mrropt, nrec -> searchparams . mvsonly, nrec -> searchparams . chopt ) ;
             (void) printf ( "\n" ) ;
           }
-        (void) printf ( "\n           Copyright 1990-2000 The Internet Movie Database Ltd.\n" ) ;
+        (void) printf ( "\n           Copyright 1990-2001 The Internet Movie Database Ltd.\n" ) ;
         (void) printf ( "      Support the IMDb by visiting our web site: http://www.imdb.com/\n\n" ) ;
       }
       else
@@ -1234,7 +1234,7 @@ void displayTitleSearchRec ( struct titleSearchRec *trec, int tidy )
     if ( trec -> searchparams . ldopt )
       displayLaserDisc ( trec -> laserdisc ) ;
 
-    (void) printf ( "\n           Copyright 1990-2000 The Internet Movie Database Ltd.\n" ) ;
+    (void) printf ( "\n           Copyright 1990-2001 The Internet Movie Database Ltd.\n" ) ;
     (void) printf ( "      Support the IMDb by visiting our web site: http://www.imdb.com/\n\n" ) ;
   }
   else

@@ -47,11 +47,11 @@
 #define   MAXBIOENTRIES        150000
 #define   MAXMRRENTRIES         60000
 #define   MAXAKAENTRIES        150000
-#define   MAXNAKAENTRIES        75000
+#define   MAXNAKAENTRIES       250000
 #define   MAXTITLEINFO         300000
 #define   MAXPOS                  255
 #define   MAXLINKS             400000
-#define   MAXLINKSPERMOVIE        250
+#define   LINKCHUNKSIZE            50
 
 #ifndef DBDIR
 #define   DBDIR

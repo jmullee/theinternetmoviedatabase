@@ -23,6 +23,13 @@
 #include <string.h>
 #include "moviedb.h"
 #include "dbutils.h"
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+
+struct tempMovieLinkRec
+{
+  struct movieLinkRec		data [ LINKCHUNKSIZE ] ;
+  struct tempMovieLinkRec	*next ;
+} ;
 
 void freeMovieLinks ( int noOfEntries, struct movieLinkRec *rec )
 {
@@ -36,23 +43,50 @@ void freeMovieLinks ( int noOfEntries, struct movieLinkRec *rec )
 
 struct movieLinkRec *readMovieLinks ( FILE *dbFp, TitleID searchKey, int *count )
 {
-  struct movieLinkRec data [ MAXLINKSPERMOVIE ] ;
+  struct tempMovieLinkRec firstchunk ;
+  struct tempMovieLinkRec *active = &firstchunk ;
+  struct tempMovieLinkRec *lastactive ;
   struct movieLinkRec *retval ;
   TitleID titleKey = searchKey ;
+  int activecount = 0 ;
+  int activeleft ;
 
+  active -> next = NULL ;
   *count = 0 ;
   titleKey = getTitle ( dbFp ) ;
   while ( feof ( dbFp ) == 0 && titleKey == searchKey )
   {
-    data [ *count ] . link = getByte ( dbFp ) ;
-    data [ *count ] . titleKey = getTitle ( dbFp ) ;
-    data [ *count ] . title = NULL ;
-    (*count)++ ;
+    active -> data [ activecount ] . link = getByte ( dbFp ) ;
+    active -> data [ activecount ] . titleKey = getTitle ( dbFp ) ;
+    active -> data [ activecount ] . title = NULL ;
+    activecount++ ;
+    if ( activecount == LINKCHUNKSIZE )
+    {
+	*count += activecount ;
+	activecount = 0 ;
+	active -> next = malloc ( sizeof (struct tempMovieLinkRec) ) ;
+	active = active -> next ;
+	active -> next = NULL ;
+    }
     titleKey = getTitle ( dbFp ) ;
   }
+  *count += activecount ;
   if ( ( retval = calloc ( *count, sizeof ( struct movieLinkRec ) ) ) != NULL )
   {
-    memcpy ( retval, data, *count * sizeof ( struct movieLinkRec ) ) ;
+    activecount = 0 ;
+    activeleft = *count ;
+    active = &firstchunk ;
+    while ( active )
+    {
+	memcpy ( retval + activecount , active,
+	  MIN ( activeleft, LINKCHUNKSIZE ) * sizeof ( struct movieLinkRec ) ) ;
+	activecount += LINKCHUNKSIZE ;
+	activeleft -= LINKCHUNKSIZE ;
+	lastactive = active ;
+	active = active -> next ;
+	if ( lastactive != &firstchunk )
+	  free ( lastactive ) ;
+    }
     return ( retval ) ;
   }
   else
