@@ -433,7 +433,7 @@ long lookupNamesIndex ( FILE *indexFp, NameID nameKey )
       upper = mid - 1 ;
   }
   if ( found )
-    return ( getName ( indexFp ) ) ;
+    return ( getFullOffset ( indexFp ) ) ;
   else
     return ( -1 ) ;
 }

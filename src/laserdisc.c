@@ -55,9 +55,14 @@ void freeLaserRec ( struct laserRec *rec )
 
 struct laserRec *readLaserDisc ( FILE *stream, long offset )
 {
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN + 1 ] ;
   struct laserRec *rec ;
   struct lineRec *tail ;
+  char *newStr ;
+  char saveChar ;
+  size_t saveLen ;
+
+  line [ MXLINELEN ] = '\0' ;
 
   rec = newLaserRec ( ) ;
   rec -> misc = NULL ;
@@ -98,16 +103,23 @@ struct laserRec *readLaserDisc ( FILE *stream, long offset )
           {
             rec -> misc = newLineRec ( ) ;
             tail = rec -> misc ;
-            tail -> text = duplicateString ( line ) ;
-            tail -> next = NULL ;
           }
           else
           {
             tail -> next = newLineRec ( ) ;
-            tail -> next -> text = duplicateString ( line ) ;
-            tail -> next -> next = NULL ;
             tail = tail -> next ;
           }
+          tail -> text = duplicateString ( line ) ;
+          tail -> next = NULL ;
+          while ( strlen ( line ) > MXLINELEN - 2 )
+	  {
+            saveLen = strlen ( tail -> text ) ;
+            saveChar = tail -> text [ saveLen - 1 ] ;
+	    (void) fgets ( line, MXLINELEN, stream ) ;
+	    newStr = appendString ( tail -> text, line ) ;
+            newStr [ saveLen - 1 ] = saveChar ;
+	    tail -> text = newStr ;
+	  }
         }
       }
   return ( rec ) ;
@@ -181,12 +193,16 @@ void addLaserDiscToTitleSearch ( struct titleSearchRec *tchain )
           if ( trec -> laserdisc == NULL )
           {
             trec -> laserdisc = readLaserDisc ( dbFp, offset ) ;
-            tail = trec -> laserdisc ;
+	    if ( trec -> laserdisc )
+              tail = trec -> laserdisc ;
+/* else should natter */
           }
           else
           {
             tail -> next = readLaserDisc ( dbFp, offset ) ;
-            tail = tail -> next ;
+	    if ( tail -> next )
+              tail = tail -> next ;
+/* else should natter */
           }
           indexTitleKey = getTitle ( indexFp ) ;
         }

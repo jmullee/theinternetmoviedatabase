@@ -779,7 +779,7 @@ void makeCastDatabaseTitlesIndex ( int listId, long nentries )
   for ( i = 0 ; i < count ; i++ )
   {
      putTitle ( titlesIndex [ i ] . titleKey, tdxFp ) ;
-     putOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
+     putFullOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
   }
 
   (void) fclose ( dbFp ) ;
@@ -1107,7 +1107,7 @@ void makeDatabaseTitlesIndex ( int listId, long nentries )
   for ( i = 0 ; i < count ; i++ )
   {
      putTitle ( titlesIndex [ i ] . titleKey, tdxFp ) ;
-     putOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
+     putFullOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
   }
 
   (void) fclose ( dbFp ) ;
@@ -1434,7 +1434,7 @@ void makeWriterDatabaseTitlesIndex ( int listId, long nentries )
   for ( i = 0 ; i < count ; i++ )
   {
      putTitle ( titlesIndex [ i ] . titleKey, tdxFp ) ;
-     putOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
+     putFullOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
   }
 
   (void) fclose ( dbFp ) ;

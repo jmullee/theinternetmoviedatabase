@@ -541,12 +541,12 @@ int findTitleIndexBase ( FILE *indexFp, TitleID titleKey )
 
   (void) fseek ( indexFp, 0, SEEK_END ) ;
   upper = ftell ( indexFp ) ;
-  upper = upper / 6 ;
+  upper = upper / 7 ;
 
   while ( !found && upper >= lower )
   {
      mid = ( upper + lower ) / 2 ;
-     (void) fseek ( indexFp, mid * 6, SEEK_SET ) ;
+     (void) fseek ( indexFp, mid * 7, SEEK_SET ) ;
      indexKey = getTitle ( indexFp ) ;
      if ( titleKey == indexKey )
        found = TRUE ;
@@ -565,14 +565,14 @@ int findTitleIndexBase ( FILE *indexFp, TitleID titleKey )
       {
         if ( --mid >= 0 )
         {
-          (void) fseek ( indexFp, mid * 6, SEEK_SET ) ;
+          (void) fseek ( indexFp, mid * 7, SEEK_SET ) ;
           indexKey = getTitle ( indexFp ) ;
         }
         else
           break ;
       }
       if ( mid >= 0 )
-        (void) getOffset ( indexFp ) ;
+        (void) getFullOffset ( indexFp ) ;
       else
         (void) fseek ( indexFp, 0, SEEK_SET ) ;
     }
@@ -600,7 +600,7 @@ void lookupTitles ( FILE *dbFp, FILE *indexFp, struct titleSearchRec *trec, int 
     if ( findTitleIndexBase ( indexFp, trec -> titleKey ) )
     {
       titleKey = getTitle ( indexFp ) ;
-      offset = getOffset ( indexFp ) ;
+      offset = getFullOffset ( indexFp ) ;
       dupeCount = 0 ;
       while ( titleKey == trec -> titleKey )
       {
@@ -618,7 +618,7 @@ void lookupTitles ( FILE *dbFp, FILE *indexFp, struct titleSearchRec *trec, int 
         trec -> nameCount++ ;
         titleKey = getTitle ( indexFp ) ;
         prevOffset = offset ;
-        offset = getOffset ( indexFp ) ;
+        offset = getFullOffset ( indexFp ) ;
         if ( offset == prevOffset )
           dupeCount++ ;
         else
