@@ -2,13 +2,13 @@
  *
  *  Program: display.c
  *
- *  Version: 3.8
+ *  Version: 3.20
  *
  *  Purpose: display procedures
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1990-2001 The Internet Movie Database Inc.
+ *  Copyright (c) 1990-2002 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -236,7 +236,7 @@ void displayPlot ( struct plotRec *rec )
       displayOutline ( oline ) ;
 
     if ( rec -> RV != NULL )
-      (void) printf ( "Reviews (rec.arts.movies.revies index):\n  %s\n", rec -> RV ) ;
+      (void) printf ( "Reviews (rec.arts.movies.reviews index):\n  %s\n", rec -> RV ) ;
   }
 }
 

@@ -2,13 +2,13 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.18
+ *  Version: 3.20
  *
  *  Purpose: make databases from list files
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -2178,13 +2178,15 @@ int akaIndexDataSort (struct akaData *a1, struct akaData *a2)
 TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, char *akaFile )
 {
   FILE *dbFp, *listFp ;
-  struct akaData aka [ MAXAKAENTRIES ] ;
+  struct akaData *aka ;
+  size_t akaIndexSize = AKASTART ;
   char line [ MXLINELEN ] ;
   int inaka = FALSE, enddata = FALSE ;
   TitleID count = 0, processed = 0, sortedTo = 0, i ;
   TitleID primaryKey = NOTITLE ;
   char *ptr ;
 
+  aka = malloc ( sizeof (struct akaData ) * akaIndexSize ) ;
   if ( isReadable ( AKADB ) )
   {
     dbFp = openFile ( AKADB ) ;
@@ -2194,8 +2196,16 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
       aka [ count ] . aka = getTitle ( dbFp ) ;
       aka [ count ] . attrKey = getAttr ( dbFp ) ;
       count++ ;
-      if (count >= MAXAKAENTRIES)
-	moviedbError ( "mkdb: too many akas -- increase MAXAKAENTRIES" ) ;
+      if (count >= akaIndexSize )
+      {
+	  struct akaData *akaIndex = aka ;
+
+	  akaIndexSize += AKAGROW ;
+	  aka = realloc ( akaIndex, sizeof (struct akaData) * akaIndexSize ) ;
+	  if ( aka == NULL )
+	    moviedbError ( "mkdb: not enough memory to generate aka index" ) ;
+      }
+
     }
     count-- ;
     sortedTo = count ;
@@ -2235,6 +2245,15 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
         else
           if ( bsearch ( (void*) &(aka [ count ]) , (void*) aka, (size_t) sortedTo, sizeof ( struct akaData ), (int (*) (const void*, const void*)) akaDataSort ) == NULL )
             count++ ;
+	if (count >= akaIndexSize )
+	{
+	    struct akaData *akaIndex = aka ;
+
+	    akaIndexSize += AKAGROW ;
+	    aka = realloc ( akaIndex, sizeof (struct akaData) * akaIndexSize ) ;
+	    if ( aka == NULL )
+	      moviedbError ( "mkdb: not enough memory to generate aka index" ) ;
+	}
       }
       else
       {

@@ -1342,13 +1342,15 @@ after reading this section, contact me via e-mail: <col@imdb.com>.
 
 (Q7) The database generation program 'mkdb' fails to create the database files
 
-(A7) Use the ready made database files instead (see section 12.1 for details)
+(A7) Check to see that your shell has not placed limits on your stack size.
+     If that doesn't solve the problem, use the ready made database files
+     instead (see section 12.1 for details)
 
 
 12.5 Logfiles
 =============
 
-If the database is installed on a mult-user machine and you'd like to keep
+If the database is installed on a multi-user machine and you'd like to keep
 track of the usage, the programs can append various details to a system
 log file. To enable this feature see the "LOGFILENAME" variable in the top
 level makefile.
@@ -1370,7 +1372,7 @@ There are two upgrade options:
 
    (i) follow steps (1), (2), (3) and (4) in section 1.2
 
-  (ii) copy all the list files (.list extenstions) and the 'filesizes' file
+  (ii) copy all the list files (.list extensions) and the 'filesizes' file
        from moviedb-3.3/lists to the directory moviedb-3.4/lists. 
 
  (iii) to compile all the programs, fetch the new/updated list files and create 

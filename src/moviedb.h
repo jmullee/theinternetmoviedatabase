@@ -2,13 +2,13 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.18
+ *  Version: 3.20
  *
  *  Purpose: general constant and type definitions for movie database
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -47,10 +47,12 @@
 /* Similarly for attributes */
 #define   ATTRSTART            300000
 #define   ATTRGROW             100000
+/* and for akas */
+#define   AKASTART             200000
+#define   AKAGROW               50000
 /* (under-)Estimate of movie ratings average line; assumes 1-letter titles */
 #define   MRRSIZE                  41
 /* Following constants used only by mkdb (hence, more easily programmed out) */
-#define   MAXAKAENTRIES        150000
 #define   MAXNAKAENTRIES       250000
 #define   MAXTITLEINFO         500000
 #define   MAXBIOENTRIES        250000
