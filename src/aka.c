@@ -92,7 +92,7 @@ void addAkaToNameSearch (struct nameSearchRec *chain)
 
   dbFp = openFile ( AKADB ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 8 ;
+  saveUpper = ftell ( dbFp ) / AKABYTES ;
 
   for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
   {
@@ -107,7 +107,7 @@ void addAkaToNameSearch (struct nameSearchRec *chain)
           while ( !found && upper >= lower )
           {
              mid = ( upper + lower ) / 2 ;
-             (void) fseek ( dbFp, mid * 8, SEEK_SET ) ;
+             (void) fseek ( dbFp, mid * AKABYTES, SEEK_SET ) ;
              dbKey = getTitle ( dbFp ) ;
              if ( titleKey == dbKey )
                found = TRUE ;
@@ -126,7 +126,7 @@ void addAkaToNameSearch (struct nameSearchRec *chain)
               {
                 if ( --mid >= 0 )
                 {
-                  (void) fseek ( dbFp, mid * 8, SEEK_SET ) ;
+                  (void) fseek ( dbFp, mid * AKABYTES, SEEK_SET ) ;
                   dbKey = getTitle ( dbFp ) ;
                 }
                 else
@@ -164,7 +164,7 @@ void addAkaToTitleSearch (struct titleSearchRec *tchain)
 
   dbFp = openFile ( AKADB ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 8 ;
+  saveUpper = ftell ( dbFp ) / AKABYTES ;
 
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
   {
@@ -175,7 +175,7 @@ void addAkaToTitleSearch (struct titleSearchRec *tchain)
     while ( !found && upper >= lower )
     {
       mid = ( upper + lower ) / 2 ;
-      (void) fseek ( dbFp, mid * 8, SEEK_SET ) ;
+      (void) fseek ( dbFp, mid * AKABYTES, SEEK_SET ) ;
       dbKey = getTitle ( dbFp ) ;
       if ( titleKey == dbKey )
         found = TRUE ;
@@ -194,7 +194,7 @@ void addAkaToTitleSearch (struct titleSearchRec *tchain)
         {
           if ( --mid >= 0 )
           {
-            (void) fseek ( dbFp, mid * 8, SEEK_SET ) ;
+            (void) fseek ( dbFp, mid * AKABYTES, SEEK_SET ) ;
             dbKey = getTitle ( dbFp ) ;
           }
           else
@@ -258,7 +258,7 @@ void addNameAkaToNameSearch (struct nameSearchRec *nchain)
 
   dbFp = openFile ( NAKADB ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 6 ;
+  saveUpper = ftell ( dbFp ) / NAKABYTES ;
 
   for ( nrec = nchain ; nrec != NULL ; nrec = nrec -> next )
   {
@@ -269,7 +269,7 @@ void addNameAkaToNameSearch (struct nameSearchRec *nchain)
     while ( !found && upper >= lower )
     {
       mid = ( upper + lower ) / 2 ;
-      (void) fseek ( dbFp, mid * 6, SEEK_SET ) ;
+      (void) fseek ( dbFp, mid * NAKABYTES, SEEK_SET ) ;
       dbKey = getName ( dbFp ) ;
       if ( nameKey == dbKey )
         found = TRUE ;
@@ -288,7 +288,7 @@ void addNameAkaToNameSearch (struct nameSearchRec *nchain)
         {
           if ( --mid >= 0 )
           {
-            (void) fseek ( dbFp, mid * 6, SEEK_SET ) ;
+            (void) fseek ( dbFp, mid * NAKABYTES, SEEK_SET ) ;
             dbKey = getName ( dbFp ) ;
           }
           else

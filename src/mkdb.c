@@ -212,8 +212,10 @@ void writeAttrIndexKey ( AttributeID attrCount )
 
   while ( fgets ( line, MXLINELEN, keyFp ) != NULL )
   {
-     if ( ( p = strchr ( line, FSEP ) ) == NULL )
+     if ( ( p = strchr ( line, FSEP ) ) == NULL ) {
+       printf ( "%s\n", line ) ;
        moviedbError ( "mkdb: badly formed key file" ) ;
+     }
      attrIndex [ count ] . attrKey = strtol ( ++p, (char **) NULL, 16) ;
      attrIndex [ count++ ] . offset = lastOffset ;
      lastOffset = ftell ( keyFp ) ;
@@ -287,7 +289,7 @@ void writeAttrAlphaKey ( AttributeID attrCount, struct attrIndexRec *attributes)
   indexFp = writeFile ( ATTRKEY ) ;
 
   for ( i = 0 ; i < attrCount ; i++ )
-    (void) fprintf ( indexFp , "%s|%x\n", attributes [ i ] . attr, attributes [ i ] . attrKey ) ;
+    (void) fprintf ( indexFp , "%s|%lx\n", attributes [ i ] . attr, attributes [ i ] . attrKey ) ;
 
   (void) fclose ( indexFp ) ;
 }
@@ -476,7 +478,7 @@ AttributeID attrKeyLookup (char *attr, struct attrIndexRec *attributes, Attribut
      attributes [ insert ] . attr = duplicateString ( attr ) ;
      attributes [ insert ] . attrKey = attrKey ;
      *attrCount = *attrCount + 1 ;
-     if ( *attrCount >= MAXTITLES )
+     if ( *attrCount >= MAXATTRS )
        moviedbError ( "mkdb: too many attributes -- increase MAXATTRS" ) ;
      return ( attrKey ) ;
    }
@@ -2101,32 +2103,29 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, struc
 	enddata = TRUE ;
       else if ( line [ 0 ] == ' ' )
       {
-        if ( ( ptr = strrchr ( line, ')' ) ) != NULL )
+        stripEOL ( line ) ;
+        if ( ( ptr = strchr ( line, '\t' ) ) != NULL )
         {
-          if ( *(ptr - 1) != ')' && *(ptr - 1) != '"' )
-          {
-            *(ptr + 1) = '\0' ;
-            if ( ( ptr = strrchr ( line, '(' ) ) == NULL )
-              continue ;
-            aka [ count ] . attrKey = attrKeyLookup ( ptr, attributes, attrCount ) ;
-            *(ptr - 1) = '\0' ;
-            if ( ( ptr = strrchr ( line, ')' ) ) == NULL )
-              continue ;
-          }
-          else
-            aka [ count ] . attrKey = NOATTR ;
-          *ptr = '\0' ;
-          if ( debugFlag )
-             (void) printf ( "%s\n", line ) ;
-          aka [ count ] . aka = titleKeyLookup ( line + 8, titles, titleCount ) ;
-          aka [ count ] . primary = primaryKey ;
-          processed++ ;
-          if ( sortedTo == 0 )
-            count++ ;
-          else
-            if ( bsearch ( (void*) &(aka [ count ]) , (void*) aka, (size_t) sortedTo, sizeof ( struct akaData ), (int (*) (const void*, const void*)) akaDataSort ) == NULL )
-              count++ ;
+          *(ptr - 1) = '\0' ;
+          aka [ count ] . attrKey = attrKeyLookup ( ++ptr, attributes, attrCount ) ;
         }
+        else
+        {
+          aka [ count ] . attrKey = NOATTR ;
+          if ( ( ptr = strrchr ( line, ')' ) ) == NULL )
+            continue ;
+          *ptr = '\0' ;
+        }
+        if ( debugFlag )
+           (void) printf ( "%s\n", line ) ;
+        aka [ count ] . aka = titleKeyLookup ( line + 8, titles, titleCount ) ;
+        aka [ count ] . primary = primaryKey ;
+        processed++ ;
+        if ( sortedTo == 0 )
+          count++ ;
+        else
+          if ( bsearch ( (void*) &(aka [ count ]) , (void*) aka, (size_t) sortedTo, sizeof ( struct akaData ), (int (*) (const void*, const void*)) akaDataSort ) == NULL )
+            count++ ;
       }
       else
       {

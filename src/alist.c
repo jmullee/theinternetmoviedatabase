@@ -395,7 +395,7 @@ int main ( int argc, char **argv )
   int   casesen = FALSE ;
   int   substring = FALSE ;
   int   mvsonly = FALSE ;
-  struct titleDbRec years [ MAXTITLES ] ;
+  struct titleDbRec *years  ;
   char  attr [ MXLINELEN ] ;
   struct attrSearchOptRec  attrFlags = { 0, 0, 0, 0, 0 } ;
   int   yrf = 0 ;
@@ -404,6 +404,10 @@ int main ( int argc, char **argv )
   TitleID nyears = 0 ;
   int   listId = -1 ;
   int   titleFlag = FALSE ;
+
+  years = (struct titleDbRec *) calloc ( MAXTITLES, sizeof ( struct titleDbRec ) ) ;
+  if ( years == NULL )
+    moviedbError ( "mkdb: not enough memory to generate titleDbRec" ) ;
 
   logProgram ( argv [ 0 ] ) ;
 

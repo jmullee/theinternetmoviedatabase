@@ -171,7 +171,7 @@ void swapAkaTitles (struct titleSearchRec *tchain)
 
   dbFp = openFile ( AKAIDX ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 6 ;
+  saveUpper = ftell ( dbFp ) / AKABYTES ;
 
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
   {
@@ -182,7 +182,7 @@ void swapAkaTitles (struct titleSearchRec *tchain)
     while ( !found && upper >= lower )
     {
       mid = ( upper + lower ) / 2 ;
-      (void) fseek ( dbFp, mid * 6, SEEK_SET ) ;
+      (void) fseek ( dbFp, mid * AKABYTES, SEEK_SET ) ;
       dbKey = getTitle ( dbFp ) ;
       if ( titleKey == dbKey )
         found = TRUE ;

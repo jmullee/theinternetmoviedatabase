@@ -18,19 +18,25 @@
  *============================================================================
  */
 
+/* Size of the master title record: title+int+int+attr = 3+2+2+3 */
+#define	  RECBYTES		   10
+/* Size of an aka record: title+title+attr = 3+3+3 */
+#define	  AKABYTES		    9
+/* Size of a naka record: name+name = 3+3 */
+#define	  NAKABYTES		    6
 #define   MXLINELEN               500
 #define   FSEP                    '|'
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
 #define   MAXTITLES            300000
-#define   MAXATTRS              65500
+#define   MAXATTRS             100000
 #define   MAXFILMOGRAPHIES       1023
 #define   MAXWITHATTRS           4095
 #define   MAXTITLERESULTS        4095
 #define   MAXALISTRESULTS        5000
 #define   MAXALISTTITLES         3000
 #define   NOTITLE            0xffffff
-#define   NOATTR               0xffff
+#define   NOATTR             0xffffff
 #define   NONAME           0xffffffff
 #define   NOPOS                     0
 #define   MAXTRIVENTRIES        30000
@@ -275,7 +281,7 @@ enum movieLinkTypes { followsLink, followedByLink,
                       unknownLink } ;
 
 #ifndef __alpha
-typedef unsigned int AttributeID ;
+typedef unsigned long AttributeID ;
 typedef unsigned long TitleID ;
 typedef unsigned long NameID ;
 #else

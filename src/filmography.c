@@ -158,7 +158,7 @@ void swapAkaNames (struct nameSearchRec *nchain)
 
   dbFp = openFile ( NAKAIDX ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 6 ;
+  saveUpper = ftell ( dbFp ) / NAKABYTES ;
 
   for ( nrec = nchain ; nrec != NULL ; nrec = nrec -> next )
   {
@@ -169,7 +169,7 @@ void swapAkaNames (struct nameSearchRec *nchain)
     while ( !found && upper >= lower )
     {
       mid = ( upper + lower ) / 2 ;
-      (void) fseek ( dbFp, mid * 6, SEEK_SET ) ;
+      (void) fseek ( dbFp, mid * NAKABYTES, SEEK_SET ) ;
       dbKey = getName ( dbFp ) ;
       if ( nameKey == dbKey )
         found = TRUE ;

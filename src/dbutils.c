@@ -275,6 +275,7 @@ void putAttr ( AttributeID attrKey, FILE *stream)
 {
   (void) fputc ( attrKey & 255, stream ) ;
   (void) fputc ( ( attrKey >> 8 ) & 255, stream ) ;
+  (void) fputc ( ( attrKey >> 16 ) & 255, stream ) ;
 }
 
 
@@ -391,6 +392,7 @@ AttributeID getAttr (FILE *stream)
 
   attrKey = fgetc ( stream )  & 255 ;
   attrKey |= fgetc ( stream ) << 8 ;
+  attrKey |= fgetc ( stream ) << 16 ;
   return ( attrKey ) ;
 }
 

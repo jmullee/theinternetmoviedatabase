@@ -2,13 +2,13 @@
  *
  *  Program: years.c
  *
- *  Version: 3.0
+ *  Version: 3.4
  *
  *  Purpose: year database procedures
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1998 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -40,7 +40,7 @@ void addYearsToNameSearch (struct nameSearchRec *chain)
 
   dbFp = openFile ( MOVIEDB ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 9 ;
+  saveUpper = ftell ( dbFp ) / RECBYTES ;
 
   for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
   {
@@ -55,7 +55,7 @@ void addYearsToNameSearch (struct nameSearchRec *chain)
           while ( !found && upper >= lower )
           {
              mid = ( upper + lower ) / 2 ;
-             (void) fseek ( dbFp, mid * 9, SEEK_SET ) ;
+             (void) fseek ( dbFp, mid * RECBYTES, SEEK_SET ) ;
              dbKey = getTitle ( dbFp ) ;
              if ( titleKey == dbKey )
                found = TRUE ;
@@ -88,7 +88,7 @@ void addYearsToTitleSearch (struct titleSearchRec *tchain)
 
   dbFp = openFile ( MOVIEDB ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / 9 ;
+  saveUpper = ftell ( dbFp ) / RECBYTES ;
 
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
   {
@@ -99,7 +99,7 @@ void addYearsToTitleSearch (struct titleSearchRec *tchain)
     while ( !found && upper >= lower )
     {
       mid = ( upper + lower ) / 2 ;
-      (void) fseek ( dbFp, mid * 9, SEEK_SET ) ;
+      (void) fseek ( dbFp, mid * RECBYTES, SEEK_SET ) ;
       dbKey = getTitle ( dbFp ) ;
       if ( titleKey == dbKey )
         found = TRUE ;

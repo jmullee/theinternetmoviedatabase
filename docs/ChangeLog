@@ -1,3 +1,11 @@
+-------Version 3.5 Released---------------------
+
+Sun Oct 11 16:04:33 BST 1998
+
+ * adjusted attributes to 24bit key following overflow; rebuild of databases
+   required
+
+
 -------Version 3.4 Released---------------------
 
 Sun Mar 29 22:40:37 BST 1998
