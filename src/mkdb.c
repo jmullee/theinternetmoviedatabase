@@ -2,13 +2,13 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.22
+ *  Version: 3.23
  *
  *  Purpose: make databases from list files
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2004 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -231,7 +231,7 @@ void writeAttrIndexKey ( AttributeID attrCount )
   (void) qsort ( (void*) attrIndex, (size_t) count, sizeof ( struct attrKeyOffset ), (int (*) (const void*, const void*)) attrKeyOffsetSort ) ;
 
   for ( i = 0 ; i < count ; i++ )
-    putOffset ( attrIndex [ i ] . offset, indexFp ) ;
+    putFullOffset ( attrIndex [ i ] . offset, indexFp ) ;
 
   (void) fclose ( keyFp ) ;
   (void) fclose ( indexFp ) ;

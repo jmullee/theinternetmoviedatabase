@@ -2,13 +2,13 @@
  *
  *  Program: dbutils.c
  *
- *  Version: 3.22
+ *  Version: 3.23
  *
  *  Program: general database functions
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2004 The Internet Movie Database Inc.
  *
  *  OpenFile function by: Timo Lamminjoki <lamminjo@pcu.helsinki.fi>
  *
@@ -1056,8 +1056,8 @@ char *mapAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp
 
   if ( attrKey != NOATTR )
   {
-    (void) fseek ( attrIndexFp, 3 * attrKey, SEEK_SET ) ;
-    offset = getOffset ( attrIndexFp ) ;
+    (void) fseek ( attrIndexFp, 4 * attrKey, SEEK_SET ) ;
+    offset = getFullOffset ( attrIndexFp ) ;
     (void) fseek ( attrKeyFp, offset, SEEK_SET ) ;
     (void) fgets ( line, MXLINELEN, attrKeyFp ) ;
     return ( duplicateField ( line ) ) ;
@@ -1092,8 +1092,8 @@ char *mapfastAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrInd
 
   if ( attrKey != NOATTR )
   {
-    (void) fseek ( attrIndexFp, 3 * attrKey, SEEK_SET ) ;
-    offset = getOffset ( attrIndexFp ) ;
+    (void) fseek ( attrIndexFp, 4 * attrKey, SEEK_SET ) ;
+    offset = getFullOffset ( attrIndexFp ) ;
     (void) fseek ( attrKeyFp, offset, SEEK_SET ) ;
     (void) fgets ( line, MXLINELEN, attrKeyFp ) ;
     if ( (p = strchr ( line, FSEP ) ) == NULL )

@@ -2,13 +2,13 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.22
+ *  Version: 3.23
  *
  *  Purpose: general constant and type definitions for movie database
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2004 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -29,7 +29,7 @@
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
 #define   MAXTITLES            750000
-#define   MAXFILMOGRAPHIES       1023
+#define   MAXFILMOGRAPHIES       2047
 #define   MAXWITHATTRS           4095
 #define   MAXTITLERESULTS       16383
 #define   MAXALISTRESULTS        5000
