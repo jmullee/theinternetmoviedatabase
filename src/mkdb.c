@@ -2,13 +2,13 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.9
+ *  Version: 3.16
  *
  *  Purpose: make databases from list files
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2001 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -84,6 +84,9 @@
 #define MKDB_USAGE5 "            -lang|-sfxco|-bus|-ld|-dist|-crewcom] [-m -debug -create]"
 
 static int debugFlag = FALSE ;
+
+static struct titleKeyOffset *sharedTitleIndex ;
+static size_t sharedTitleIndexSize ;
 
 TitleID readMoviesList (struct titleIndexRec *titles)
 {
@@ -1647,7 +1650,7 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
 TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, int listId)
 {
   FILE *dbFp, *listFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXTRIVENTRIES ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char line [ MXLINELEN ] ;
   int  indata = FALSE ;
   int  inheader = FALSE ;
@@ -1674,8 +1677,14 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 2, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
-	   if (count >= MAXTRIVENTRIES)
-	     moviedbError ( "mkdb: too many trivia entries -- increase MAXTRIVENTRIES" ) ;
+	   if (count >= sharedTitleIndexSize)
+	   {
+	     sharedTitleIndexSize += TIGROW ;
+	     titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	      if ( titlesIndex == NULL )
+		moviedbError ( "mkdb: not enough memory to generate trivia index" ) ;
+	      sharedTitleIndex = titlesIndex ;
+	   }
          }
        }
     else
@@ -1712,7 +1721,7 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
 TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXPLOTENTRIES ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char line [ MXLINELEN ] ;
   int  inplot = FALSE ;
   TitleID  count = 0, i ;
@@ -1736,8 +1745,14 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
-	   if (count >= MAXPLOTENTRIES)
-	     moviedbError ( "mkdb: too many plot entries -- increase MAXPLOTENRIES" );
+	   if (count >= sharedTitleIndexSize)
+	   {
+	     sharedTitleIndexSize += TIGROW ;
+	     titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	      if ( titlesIndex == NULL )
+		moviedbError ( "mkdb: not enough memory to generate plot index" ) ;
+	      sharedTitleIndex = titlesIndex ;
+           }
          }
        }
     }
@@ -1769,7 +1784,7 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
 TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXPLOTENTRIES ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char line [ MXLINELEN ] ;
   int  inplot = FALSE ;
   TitleID  count = 0, i ;
@@ -1793,8 +1808,14 @@ TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
-	   if (count >= MAXPLOTENTRIES)
-	     moviedbError ( "mkdb: too many outline entries -- increase MAXPLOTENRIES" );
+	   if (count >= sharedTitleIndexSize)
+	   {
+	     sharedTitleIndexSize += TIGROW ;
+	     titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	      if ( titlesIndex == NULL )
+		moviedbError ( "mkdb: not enough memory to generate outline index" ) ;
+	      sharedTitleIndex = titlesIndex ;
+           }
          }
        }
     }
@@ -1927,7 +1948,7 @@ NameID processBiographiesList ( NameID *nameCount )
            namesIndex [ count ] . offset = currentOffset ;
            count++ ;
 	   if (count >= MAXBIOENTRIES)
-	     moviedbError ( "mkdb: too many bios -- increase MAXBIOENRIES" ) ;
+	     moviedbError ( "mkdb: too many bios -- increase MAXBIOENTRIES" ) ;
          }
        }
     }
@@ -2489,7 +2510,7 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
 {
   char  *tmptr, *attrptr ;
   FILE  *listFp, *dbFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXTITLEINFO ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char  line [ MXLINELEN ] ;
   int   inMovie = FALSE ;
   TitleID   count = 0, i, titleKey, prevTitleKey = NOTITLE, idxCount = 0 ;
@@ -2531,8 +2552,14 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
           putString ( tmptr, dbFp ) ;
           putAttr ( attrKey, dbFp ) ;
           count++ ;
-	  if (count >= MAXTITLEINFO)
-	    moviedbError ( "mkdb: too many titles -- increase MAXTITLEINFO" ) ;
+	 if (count >= sharedTitleIndexSize)
+	 {
+	   sharedTitleIndexSize += TIGROW ;
+	   titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	    if ( titlesIndex == NULL )
+	      moviedbError ( "mkdb: not enough memory to generate title info index" ) ;
+	    sharedTitleIndex = titlesIndex ;
+         }
        }
     }
     else
@@ -2561,7 +2588,7 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
 TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount )
 {
   FILE *dbFp, *listFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXBUSENTRIES ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char line [ MXLINELEN ] ;
   int  inLit = FALSE ;
   TitleID  count = 0, i ;
@@ -2585,8 +2612,14 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
-	   if (count >= MAXBUSENTRIES)
-	     moviedbError ( "mkdb: too many business entries -- increase MAXBUSENTRIES" ) ;
+	   if (count >= sharedTitleIndexSize)
+	   {
+	     sharedTitleIndexSize += TIGROW ;
+	     titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	      if ( titlesIndex == NULL )
+		moviedbError ( "mkdb: not enough memory to generate business index" ) ;
+	      sharedTitleIndex = titlesIndex ;
+           }
          }
        }
     }
@@ -2618,7 +2651,7 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
 TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount )
 {
   FILE *dbFp, *listFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXLDENTRIES ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char line [ MXLINELEN ] ;
   int  inLD = FALSE ;
   TitleID  count = 0, i ;
@@ -2641,8 +2674,14 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
-	   if (count >= MAXLDENTRIES)
-	     moviedbError ( "mkdb: too many laser discs -- increase MAXLDENTRIES" ) ;
+	   if (count >= sharedTitleIndexSize)
+	   {
+	     sharedTitleIndexSize += TIGROW ;
+	     titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	      if ( titlesIndex == NULL )
+		moviedbError ( "mkdb: not enough memory to generate laser index" ) ;
+	      sharedTitleIndex = titlesIndex ;
+           }
          }
        }
        else
@@ -2680,7 +2719,7 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
 TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCount )
 {
   FILE *dbFp, *listFp, *indexFp ;
-  struct titleKeyOffset titlesIndex [ MAXLITENTRIES ] ;
+  struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
   char line [ MXLINELEN ] ;
   int  inLit = FALSE ;
   TitleID  count = 0, i ;
@@ -2704,8 +2743,14 @@ TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCoun
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 6, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
-	   if (count >= MAXLITENTRIES)
-	     moviedbError ( "mkdb: too many literature entries -- increase MAXLITENTRIES" ) ;
+	   if (count >= sharedTitleIndexSize)
+	   {
+	     sharedTitleIndexSize += TIGROW ;
+	     titlesIndex = realloc ( sharedTitleIndex, sizeof (struct titleKeyOffset) * sharedTitleIndexSize );
+	      if ( titlesIndex == NULL )
+		moviedbError ( "mkdb: not enough memory to generate lit index" ) ;
+	      sharedTitleIndex = titlesIndex ;
+           }
          }
        }
     }
@@ -3063,6 +3108,11 @@ int main (int argc, char **argv)
   TitleID titleCount = 0 ;
   AttributeID attrCount = 0 ;
   NameID  nameCount = 0 ;
+
+  sharedTitleIndex = malloc ( sizeof (struct titleKeyOffset) * TISTART ) ;
+  if ( sharedTitleIndex == NULL )
+    moviedbError ( "mkdb: not enough memory to generate titles index" ) ;
+  sharedTitleIndexSize = TISTART ;
 
   akaFile [ 0 ] = '\0' ;
 

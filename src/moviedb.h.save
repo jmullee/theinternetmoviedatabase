@@ -2,13 +2,13 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.16
+ *  Version: 3.13
  *
  *  Purpose: general constant and type definitions for movie database
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1999 The Internet Movie Database Ltd
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd 
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -29,6 +29,7 @@
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
 #define   MAXTITLES            500000
+#define   MAXATTRS             200000
 #define   MAXFILMOGRAPHIES       1023
 #define   MAXWITHATTRS           4095
 #define   MAXTITLERESULTS        4095
@@ -38,20 +39,19 @@
 #define   NOATTR             0xffffff
 #define   NONAME           0xffffffff
 #define   NOPOS                     0
+#define   MAXTRIVENTRIES        30000
+#define   MAXPLOTENTRIES        75000
+#define   MAXLITENTRIES         25000
+#define   MAXLDENTRIES          25000
+#define   MAXBUSENTRIES         40000
+#define   MAXBIOENTRIES        250000
 #define   MAXMRRENTRIES         60000
-#define   MAXPOS                  255
-#define   LINKCHUNKSIZE            50
-/* mkdb: Start and increment for titleInfo lists (replaces hard limits) */
-/* TISTART should be the max needed, but it's not a catastrophe if it isn't */
-#define   TISTART              500000
-#define   TIGROW               100000
-/* Following constants used only by mkdb (hence, more easily programmed out) */
 #define   MAXAKAENTRIES        150000
 #define   MAXNAKAENTRIES       250000
-#define   MAXATTRS             200000
 #define   MAXTITLEINFO         500000
-#define   MAXBIOENTRIES        250000
+#define   MAXPOS                  255
 #define   MAXLINKS             400000
+#define   LINKCHUNKSIZE            50
 
 #ifndef DBDIR
 #define   DBDIR
@@ -317,7 +317,7 @@
 
 #define  MAXBIODEFS      25
 
-#define  TRIVTITLE "# "
+#define  TRIVTITLE "# " 
 
 #include <sys/param.h>
 #ifndef MAXPATHLEN
@@ -336,14 +336,14 @@ enum compCastStatus { unknown, completed, verified } ;
 
 #define NO_OF_LINK_TYPES  18
 
-enum movieLinkTypes { followsLink, followedByLink,
-                      remakeOfLink, remadeAsLink,
-                      referencesLink, referencedInLink,
-                      spoofsLink, spoofedInLink,
-                      featuresLink, featuredInLink,
-                      spinOffFromLink, spinOffLink,
-                      versionOfLink,
-                      similarToLink,
+enum movieLinkTypes { followsLink, followedByLink, 
+                      remakeOfLink, remadeAsLink, 
+                      referencesLink, referencedInLink, 
+                      spoofsLink, spoofedInLink, 
+                      featuresLink, featuredInLink, 
+                      spinOffFromLink, spinOffLink, 
+                      versionOfLink, 
+                      similarToLink, 
                       editedIntoLink, editedFromLink,
                       alternateLanguageVersionOfLink,
                       unknownLink } ;
@@ -408,7 +408,7 @@ struct personRec
 } ;
 
 
-struct bioRec
+struct bioRec 
 {
   char           *biog ;
   char           *BY ;
@@ -432,14 +432,14 @@ struct outlineRec
 } ;
 
 
-struct lineRec
+struct lineRec 
 {
   char            *text ;
   struct lineRec *next ;
 }  ;
 
 
-struct titleInfoRec
+struct titleInfoRec 
 {
   AttributeID     attrKey ;
   char            *text ;
@@ -448,21 +448,21 @@ struct titleInfoRec
 }  ;
 
 
-struct plotRec
+struct plotRec 
 {
   struct outlineRec *outline ;
   char              *RV ;
 } ;
 
 
-struct triviaRec
-{
+struct triviaRec  
+{ 
   int             count ;
-  struct lineRec *trivia ;
+  struct lineRec *trivia ;  
 } ;
 
 
-struct titleOrderRec
+struct titleOrderRec 
 {
   int  listId ;
   char *tag ;
@@ -584,21 +584,21 @@ struct titleSearchRec
   unsigned char            *title ;
   TitleID                  titleKey ;
   struct titleSearchOptRec searchparams ;
-  int                      trivflags [ NO_OF_TRIV_LISTS ] ;
-  int                      titleInfoFlags [ NO_OF_TITLE_INFO_LISTS ] ;
+  int                      trivflags [ NO_OF_TRIV_LISTS ] ; 
+  int                      titleInfoFlags [ NO_OF_TITLE_INFO_LISTS ] ; 
   int                      nameCount ;
   struct titleResults      results [ NO_OF_FILMOGRAPHY_LISTS ] ;
   struct titleListEntry    entries [ MAXTITLERESULTS ] ;
-  struct lineRec           *trivlists [ NO_OF_TRIV_LISTS ] ;
-  struct titleInfoRec      *titleInfo [ NO_OF_TITLE_INFO_LISTS ] ;
-  int                      year ;
+  struct lineRec           *trivlists [ NO_OF_TRIV_LISTS ] ; 
+  struct titleInfoRec      *titleInfo [ NO_OF_TITLE_INFO_LISTS ] ; 
+  int                      year ; 
   AttributeID              attrKey ;
   char                     *attr ;
   enum compCastStatus      castStatus ;
   enum compCastStatus      crewStatus ;
   struct mrrRec            *mrr ;
   struct akaRec            *aka ;
-  struct plotRec           *plot ;
+  struct plotRec           *plot ; 
   struct lineRec           *literature ;
   struct lineRec           *business ;
   struct laserRec          *laserdisc ;
@@ -615,7 +615,7 @@ struct listEntry
   int           position ;
   int           lineOrder ;
   int           groupOrder ;
-  int           subgroupOrder ;
+  int           subgroupOrder ; 
   char          *title ;
   char          *attr ;
   char          *cname ;
@@ -699,7 +699,7 @@ struct mrrDbRec
 {
   TitleID       titleKey ;
   struct mrrRec mrr ;
-} ;
+} ; 
 
 
 struct voteDbRec
@@ -722,7 +722,7 @@ struct lindexTitleRec
   unsigned char  *title ;
   struct mrrRec  mrr ;
   int            year ;
-} ;
+} ; 
 
 
 struct formatRec
@@ -735,7 +735,7 @@ struct formatRec
    AttributeID   attrKey ;
    int           year ;
    struct mrrRec mrr ;
-} ;
+} ; 
 
 
 struct lseenCount
@@ -797,7 +797,7 @@ struct titleAttrPair
 } ;
 
 
-struct filmography
+struct filmography 
 {
   NameID               nameKey ;
   int                  noWithAttr ;
@@ -823,7 +823,7 @@ struct titleAttrChar
 } ;
 
 
-struct castFilmography
+struct castFilmography 
 {
   NameID               nameKey ;
   int                  noWithAttr ;
@@ -852,7 +852,7 @@ struct titleAttrWrite
 } ;
 
 
-struct writerFilmography
+struct writerFilmography 
 {
   NameID               nameKey ;
   int                  noWithAttr ;
@@ -862,7 +862,7 @@ struct writerFilmography
 } ;
 
 
-struct corrections
+struct corrections 
 {
   char  *original ;
   char  *corrected ;

@@ -32,6 +32,8 @@
 #include "lcs.h"
 #include "titleinfo.h"
 
+struct listRec *lookupFilmography ( FILE *dbFp, FILE *indexFp, struct nameSearchRec *nrec, int listId ) ;
+
 void freeNameAkas ( struct akaNameRec *naka )
 {
   struct akaNameRec *arec, *aprev ;
@@ -162,6 +164,7 @@ void swapAkaNames (struct nameSearchRec *nchain)
 
   for ( nrec = nchain ; nrec != NULL ; nrec = nrec -> next )
   {
+    if ( nrec -> firstMatch >= 0 ) continue ;
     nameKey = nrec -> nameKey ;
     lower = 0 ;
     upper = saveUpper ;
@@ -405,8 +408,47 @@ void filmographySearchKeyLookup (struct nameSearchRec *chain)
     approxFilmographySearchKeyLookup ( chain ) ;
   else
     straightFilmographySearchKeyLookup ( chain ) ;
-  if ( chain -> searchparams . akaopt )
+
+  if ( chain -> searchparams . akaopt ) {
+	/* Do preliminary lookup to determine which names are "real" */
+    struct listRec *tempListRec ;
+    FILE  *dbFp = NULL, *indexFp = NULL ;
+    int   listId ;
+    struct nameSearchRec *nrec ;
+    char fn [ MAXPATHLEN ] ;
+
+    for ( listId = 0 ; listId < NO_OF_FILMOGRAPHY_LISTS ; listId++ )
+    {
+      for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
+      {
+	if ( nrec -> firstMatch >= 0 ) continue ;
+	if ( nrec -> searchFlags [ listId ] )
+	{
+	  if ( dbFp == NULL )
+	  {
+	    (void) constructFilename ( fn, filmographyDefs [ listId ] . stem, DBSEXT ) ;
+	    dbFp = openFile ( fn ) ;
+	    (void) constructFilename ( fn, filmographyDefs [ listId ] . stem, NDXEXT ) ;
+	    indexFp = openFile ( fn ) ;
+	  }
+	  tempListRec = lookupFilmography ( dbFp, indexFp, nrec, listId ) ;
+	  if  ( tempListRec != NULL ) {
+	    nrec -> firstMatch = listId ;
+	    free ( tempListRec ) ;
+	  }
+	}
+      }
+      if ( dbFp != NULL )
+      {
+	(void) fclose ( dbFp ) ;
+	(void) fclose ( indexFp ) ;
+	dbFp = NULL ;
+      }
+    }
     swapAkaNames ( chain ) ;
+    for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
+      nrec -> firstMatch = -1 ;
+  }
 }
 
 
