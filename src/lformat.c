@@ -2,13 +2,13 @@
  *
  *  Program: lformat.c
  *
- *  Version: 3.7
+ *  Version: 3.18
  *
  *  Purpose: format list databases
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -404,7 +404,8 @@ int main ( int argc, char **argv )
 
   if ( mrropt != NONE )
   {
-    if ( ( ratings = calloc ( MAXTITLES, sizeof ( struct mrrDbRec ) ) ) == NULL )
+    nratings = ratingsDbSize ( ) ;
+    if ( ( ratings = calloc ( nratings, sizeof ( struct mrrDbRec ) ) ) == NULL )
       moviedbError ( "out of memory" ) ;
     nratings = readRatingsDb ( ratings ) ;
   }

@@ -2,13 +2,13 @@
  *
  *  Program: ratings.c
  *
- *  Version: 3.0
+ *  Version: 3.18
  *
  *  Purpose: movie ratings procedures
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -205,6 +205,18 @@ TitleID readRatingsDb ( struct mrrDbRec array [] )
     array [ count ] . mrr . rating = (float) getByte ( dbFp ) / 10.0 ;
     count++ ;
   }
+  return ( count ) ;
+}
+
+TitleID ratingsDbSize ( void )
+{
+  TitleID count = 0 ;
+  FILE *dbFp ;
+
+  dbFp = openFile ( MRRDB ) ;
+  (void) fseek ( dbFp, 0, SEEK_END ) ;
+  count = ftell ( dbFp ) / 16 ;
+  (void) fclose ( dbFp ) ;
   return ( count ) ;
 }
 

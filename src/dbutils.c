@@ -2,13 +2,13 @@
  *
  *  Program: dbutils.c
  *
- *  Version: 3.7
+ *  Version: 3.18
  *
  *  Program: general database functions
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
  *
  *  OpenFile function by: Timo Lamminjoki <lamminjo@pcu.helsinki.fi>
  *
@@ -16,7 +16,7 @@
  *
  *  Text justification functions by: Mark Harding <mah@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -571,11 +571,7 @@ FILE *openFile ( const char *path )
    char argstring [ MAXPATHLEN + MXLINELEN ] ;
    char *ptr ;
    int i ;
-#endif
-#if HAVE_TEMPNAM
-   char *tmpfname ;
-#else
-   char tmpfname [ L_tmpnam ] ;
+   char tmpfname [ ] = "mkdbXXXXXX" ;
 #endif
 
    if ( ( ret = fopen ( path, "r" ) ) == NULL )
@@ -594,30 +590,14 @@ FILE *openFile ( const char *path )
 	   exit ( -1 );
         }
       }
-#if HAVE_TEMPNAM
-      if ( ( tmpfname = tempnam ( NULL, NULL ) ) == NULL )
-      {
-       (void) fprintf ( stderr, "Can't create temporary name\n" );
-       exit ( -1 );
-      }
-#else
-      (void) tmpnam ( tmpfname );
-#endif
-      if ( ( tmpfd = open ( tmpfname, O_RDWR | O_CREAT ) ) == -1 )
+      tmpfd = mkstemp ( tmpfname ) ;
+      unlink ( tmpfname ) ;
+
+      if ( tmpfd == -1 )
       {
 	 (void) fprintf ( stderr, "Can't open workfile\n" );
 	 exit ( -1 );
       }
-      /* make temporary file disappear automatically when last file descriptor
-	 referencing it is closed */
-      if ( unlink ( tmpfname ) )
-      {
-	 (void) fprintf ( stderr, "Can't unlink workfile\n" );
-	 exit ( -1 );
-      }
-#if HAVE_TEMPNAM
-      free ( (void*) tmpfname ) ;
-#endif
       if ( ( pid = fork () ) == -1 )
       {
 	 (void) fprintf ( stderr, "Can't fork subprocess\n" );
@@ -679,21 +659,23 @@ FILE *openFile ( const char *path )
 }
 
 
-FILE *copyFile ( const char *toName, const char *fromName )
+FILE *copyFile ( const char *fromName )
 {
+  int toFd;
   FILE *toFp, *fromFp ;
+  char tmpfname [ ] = "mkdbXXXXXX" ;
   int c ;
 
   fromFp = openFile ( fromName ) ;
-  if ( ( toFp = fopen ( toName, "w+" ) ) == NULL )
-    moviedbWriteError ( toName ) ;
+  if ( ( toFd = mkstemp ( tmpfname ) ) == -1 )
+    moviedbWriteError ( tmpfname ) ;
+  unlink ( tmpfname ) ;
+  toFp = fdopen ( toFd, "w+" ) ;
 
   while ( ( c = fgetc ( fromFp ) ) != EOF )
     fputc ( c, toFp ) ;
   (void) fclose ( fromFp ) ;
 
-  if ( unlink ( toName ) )
-    moviedbError ( "error: can't unlink temporary file" ) ;
   rewind ( toFp ) ;
   return ( toFp ) ;
 }
@@ -707,18 +689,18 @@ long findSOL ( FILE *stream, long pos )
    {
       do {
          pos--;
-         (void) fseek ( stream, pos, 0 ) ;
+         (void) fseek ( stream, pos, SEEK_SET ) ;
          ch = fgetc ( stream ) ;
       } while ( (ch != '\n') && (ch != EOF) && (pos > 0) ) ;
       if ( pos != 0 )
           pos++ ;
       else
-           (void) fseek ( stream, pos, 0 ) ;
+           (void) fseek ( stream, pos, SEEK_SET ) ;
    }
    else
    {
        pos = 0 ;
-       (void) fseek ( stream, pos, 0 ) ;
+       (void) fseek ( stream, pos, SEEK_SET ) ;
    }
    return pos ;
 }

@@ -2,13 +2,13 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.17
+ *  Version: 3.18
  *
  *  Purpose: make databases from list files
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2001 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -119,7 +119,7 @@ TitleID readMoviesList (struct titleIndexRec *titles)
         (void) fgets ( line, MXLINELEN, listFp ) ;
       }
 
-  (void) fseek ( listFp, 0L, 0 ) ;
+  (void) fseek ( listFp, 0L, SEEK_SET ) ;
   inMovie = FALSE ;
   while ( fgets ( line, MXLINELEN, listFp ) != NULL )
     if ( inMovie && *line == '"' )
@@ -857,7 +857,6 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   fn [ MAXPATHLEN ] ;
-  char   tmpfname [ L_tmpnam ] ;
   char   *title, *attr, *cname, *keyPtr = NULL ;
   long   nentries = 0 ;
   NameID namesOnList = 0 ;
@@ -874,8 +873,7 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
 
   if ( isReadable ( NAMEKEY ) )
   {
-    (void) tmpnam ( tmpfname ) ;
-    tmpFp = copyFile ( tmpfname, NAMEKEY ) ;
+    tmpFp = copyFile ( NAMEKEY ) ;
     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
@@ -1165,7 +1163,6 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   fn [ MAXPATHLEN ] ;
-  char   tmpfname [ L_tmpnam ] ;
   char   *title, *attr, *keyPtr = NULL ;
   long   nentries = 0 ;
   NameID namesOnList = 0 ;
@@ -1181,8 +1178,7 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
 
   if ( isReadable ( NAMEKEY ) )
   {
-    (void) tmpnam ( tmpfname ) ;
-    tmpFp = copyFile ( tmpfname, NAMEKEY ) ;
+    tmpFp = copyFile ( NAMEKEY ) ;
     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
@@ -1500,7 +1496,6 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   fn [ MAXPATHLEN ] ;
-  char   tmpfname [ L_tmpnam ] ;
   char   *title, *attr, *keyPtr = NULL ;
   long   nentries = 0 ;
   NameID namesOnList = 0 ;
@@ -1517,8 +1512,7 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
 
   if ( isReadable ( NAMEKEY ) )
   {
-    (void) tmpnam ( tmpfname ) ;
-    tmpFp = copyFile ( tmpfname, NAMEKEY ) ;
+    tmpFp = copyFile ( NAMEKEY ) ;
     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
@@ -1870,7 +1864,6 @@ NameID processBiographiesList ( NameID *nameCount )
   char line [ MXLINELEN ] ;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
-  char   tmpfname [ L_tmpnam ] ;
   char   *keyPtr = NULL ;
   int  inbio = FALSE, skipMode = FALSE, compare ;
   NameID count = 0, i ;
@@ -1880,8 +1873,7 @@ NameID processBiographiesList ( NameID *nameCount )
 
   if ( isReadable ( NAMEKEY ) )
   {
-    (void) tmpnam ( tmpfname ) ;
-    tmpFp = copyFile ( tmpfname, NAMEKEY ) ;
+    tmpFp = copyFile ( NAMEKEY ) ;
     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
@@ -2038,15 +2030,20 @@ int mrrTitleCompare (char *mrrtitle, char *title)
 TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
-  struct mrrData ratingsReport [ MAXMRRENTRIES ] ;
+  struct mrrData *ratingsReport ;
   char line [ MXLINELEN ] ;
   int  inmrr = FALSE ;
-  TitleID count = 0, i, insert ;
+  TitleID count = 0, i, insert, nratings ;
   int  votes ;
   float rating ;
   struct titleIndexRec *matched ;
 
   listFp = openFile ( MRRLIST ) ;
+  (void) fseek ( listFp, 0, SEEK_END ) ;
+  nratings = ftell ( listFp ) / MRRSIZE ;
+  (void) fseek ( listFp, 0, SEEK_SET ) ;
+  if ( ( ratingsReport = calloc ( nratings, sizeof ( struct mrrData ) ) ) == NULL )
+     moviedbError ( "out of memory" ) ;
 
   while ( fgets ( line, MXLINELEN, listFp ) != NULL )
   {
@@ -2068,8 +2065,8 @@ TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
         (void) strncpy ( ratingsReport [ count ] . distribution, line + 6, 10 ) ;
         ratingsReport [ count ] . distribution [ 10 ] = '\0' ;
         count ++ ;
-	if (count >= MAXMRRENTRIES)
-	  moviedbError ( "mkdb: too many ratings -- increase MAXMRRENTRIES" ) ;
+	if (count >= nratings)
+	  moviedbError ( "mkdb: too many ratings -- decrease MRRSIZE" ) ;
       }
       else
         if ( debugFlag )
@@ -2105,7 +2102,7 @@ int voteDataSort (struct voteData *v1, struct voteData *v2)
 TitleID processVotesList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
-  struct voteData votes [ MAXMRRENTRIES ] ;
+  struct voteData votes [ MAXTITLES ] ;
   char line [ MXLINELEN ] ;
   struct titleIndexRec *matched ;
   int compare ;
@@ -2314,7 +2311,6 @@ NameID processAkaNamesList ( NameID *nameCount )
   char line [ MXLINELEN ] ;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
-  char   tmpfname [ L_tmpnam ] ;
   char   *keyPtr = NULL ;
   int inaka = FALSE, enddata = FALSE, skipMode, compare ;
   NameID count = 0, i ;
@@ -2325,8 +2321,7 @@ NameID processAkaNamesList ( NameID *nameCount )
 
   if ( isReadable ( NAMEKEY ) )
   {
-    (void) tmpnam ( tmpfname ) ;
-    tmpFp = copyFile ( tmpfname, NAMEKEY ) ;
+    tmpFp = copyFile ( NAMEKEY ) ;
     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
@@ -2440,8 +2435,7 @@ NameID processAkaNamesList ( NameID *nameCount )
   (void) qsort ( (void*) naka, (size_t) count, sizeof ( struct akaNameData ), (int (*) (const void*, const void*)) akaNameDataAlphaSort ) ;
 
   prevName [ 0 ] = '\0' ;
-  (void) tmpnam ( tmpfname ) ;
-  tmpFp = copyFile ( tmpfname, NAMEKEY ) ;
+  tmpFp = copyFile ( NAMEKEY ) ;
   (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
   if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
     *keyPtr++ = '\0' ;

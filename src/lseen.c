@@ -2,13 +2,13 @@
  *
  *  Program: lseen.c
  *
- *  Version: 3.7
+ *  Version: 3.18
  *
  *  Purpose: track movies seen
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -458,13 +458,14 @@ int main ( int argc, char **argv )
   if ( err )
     moviedbUsage ( LSEEN_USAGE1, LSEEN_USAGE2, NULL, NULL, NULL, NULL ) ;
 
-  if ( ( votes = calloc ( MAXMRRENTRIES, sizeof ( struct voteDbRec ) ) ) == NULL )
+  if ( ( votes = calloc ( MAXTITLES, sizeof ( struct voteDbRec ) ) ) == NULL )
     moviedbError ( "out of memory" ) ;
   nvotes = readVotesDb ( votes ) ;
 
   if ( mrropt != NONE )
   {
-    if ( ( ratings = calloc ( MAXMRRENTRIES, sizeof ( struct mrrDbRec ) ) ) == NULL )
+    nratings = ratingsDbSize ( ) ;
+    if ( ( ratings = calloc ( nratings, sizeof ( struct mrrDbRec ) ) ) == NULL )
       moviedbError ( "out of memory" ) ;
     nratings = readRatingsDb ( ratings ) ;
   }

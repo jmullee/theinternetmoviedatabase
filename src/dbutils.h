@@ -49,7 +49,7 @@ void upperCaseString ( char *str ) ;
 
 FILE *openFile ( const char *path ) ;
 FILE *writeFile ( const char *path ) ;
-FILE *copyFile ( const char *toName, const char *fromName ) ;
+FILE *copyFile ( const char *fromName ) ;
 
 long findSOL ( FILE *stream, long pos ) ;
 int fieldCaseCompare ( unsigned char *s1, unsigned char *s2 ) ;

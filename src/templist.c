@@ -2728,7 +2728,7 @@ examples[GENERAL] =
 "# \n"
 "# Return this form to movie@imdb.com with the subject\n"
 "# UPDATE NAME <name>   - where <name> is name of person to update\n"
-"# All data submitted becomes the property of IMDb Ltd.\n"
+"# All data submitted becomes the property of IMDb Inc.\n"
 "# \n"
 "# Please follow the instructions below; this is very important as\n"
 "# it saves work for the UPDATES manager who runs this system. \n"

@@ -2,13 +2,13 @@
  *
  *  Program: movielink.c
  *
- *  Version: 3.1
+ *  Version: 3.18
  *
  *  Purpose: movie links procedures
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -23,7 +23,7 @@
 #include <string.h>
 #include "moviedb.h"
 #include "dbutils.h"
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define my_min(a, b)  (((a) < (b)) ? (a) : (b))
 
 struct tempMovieLinkRec
 {
@@ -79,7 +79,7 @@ struct movieLinkRec *readMovieLinks ( FILE *dbFp, TitleID searchKey, int *count 
     while ( active )
     {
 	memcpy ( retval + activecount , active,
-	  MIN ( activeleft, LINKCHUNKSIZE ) * sizeof ( struct movieLinkRec ) ) ;
+	  my_min ( activeleft, LINKCHUNKSIZE ) * sizeof ( struct movieLinkRec ) ) ;
 	activecount += LINKCHUNKSIZE ;
 	activeleft -= LINKCHUNKSIZE ;
 	lastactive = active ;

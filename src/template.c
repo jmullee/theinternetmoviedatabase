@@ -3671,7 +3671,7 @@ char *yytext;
 #define INITIAL 0
 /*----------------------------------------------------------------------------*/
 /*  template.l                                                                */
-/*  (c) 1994 - 1997, Internet Movie Database Ltd, All Rights Reserved.        */
+/*  (c) 1994 - 1997, Internet Movie Database Inc, All Rights Reserved.        */
 /*  Author: Mark Harding BSc(Hons) AMIAP SBCS                                 */
 /*                                                                            */
 /*  A lexical analyzer for converting the output from 'title -full' into      */
@@ -5224,7 +5224,7 @@ xmpl_head[TITLE] = "Title:\n";
 xmpl_text[TITLE] =
 "You shouldn't see this message!!\n";
 
-xmpl_head[COPYRIGHT] = "               Copyright 1990-1997 The Internet Movie Database Ltd.\n";
+xmpl_head[COPYRIGHT] = "               Copyright 1990-1997 The Internet Movie Database Inc.\n";
 xmpl_text[COPYRIGHT] = NULL;
 
 xmpl_text[SHRIEK] = NULL;
@@ -5233,7 +5233,7 @@ xmpl_head[SHRIEK] =
 "#\n"
 "# Send completed forms to movie@imdb.com with the subject\n"
 "# UPDATE TITLE - all data submitted becomes the property of\n"
-"# IMDb Ltd.\n"
+"# IMDb Inc.\n"
 "#\n"
 "# You are not expected to fill in every section listed below.\n"
 "# *Any* data you can supply will be gratefully received and\n"
