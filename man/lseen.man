@@ -1,7 +1,7 @@
 .\" 3.2
 .\"  /*******************************************************************\
 .\"   * Copyright (C) 1995 Lars J Aas <larsa@colargol.stud.idb.hist.no> *
-.\"   * based on documentation by C J Nedham <cn@ibmpcug.co.uk> 1995,   *
+.\"   * based on documentation by C J Needham <col@imdb.com> 1995,      *
 .\"   * permission is granted by the authors to freely distribute       *
 .\"   *                        providing no fee of any kind is charged. *
 .\"  \*******************************************************************/
@@ -21,7 +21,7 @@ If you don't use voting support scripts, they are available via
 anonymous ftp from cathouse.org in the directory /pub/cathouse/movies/database/tools/voting_scripts.Z.
 .PP
 If you'd like a copy of your votelog file from the movie ratings
-database, contact cn@ibmpcug.co.uk via email, and he'll send it
+database, contact col@imdb.com via email, and he'll send it
 to you.
 .SH OPTIONS
 There are

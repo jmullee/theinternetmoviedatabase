@@ -1,4 +1,4 @@
-From: cn@imdb.com (Col Needham)
+From: col@imdb.com (Col Needham)
 Newsgroups: rec.arts.movies.misc,rec.arts.movies.people,rec.arts.movies.current-films,rec.arts.movies.past-films,alt.cult-movies,rec.arts.sf.movies,alt.answers,rec.answers,news.answers
 Subject: Movie Database: Frequently Asked Questions List
 Approved: news-answers-request@MIT.EDU
@@ -7,7 +7,7 @@ Supersedes: <moviedb-faq-980330@nntp.pcug.co.uk>
 Followup-To: rec.arts.movies.misc
 Organization: The Internet Movie Database Ltd.
 Expires: 31 Jul 1998 00:00:00 GMT
-Reply-To: cn@imdb.com (Col Needham)
+Reply-To: col@imdb.com (Col Needham)
 Summary: An introduction to The Internet Movie Database (IMDb), which provides
          on-line movie information, including filmographies of actors, 
          actresses, directors, writers...; plot summaries; movie trivia etc.
@@ -23,7 +23,7 @@ under /pub/usenet/news.answers/movies/movie-database-faq, or by sending e-mail
 to <mail-server@imdb.com> with the subject "HELP FAQ"
 
 Comments and suggestions on this FAQ are welcome and should be directed
-to the database co-ordinator, Col Needham <cn@imdb.com>.
+to the database co-ordinator, Col Needham <col@imdb.com>.
 
 Changes:
  - too numerous to list
@@ -149,7 +149,7 @@ anonymous FTP:
 see the README file in the same directories for more information. You will 
 need around 150 Mb of local disk-space.
 
-The Unix interface is written and maintained by Col Needham <cn@imdb.com>.
+The Unix interface is written and maintained by Col Needham <col@imdb.com>.
 
 An interactive front-end for the Unix interface is available from the ftp 
 sites in:
@@ -265,7 +265,7 @@ expert editor. The following table gives an overview:
  Awards               | Oliver Heidelbach <awards@imdb.com>
  Biographies          | Mark Harding <biographies@imdb.com>
  Business             | Giancarlo Cairella <business@imdb.com>
- Cast Completion      | Col Needham <cn@imdb.com>
+ Cast Completion      | Col Needham <col@imdb.com>
  Crew Completion      | Giancarlo Cairella <vertigo@imdb.com>
  Certificates         | Mark Harding <certificates@imdb.com>
  Cinematographers     | Michel Hafner <cinematographers@imdb.com>
@@ -294,7 +294,7 @@ expert editor. The following table gives an overview:
  Production Companies | Rob Hartill <prod-companies@imdb.com>
  Production Designers | Peter Simeon <prod-designers@imdb.com>
  Quotes               | Bob Glickstein <quotes@imdb.com>
- Ratings              | Col Needham <cn@imdb.com>
+ Ratings              | Col Needham <col@imdb.com>
  Release Dates        | Jon Reeves <release-dates@imdb.com>
  Running Times        | Mark Harding <running-times@imdb.com>
  SFX Companies        | Rob Hartill <prod-companies@imdb.com>
@@ -329,7 +329,7 @@ The following subsections describe the database sections (lists) in more detail.
   ---------------------|-------------------------------------------
   Actors               | Giancarlo Cairella <actors@imdb.com>
   Actresses            | Giancarlo Cairella <actresses@imdb.com>
-  Cast Completion      | Col Needham <cn@imdb.com>
+  Cast Completion      | Col Needham <col@imdb.com>
   ---------------------|-------------------------------------------
 
 
@@ -407,7 +407,7 @@ The following sections contain information relating to individual titles:
   Plot Summaries       | Colin Tinto <plots@imdb.com>
   Production Companies | Rob Hartill <prod-companies@imdb.com>
   Quotes               | Bob Glickstein <quotes@imdb.com>
-  Ratings              | Col Needham <cn@imdb.com>
+  Ratings              | Col Needham <col@imdb.com>
   Release Dates        | Jon Reeves <release-dates@imdb.com>
   Running Times        | Mark Harding <running-times@imdb.com>
   SFX Companies        | Rob Hartill <prod-companies@imdb.com>
@@ -1090,7 +1090,7 @@ For further details on how to search the IMDb please see:
 
 -----------------------------------------------------------------------------
 I hope you find this FAQ useful. If you have a question that isn't covered
-please contact me via e-mail at <cn@imdb.com>.
+please contact me via e-mail at <col@imdb.com>.
 
 Col Needham
 The Internet Movie Database Ltd.

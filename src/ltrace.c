@@ -6,7 +6,7 @@
  *
  *  Purpose: search list databases for full details of a persons movies
  *
- *  Author:  C J Needham <cn@imdb.com>
+ *  Author:  C J Needham <col@imdb.com>
  *
  *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *

@@ -6,7 +6,7 @@
  *
  *  Program: general database functions
  *
- *  Author:  C J Needham <cn@imdb.com>
+ *  Author:  C J Needham <col@imdb.com>
  *
  *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
@@ -57,6 +57,8 @@ struct titleOrderRec titleOrderData [ NO_OF_FILMOGRAPHY_LISTS ] =
      { SOUSRCH,   "(snd)",  "Sound:", "Sound:" },
      { SPESRCH,   "(sfx)",  "Special Effects:", "Special Effects:" },
      { MAKSRCH,   "(mu)",   "Make-Up:", "Make-Up:" },
+     { ARDSRCH,   "(ard)",  "Art Department:", "Art Department:" },
+     { VFXSRCH,   "(vfx)",  "Visual Effects:", "Visual Effects:" },
 #endif
      { MISCSRCH,  "(misc)", "Miscellaneous:", "Miscellaneous:" },
      { ACRSRCH,   NULL,     "Cast:", "Cast:" },
@@ -78,17 +80,19 @@ struct filmographyOptRec filmographyOptions [ NO_OF_SEARCH_OPTS ] =
   { "-costdes",  "-cd", { 0,0,0,0,0,0,0,0,1,0,0 } } ,
   { "-prdcr",    "-pr", { 0,0,0,0,0,0,0,0,0,1,0 } } ,
 #ifdef INTERNAL
-  { "-castdir","-cdir", { 0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 } } ,
-  { "-art",     "-art", { 0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0 } } ,
-  { "-set",     "-set", { 0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 } } ,
-  { "-stunt",    "-st", { 0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0 } } ,
-  { "-asstdir",  "-ad", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0 } } ,
-  { "-prodman",  "-pm", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0 } } ,
-  { "-snddept", "-snd", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0 } } ,
-  { "-sfxdept", "-sfx", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0 } } ,
-  { "-makeup",   "-mu", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0 } } ,
-  { "-misc",   "-misc", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 } } ,
-  { "-name",   "-name", { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 } }
+  { "-castdir","-cdir", { 0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0 } } ,
+  { "-art",     "-art", { 0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0 } } ,
+  { "-set",     "-set", { 0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 } } ,
+  { "-stunt",    "-st", { 0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0 } } ,
+  { "-asstdir",  "-ad", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 } } ,
+  { "-prodman",  "-pm", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0 } } ,
+  { "-snddept", "-snd", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0 } } ,
+  { "-sfxdept", "-sfx", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0 } } ,
+  { "-makeup",   "-mu", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0 } } ,
+  { "-artdept", "-ard", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0 } } ,
+  { "-vfxdept", "-vfx", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0 } } ,
+  { "-misc",   "-misc", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 } } ,
+  { "-name",   "-name", { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 } }
 #else
   { "-misc",   "-misc", { 0,0,0,0,0,0,0,0,0,0,1 } } ,
   { "-name",   "-name", { 1,1,1,1,1,1,1,1,1,1,1 } }
@@ -118,6 +122,8 @@ struct filmographyDefRec filmographyDefs [ NO_OF_FILMOGRAPHY_LISTS ] =
     { "-snddept", SOUSTEM, SOULIST, "Member of Sound Department", SOUSRCH, "Sound Department", "Sound Department" },
     { "-sfxdept", SPESTEM, SPELIST, "Member of Special Effects Department", SPESRCH, "Special Effects Department", "Special Effects Department" },
     { "-makeup", MAKSTEM, MAKLIST, "Member of Make-Up Department", MAKSRCH, "Make-Up Department", "Make-Up Department" },
+    { "-artdept", ARDSTEM, ARDLIST, "Member of Art Department", ARDSRCH, "Art Department", "Art Department" },
+    { "-vfxdept", VFXSTEM, VFXLIST, "Member of Visual Effects Department", VFXSRCH, "Visual Effects Department", "Visual Effects Department" },
 #endif
     { "-misc", MISCSTEM, MISCLIST, "Miscellaneous", MISCSRCH, "Miscellaneous", "Miscellaneous" }
   } ;

@@ -544,7 +544,7 @@ Example
 -------
 
 CASTCOM
-Vertigo (1958)|Col Needham <cn@imdb.com>
+Vertigo (1958)|Col Needham <col@imdb.com>
 
 Notes
 -----
@@ -582,7 +582,7 @@ Example
 -------
 
 CREWCOM
-Vertigo (1958)|Col Needham <cn@imdb.com>
+Vertigo (1958)|Col Needham <col@imdb.com>
 
                       -------------------
 
@@ -3008,7 +3008,7 @@ First an example:
  PL: a chase. An old college friend (Gavin Elster) hires Scottie to watch his
  PL: wife (Madeleine) who has become obsessed with the past. Scottie follows her
  PL: around San Francisco and is drawn into a complex plot.
- BY: Colin Needham <cn@imdb.com>
+ BY: Colin Needham <col@imdb.com>
 
 The format is:
 
@@ -4737,7 +4737,7 @@ FOREIGN LANGUAGE MOVIE CREDITS
 This section provides translations between names of occupations as they appear
 in movie credits of non-English language movies and their equivalents for the
 purposes of adding data to the IMDb. Updates to this section of the guide 
-should be mailed directly to me at <cn@imdb.com>
+should be mailed directly to me at <col@imdb.com>
 
 German
 ------
@@ -4867,7 +4867,7 @@ PL: during a chase. An old college friend (Gavin Elster)  hires  Scottie
 PL: to  watch  his wife Madeleine who has become obsessed with the past.
 PL: Scottie follows her  around  San  Francisco  and  is  drawn  into  a
 PL: complex plot. 
-BY: Col Needham <cn@imdb.com>
+BY: Col Needham <col@imdb.com>
 GENRE
 Vertigo (1958)|Thriller
 Vertigo (1958)|Mystery
@@ -4944,9 +4944,9 @@ Simmons, Dori|Vertigo (1958)|(uncredited)|Middle-Aged Mistaken Identity|
 Stevlingson, Ed|Vertigo (1958)|(uncredited)|Inquest Attorney|
 Taft, Sara|Vertigo (1958)|(uncredited)|Nun|
 CASTCOM
-Vertigo (1958)|Col Needham <cn@imdb.com>
+Vertigo (1958)|Col Needham <col@imdb.com>
 CREWCOM
-Vertigo (1958)|Col Needham <cn@imdb.com>
+Vertigo (1958)|Col Needham <col@imdb.com>
 MOVIELINK
 Vertigo (1958)|referenced in|Jules et Jim (1961)
 Vertigo (1958)|referenced in|Sirene du Mississippi, La (1969)

@@ -308,7 +308,7 @@ but is still maintained separately by Steve Hammond.
   -----------------|--------------------------------------
   Actors           | Col Needham <actors@imdb.com>
   Actresses        | Col Needham <actresses@imdb.com>
-  Cast Completion  | Col Needham <cn@imdb.com>
+  Cast Completion  | Col Needham <col@imdb.com>
   -----------------|--------------------------------------
 
 Highlights from the actors and actresses lists are posted to rec.arts.movies
@@ -381,7 +381,7 @@ The following lists contain information that relates to individual titles:
   Plot Summaries       | Colin Tinto <plots@imdb.com>
   Production Companies | Rob Hartill <prod-companies@imdb.com>
   Quotes               | Bob Glickstein <quotes@imdb.com>
-  Ratings              | Col Needham <cn@imdb.com>
+  Ratings              | Col Needham <col@imdb.com>
   Release Dates        | Mark Harding <release-dates@imdb.com>
   Running Times        | Mark Harding <running-times@imdb.com>
   Sound Mix            | Mark Harding <sound-mix@imdb.com>
@@ -1280,7 +1280,7 @@ which you can edit to suit your system.
 This section will be expanded according to the feedback I receive on how
 easy the package is to install and what the common problems are. I recommend
 reading section 12.3 first! If you are still having problems with the package
-after reading this section, contact me via e-mail: <cn@imdb.com>.
+after reading this section, contact me via e-mail: <col@imdb.com>.
 
 (Q1) The automatic list collection doesn't work on my machine even after
      adjusting the configuration variables?

@@ -6,7 +6,7 @@
  *
  *  Purpose: Filmography searching procedures
  *
- *  Authors:  C J Needham <cn@imdb.com>
+ *  Authors:  C J Needham <col@imdb.com>
  *
  *  Copyright (c) 1996 The Internet Movie Database Ltd.
  *

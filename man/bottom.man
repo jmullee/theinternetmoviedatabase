@@ -28,7 +28,7 @@ They are features!
 .SH AUTHORS
 .SS PROGRAMMERS
 .PP
-Colin Needham                           <cn@ibmpcug.co.uk>
+Colin Needham                           <col@imdb.com>
 .rj 1
 .B most of the programming
 .PP
@@ -97,7 +97,7 @@ Harald Mayr                       <marvin@bike.augusta.de>
 .B Editors
 .B Production Designers
 .PP
-Col Needham                             <cn@ibmpcug.co.uk>
+Col Needham                             <col@imdb.com>
 .rj 8
 .B Actors
 .B Actresses
@@ -144,7 +144,7 @@ for information about how to use it.
 .\"
 .\"  /*******************************************************************\
 .\"   * Copyright (C) 1995 Lars J Aas <larsa@colargol.stud.idb.hist.no> *
-.\"   * based on documentation by C J Nedham <cn@ibmpcug.co.uk> 1995,   *
+.\"   * based on documentation by C J Needham <col@imdb.com> 1995,      *
 .\"   * permission is granted by the authors to freely distribute       *
 .\"   *                        providing no fee of any kind is charged. *
 .\"  \*******************************************************************/

@@ -6,7 +6,7 @@
  *
  *  Purpose: general constant and type definitions for movie database
  *
- *  Author:  C J Needham <cn@imdb.com>
+ *  Author:  C J Needham <col@imdb.com>
  *
  *  Copyright (c) 1996-1999 The Internet Movie Database Ltd
  *
@@ -126,6 +126,8 @@
 #define   SOUSTEM     DBDIR "sound-department"
 #define   SPESTEM     DBDIR "special-effects-department"
 #define   MAKSTEM     DBDIR "make-up-department"
+#define   ARDSTEM     DBDIR "art-department"
+#define   VFXSTEM     DBDIR "visual-effects-department"
 #endif
 
 #define   TITLEIDX    DBDIR "titles.index"
@@ -238,13 +240,15 @@
 #define   SOULIST      RAWDIR "sound-department.list"
 #define   SPELIST      RAWDIR "special-effects-department.list"
 #define   MAKLIST      RAWDIR "make-up-department.list"
+#define   ARDLIST      RAWDIR "art-department.list"
+#define   VFXLIST      RAWDIR "visual-effects-department.list"
 #endif
 
 #define   TRUE      1
 #define   FALSE     0
 
 #ifdef INTERNAL
-#define   NO_OF_FILMOGRAPHY_LISTS   20
+#define   NO_OF_FILMOGRAPHY_LISTS   22
 #else
 #define   NO_OF_FILMOGRAPHY_LISTS   11
 #endif
@@ -280,6 +284,8 @@
 #define   SOUSRCH    16
 #define   SPESRCH    17
 #define   MAKSRCH    18
+#define   ARDSRCH    19
+#define   VFXSRCH    20
 #endif
 #define   MISCSRCH   (NO_OF_FILMOGRAPHY_LISTS-1)
 
