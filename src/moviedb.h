@@ -45,9 +45,9 @@
 #define   MAXLDENTRIES          25000
 #define   MAXBUSENTRIES         20000
 #define   MAXBIOENTRIES        150000
-#define   MAXMRRENTRIES         40000
-#define   MAXAKAENTRIES        100000
-#define   MAXNAKAENTRIES        50000
+#define   MAXMRRENTRIES         60000
+#define   MAXAKAENTRIES        150000
+#define   MAXNAKAENTRIES        75000
 #define   MAXTITLEINFO         300000
 #define   MAXPOS                  255
 #define   MAXLINKS             200000
