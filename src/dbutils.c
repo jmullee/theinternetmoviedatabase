@@ -2,13 +2,13 @@
  *
  *  Program: dbutils.c
  *
- *  Version: 3.5a
+ *  Version: 3.7
  *
  *  Program: general database functions
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996-1998 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  OpenFile function by: Timo Lamminjoki <lamminjo@pcu.helsinki.fi>
  *
@@ -39,35 +39,60 @@
 #include "dbutils.h"
 
 struct titleOrderRec titleOrderData [ NO_OF_FILMOGRAPHY_LISTS ] =
-   { { PRDCRSRCH, "(pr)", "Producer:", "Producers:" },
-     { DIRSRCH, "(d)", "Director:", "Directors:" },
-     { WRITESRCH, "(w)", "Writer:", "Writers:" },
-     { COMPSRCH, "(m)", "Composer:", "Composers:" },
-     { CINESRCH, "(ph)", "Cinematographer:", "Cinematographers:" },
-     { EDITSRCH, "(ed)", "Editor:", "Editors:" },
-     { PDESSRCH, "(pd)", "Production Designer:", "Production Designers:" },
-     { CDESSRCH, "(cd)", "Costume Designer:", "Costume Designers:" },
-     { MISCSRCH, "(misc)", "Miscellaneous:", "Miscellaneous:" },
-     { ACRSRCH, NULL, "Cast:", "Cast:" },
-     { ACSSRCH, NULL, "Cast:", "Cast:" }
+   { { PRDCRSRCH, "(pr)",   "Producer:", "Producers:" },
+     { DIRSRCH,   "(d)",    "Director:", "Directors:" },
+     { WRITESRCH, "(w)",    "Writer:", "Writers:" },
+     { COMPSRCH,  "(m)",    "Composer:", "Composers:" },
+     { CINESRCH,  "(ph)",   "Cinematographer:", "Cinematographers:" },
+     { EDITSRCH,  "(ed)",   "Editor:", "Editors:" },
+     { PDESSRCH,  "(pd)",   "Production Designer:", "Production Designers:" },
+     { CDESSRCH,  "(cd)",   "Costume Designer:", "Costume Designers:" },
+#ifdef INTERNAL
+     { CASSRCH,   "(cas)",  "Casting:", "Casting:" },
+     { ARTSRCH,   "(art)",  "Art Director:", "Art Directors:" },
+     { SETSRCH,   "(set)",  "Set Decorator:", "Set Decorators:" },
+     { STUSRCH,   "(stu)",  "Stunts:", "Stunts:" },
+     { ASDSRCH,   "(ad)",   "Assistant Director:", "Assistant Directors:" },
+     { PMGSRCH,   "(pm)",   "Production Manager:", "Production Managers:" },
+     { SOUSRCH,   "(snd)",  "Sound:", "Sound:" },
+     { SPESRCH,   "(sfx)",  "Special Effects:", "Special Effects:" },
+     { MAKSRCH,   "(mu)",   "Make-Up:", "Make-Up:" },
+#endif
+     { MISCSRCH,  "(misc)", "Miscellaneous:", "Miscellaneous:" },
+     { ACRSRCH,   NULL,     "Cast:", "Cast:" },
+     { ACSSRCH,   NULL,     "Cast:", "Cast:" }
    } ;
 
 
 struct filmographyOptRec filmographyOptions [ NO_OF_SEARCH_OPTS ] =
 {
-  { "-cast",     "-a", { 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } ,
-  { "-acr",     "-ar", { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } ,
-  { "-acs",     "-as", { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 } } ,
-  { "-dir",      "-d", { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 } } ,
-  { "-write",    "-w", { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 } } ,
-  { "-comp",     "-c", { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 } } ,
-  { "-cine",    "-ph", { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 } } ,
-  { "-edit",    "-ed", { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 } } ,
-  { "-prodes",  "-pd", { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 } } ,
-  { "-costdes", "-cd", { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 } } ,
-  { "-prdcr",   "-pr", { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 } } ,
-  { "-misc",  "-misc", { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } } ,
-  { "-name",  "-name", { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } }
+  { "-cast",      "-a", { 1,1,0,0,0,0,0,0,0,0,0 } } ,
+  { "-acr",      "-ar", { 1,0,0,0,0,0,0,0,0,0,0 } } ,
+  { "-acs",      "-as", { 0,1,0,0,0,0,0,0,0,0,0 } } ,
+  { "-dir",       "-d", { 0,0,1,0,0,0,0,0,0,0,0 } } ,
+  { "-write",     "-w", { 0,0,0,1,0,0,0,0,0,0,0 } } ,
+  { "-comp",      "-c", { 0,0,0,0,1,0,0,0,0,0,0 } } ,
+  { "-cine",     "-ph", { 0,0,0,0,0,1,0,0,0,0,0 } } ,
+  { "-edit",     "-ed", { 0,0,0,0,0,0,1,0,0,0,0 } } ,
+  { "-prodes",   "-pd", { 0,0,0,0,0,0,0,1,0,0,0 } } ,
+  { "-costdes",  "-cd", { 0,0,0,0,0,0,0,0,1,0,0 } } ,
+  { "-prdcr",    "-pr", { 0,0,0,0,0,0,0,0,0,1,0 } } ,
+#ifdef INTERNAL
+  { "-castdir","-cdir", { 0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 } } ,
+  { "-art",     "-art", { 0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0 } } ,
+  { "-set",     "-set", { 0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 } } ,
+  { "-stunt",    "-st", { 0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0 } } ,
+  { "-asstdir",  "-ad", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0 } } ,
+  { "-prodman",  "-pm", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0 } } ,
+  { "-snddept", "-snd", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0 } } ,
+  { "-sfxdept", "-sfx", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0 } } ,
+  { "-makeup",   "-mu", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0 } } ,
+  { "-misc",   "-misc", { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 } } ,
+  { "-name",   "-name", { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 } }
+#else
+  { "-misc",   "-misc", { 0,0,0,0,0,0,0,0,0,0,1 } } ,
+  { "-name",   "-name", { 1,1,1,1,1,1,1,1,1,1,1 } }
+#endif
 } ;
 
 
@@ -83,6 +108,17 @@ struct filmographyDefRec filmographyDefs [ NO_OF_FILMOGRAPHY_LISTS ] =
     { "-prodes", PDESSTEM, PDESLIST, "Production Designer", PDESSRCH, "Production Design", "Production Designers" } ,
     { "-costdes", CDESSTEM, CDESLIST, "Costume Designer",  CDESSRCH, "Costume Design", "Costume Designers" } ,
     { "-prdcr", PRDCRSTEM, PRDCRLIST, "Producer", PRDCRSRCH, "Produced by", "Producers" },
+#ifdef INTERNAL
+    { "-castdir", CASSTEM, CASLIST, "Casting Director", CASSRCH, "Casting by", "Casting Directors" },
+    { "-art", ARTSTEM, ARTLIST, "Art Director", ARTSRCH, "Art Direction", "Art Directors" },
+    { "-set", SETSTEM, SETLIST, "Set Decorator", SETSRCH, "Set Decoration", "Set Decorators" },
+    { "-stunt", STUSTEM, STULIST, "Stunt Person", STUSRCH, "Stunts", "Stunt People" },
+    { "-asstdir", ASDSTEM, ASDLIST, "Assistant Director", ASDSRCH, "Assistant Drirecting", "Assistant Directors" },
+    { "-prodman", PMGSTEM, PMGLIST, "Production Manager", PMGSRCH, "Production Managing", "Production Managers" },
+    { "-snddept", SOUSTEM, SOULIST, "Member of Sound Department", SOUSRCH, "Sound Department", "Sound Department" },
+    { "-sfxdept", SPESTEM, SPELIST, "Member of Special Effects Department", SPESRCH, "Special Effects Department", "Special Effects Department" },
+    { "-makeup", MAKSTEM, MAKLIST, "Member of Make-Up Department", MAKSRCH, "Make-Up Department", "Make-Up Department" },
+#endif
     { "-misc", MISCSTEM, MISCLIST, "Miscellaneous", MISCSRCH, "Miscellaneous", "Miscellaneous" }
   } ;
 
@@ -98,6 +134,7 @@ struct triviaDefRec triviaDefs [ NO_OF_TRIV_LISTS ] =
 
 struct titleInfoDefRec titleInfoDefs [ NO_OF_TITLE_INFO_LISTS ] =
   { { "-genre", GENRELIST, GENREDB, GENREIDX, "Genres", "Genres", "8: THE GENRES LIST\n", stdDisplay },
+    { "-keyword", KYWDLIST, KYWDDB, KYWDIDX, "Keywords", "Keywords", "8: THE KEYWORDS LIST\n", stdDisplay },
     { "-prodco", PRODCOLIST, PRODCODB, PRODCOIDX, "Production Company", "Production Company", "PRODUCTION COMPANIES LIST\n", stdDisplay },
     { "-dist", DISTLIST, DISTDB, DISTIDX, "Distributor", "Distributor", "DISTRIBUTORS LIST\n", stdDisplay },
     { "-cntry", CNTRYLIST, CNTRYDB, CNTRYIDX, "Country", "Country of Production", "COUNTRIES LIST\n", mergeDisplay },
@@ -474,7 +511,7 @@ void moviedbError ( const char *message )
 }
 
 
-void moviedbUsage ( const char *s1, const char *s2, const char *s3, const char *s4, const char *s5 )
+void moviedbUsage ( const char *s1, const char *s2, const char *s3, const char *s4, const char *s5, const char *s6 )
 {
   if ( s1 != NULL )
     (void) fprintf ( stderr, "%s\n", s1 ) ;
@@ -486,6 +523,8 @@ void moviedbUsage ( const char *s1, const char *s2, const char *s3, const char *
     (void) fprintf ( stderr, "%s\n", s4 ) ;
   if ( s5 != NULL )
     (void) fprintf ( stderr, "%s\n", s5 ) ;
+  if ( s6 != NULL )
+    (void) fprintf ( stderr, "%s\n", s6 ) ;
   exit ( -1 ) ;
 }
 

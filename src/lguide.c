@@ -2,13 +2,13 @@
  *
  *  Program: lguide.c
  *
- *  Version: 3.3
+ *  Version: 3.7
  *
  *  Purpose: search list databases for a set of titles
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -138,7 +138,7 @@ int main ( int argc, char **argv )
   }
 
   if ( err )
-    moviedbUsage ( LGUIDE_USAGE1, NULL, NULL, NULL, NULL ) ;
+    moviedbUsage ( LGUIDE_USAGE1, NULL, NULL, NULL, NULL, NULL ) ;
 
   addTitleChainOpts ( tchain, options ) ;
   addTitleChainTrivOpts ( tchain, trivopts ) ;

@@ -2,13 +2,13 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.4
+ *  Version: 3.7
  *
  *  Purpose: make databases from list files
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996-1998 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -42,6 +42,7 @@
  *        -naka  update alternative names database
  *        -cert  update certificates database
  *       -genre  update genres database
+ *     -keyword  update keywords database
  *      -prodco  update production companies database
  *       -color  update color information database
  *         -mix  update sound mix database
@@ -77,9 +78,9 @@
 
 #define MKDB_USAGE1 "usage: mkdb [-acr|-acs|-dir|-write|-comp|-cine|-edit|-prodes|-costdes|-prdcr|"
 #define MKDB_USAGE2 "            -misc|-movie|-time|-plot|-bio|-triv|-crazy|-goof|-quote|-strack|"
-#define MKDB_USAGE3 "            -cert|-genre|-mrr|-votes|-aka|-akaf <file>|-naka|-prodco|-color"
-#define MKDB_USAGE4 "            -mix|-cntry|-rel|-loc|-lit|-tech|-link|-tag|-castcom|-vers|-lang|"
-#define MKDB_USAGE5 "            -sfxco|-bus|-ld|-dist|-crewcom] [-m -debug -create]"
+#define MKDB_USAGE3 "            -cert|-genre|-keyword|-mrr|-votes|-aka|-akaf <file>|-naka|-prodco|"
+#define MKDB_USAGE4 "            -color|-mix|-cntry|-rel|-loc|-lit|-tech|-link|-tag|-castcom|-vers|"
+#define MKDB_USAGE5 "            -lang|-sfxco|-bus|-ld|-dist|-crewcom] [-m -debug -create]"
 
 static int debugFlag = FALSE ;
 
@@ -339,7 +340,7 @@ AttributeID readAttrAlphaKey (struct attrIndexRec *attributes)
       attributes [ i ] . attr = duplicateString ( line ) ;
       attributes [ i++ ] . attrKey = strtol ( p + 1, (char **) NULL, 16) ;
       if ( i >= MAXATTRS )
-        moviedbError ( "mkdb: too many attributes -- increase ATTRS" ) ;
+        moviedbError ( "mkdb: too many attributes -- increase MAXATTRS" ) ;
     }
    (void) fclose ( listFP ) ;
   }
@@ -544,6 +545,8 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, st
           if ( years [ count ] . yrto < 1890 || years [ count ] . yrto > 2100 )
             years [ count ] . yrto = 0 ;
           count++ ;
+	  if (count >= MAXTITLES)
+	    moviedbError ( "mkdb: too many titles -- increase MAXTITLES" );
        }
     }
     else
@@ -1666,6 +1669,8 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 2, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
+	   if (count >= MAXTRIVENTRIES)
+	     moviedbError ( "mkdb: too many trivia entries -- increase MAXTRIVENTRIES" ) ;
          }
        }
     else
@@ -1726,6 +1731,8 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
+	   if (count >= MAXPLOTENTRIES)
+	     moviedbError ( "mkdb: too many plot entries -- increase MAXPLOTENRIES" );
          }
        }
     }
@@ -1855,6 +1862,8 @@ NameID processBiographiesList ( NameID *nameCount )
            }
            namesIndex [ count ] . offset = currentOffset ;
            count++ ;
+	   if (count >= MAXBIOENTRIES)
+	     moviedbError ( "mkdb: too many bios -- increase MAXBIOENRIES" ) ;
          }
        }
     }
@@ -1956,6 +1965,8 @@ TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
         (void) strncpy ( ratingsReport [ count ] . distribution, line + 6, 10 ) ;
         ratingsReport [ count ] . distribution [ 10 ] = '\0' ;
         count ++ ;
+	if (count >= MAXMRRENTRIES)
+	  moviedbError ( "mkdb: too many ratings -- increase MAXMRRENTRIES" ) ;
       }
       else
         if ( debugFlag )
@@ -2087,6 +2098,8 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, struc
       aka [ count ] . aka = getTitle ( dbFp ) ;
       aka [ count ] . attrKey = getAttr ( dbFp ) ;
       count++ ;
+      if (count >= MAXAKAENTRIES)
+	moviedbError ( "mkdb: too many akas -- increase MAXAKAENTRIES" ) ;
     }
     count-- ;
     sortedTo = count ;
@@ -2298,6 +2311,8 @@ NameID processAkaNamesList ( NameID *nameCount )
            naka [ count ] . akaString = duplicateString ( line + 8 ) ;
            naka [ count ] . primary = primaryKey ;
            count++ ;
+	   if (count >= MAXNAKAENTRIES)
+	     moviedbError ( "mkdb: too many alternate names -- increase MAXNAKAENTRIES" ) ;
         }
       }
     }
@@ -2452,6 +2467,8 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
           putString ( tmptr, dbFp ) ;
           putAttr ( attrKey, dbFp ) ;
           count++ ;
+	  if (count >= MAXTITLEINFO)
+	    moviedbError ( "mkdb: too many titles -- increase MAXTITLEINFO" ) ;
        }
     }
     else
@@ -2504,6 +2521,8 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
+	   if (count >= MAXBUSENTRIES)
+	     moviedbError ( "mkdb: too many business entries -- increase MAXBUSENTRIES" ) ;
          }
        }
     }
@@ -2558,6 +2577,8 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
+	   if (count >= MAXLDENTRIES)
+	     moviedbError ( "mkdb: too many laser discs -- increase MAXLDENTRIES" ) ;
          }
        }
        else
@@ -2619,6 +2640,8 @@ TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCoun
            titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 6, titles, titleCount ) ;
            titlesIndex [ count ] . offset = currentOffset ;
            count++ ;
+	   if (count >= MAXLITENTRIES)
+	     moviedbError ( "mkdb: too many literature entries -- increase MAXLITENTRIES" ) ;
          }
        }
     }
@@ -2682,6 +2705,8 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
           else
             list [ count ] . status = completed ;
           count++ ;
+	  if (count >= MAXTITLEINFO)
+	    moviedbError ( "mkdb: too many complete casts -- increase MAXTITLEINFO" ) ;
        }
     }
     else
@@ -2735,6 +2760,8 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
           else
             list [ count ] . status = completed ;
           count++ ;
+	  if (count >= MAXTITLEINFO)
+	    moviedbError ( "mkdb: too many complete crews -- increase MAXTITLEINFO" ) ;
        }
     }
     else
@@ -2808,6 +2835,8 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
                list [ count ] . toTitleKey = titleKeyLookup ( line + 4 + movieLinkDefs [ i ] . length, titles, titleCount ) ;
                list [ count ] . position = position++ ;
                count++ ;
+	       if (count >= MAXLINKS)
+		 moviedbError ( "mkdb: too many links -- increase MAXLINKS" ) ;
              }
              break ;
            }
@@ -3116,7 +3145,7 @@ int main (int argc, char **argv)
     }
 
   if ( err )
-    moviedbUsage ( MKDB_USAGE1, MKDB_USAGE2, MKDB_USAGE3, MKDB_USAGE4, MKDB_USAGE5 ) ;
+    moviedbUsage ( MKDB_USAGE1, MKDB_USAGE2, MKDB_USAGE3, MKDB_USAGE4, MKDB_USAGE5, NULL ) ;
 
   if ( ! specific )
   {

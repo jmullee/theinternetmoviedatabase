@@ -2,13 +2,13 @@
  *
  *  Program: list.c
  *
- *  Version: 3.2
+ *  Version: 3.7
  *
  *  Purpose: search databases for filmographies
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -49,6 +49,7 @@
  *    -1..-9      use approximate matching, max difference in range 1 to 9
  *
  *   -genre <str>  limit search by genre
+ *   -keyword <str> limit search by keyword
  *    -cert <str>  limit search by certificate
  *    -time <str>  limit search by running time
  *  -prodco <str>  limit search by production company
@@ -75,8 +76,9 @@
 #define LIST_USAGE1 "usage: list [-cast|-acr|-acs|-dir|-write|-comp|-cine|-edit|-prodes|-costdes|"
 #define LIST_USAGE2 "            -prdcr|-misc|-name <name>]+ [-full] [-mrr|-smrr|-vmrr] [-yr|-yru]"
 #define LIST_USAGE3 "            [-chr] [-bio] [-aka] [-m -s -i] [-s|-1|-2|-3|-4|-5|-6|-7|-8|-9]"
-#define LIST_USAGE4 "            [-genre <s>] [-time <s>] [-prodco <s>] [-cert <s>] [-mix <str>]"
-#define LIST_USAGE5 "            [-cntry <s>] [-loc <s>] [-rel <s>] [-tech <s>] [-lang <s>]"
+#define LIST_USAGE4 "            [-genre <s>] [-keyword <s>] [-time <s>] [-prodco <s>] [-cert <s>]"
+#define LIST_USAGE5 "            [-mix <str>] [-cntry <s>] [-loc <s>] [-rel <s>]"
+#define LIST_USAGE6 "            [-tech <s>] [-lang <s>]"
 
 int main ( int argc, char **argv )
 {
@@ -173,7 +175,7 @@ int main ( int argc, char **argv )
     }
 
   if ( err || nchain == NULL )
-    moviedbUsage ( LIST_USAGE1, LIST_USAGE2, LIST_USAGE3, LIST_USAGE4, LIST_USAGE5 ) ;
+    moviedbUsage ( LIST_USAGE1, LIST_USAGE2, LIST_USAGE3, LIST_USAGE4, LIST_USAGE5, LIST_USAGE6 ) ;
 
   if ( nchain -> next != NULL )
   {

@@ -8,7 +8,7 @@
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1990-1998 The Internet Movie Database Ltd.
+ *  Copyright (c) 1990-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -61,8 +61,8 @@ void displayNameURL ( char *name )
    char url [ MXLINELEN ] ;
    char *ptr ;
 
-   (void) strcpy ( url, "http://www.imdb.com/M/person-exact?" ) ;
-   for ( ptr = url + 35 ; *name != 0 ; ptr++, name++ )
+   (void) strcpy ( url, "http://www.imdb.com/Person?" ) ;
+   for ( ptr = url + strlen(url) ; *name != 0 ; ptr++, name++ )
    {
      if ( isalnum ( *name ) )
        *ptr = *name ;
@@ -103,6 +103,8 @@ void displayBioMiscRec ( struct bioMiscRec *rec )
       (void) printf ( "Height:\n\n" ) ;
     else if ( rec -> label [ 0 ] == 'B' && rec -> label [ 1 ] == 'T' )
       (void) printf ( "Biographical Movies:\n\n" ) ;
+    else if ( rec -> label [ 0 ] == 'P' && rec -> label [ 1 ] == 'I' )
+      (void) printf ( "Portrayed in:\n\n" ) ;
     else if ( rec -> label [ 0 ] == 'G' && rec -> label [ 1 ] == 'A' )
       (void) printf ( "Guest Appearances:\n\n" ) ;
     else if ( rec -> label [ 0 ] == 'W' && rec -> label [ 1 ] == 'N' )
@@ -312,6 +314,8 @@ void displayBusiness ( struct lineRec *rec )
           (void) printf ( "  Admissions:\n" ) ;
         else if ( strncmp ( current -> text, "PD", 2 ) == 0 )
           (void) printf ( "  Production Dates:\n" ) ;
+        else if ( strncmp ( current -> text, "SD", 2 ) == 0 )
+          (void) printf ( "  Shooting Dates:\n" ) ;
         else if ( strncmp ( current -> text, "ST", 2 ) == 0 )
           (void) printf ( "  Studio:\n" ) ;
         else if ( strncmp ( current -> text, "CP", 2 ) == 0 )
@@ -517,7 +521,7 @@ void displayNameSearchResults ( struct nameSearchRec *chain, int tidy )
             displayTitleAttrPairs ( nrec -> lists [ i ] -> entries, nrec -> lists [ i ] -> count, tidy, nrec -> searchparams . mrropt, nrec -> searchparams . mvsonly, nrec -> searchparams . chopt ) ;
             (void) printf ( "\n" ) ;
           }
-        (void) printf ( "\n           Copyright 1990-1998 The Internet Movie Database Ltd.\n" ) ;
+        (void) printf ( "\n           Copyright 1990-1999 The Internet Movie Database Ltd.\n" ) ;
         (void) printf ( "      Support the IMDb by visiting our web site: http://www.imdb.com/\n\n" ) ;
       }
       else
@@ -1132,8 +1136,8 @@ void displayTitleURL ( char *title )
    char url [ MXLINELEN ] ;
    char *ptr ;
 
-   (void) strcpy ( url, "http://www.imdb.com/M/title-exact?" ) ;
-   for ( ptr = url + 34 ; *title != 0 ; ptr++, title++ )
+   (void) strcpy ( url, "http://www.imdb.com/Title?" ) ;
+   for ( ptr = url + strlen(url) ; *title != 0 ; ptr++, title++ )
    {
      if ( isalnum ( *title ) )
        *ptr = *title ;
@@ -1191,15 +1195,20 @@ void displayTitleSearchRec ( struct titleSearchRec *trec, int tidy )
     if ( trec -> trivlists [ NO_OF_TRIV_LISTS - 1 ] != NULL )
       displayTagLines ( trec -> trivlists [ NO_OF_TRIV_LISTS - 1 ] ) ;
 
-    for ( i = 1 ; i < NO_OF_TITLE_INFO_LISTS ; i++ )
+    for ( i = 2 ; i < NO_OF_TITLE_INFO_LISTS ; i++ )
       if ( trec -> titleInfo [ i ] != NULL )
         displayTitleInfo ( trec -> titleInfo [ i ], i ) ;
 
     if ( trec -> searchparams . plotopt )
       displayPlot ( trec -> plot ) ;
 
+/* Genres */
     if ( trec -> titleInfo [ 0 ] != NULL )
       displayCompactTitleInfo ( trec -> titleInfo [ 0 ], 0 ) ;
+
+/* Keywords */
+    if ( trec -> titleInfo [ 1 ] != NULL )
+      displayCompactTitleInfo ( trec -> titleInfo [ 1 ], 1 ) ;
 
     displayFilmographyListData ( trec ) ;
 
@@ -1219,7 +1228,7 @@ void displayTitleSearchRec ( struct titleSearchRec *trec, int tidy )
     if ( trec -> searchparams . ldopt )
       displayLaserDisc ( trec -> laserdisc ) ;
 
-    (void) printf ( "\n           Copyright 1990-1998 The Internet Movie Database Ltd.\n" ) ;
+    (void) printf ( "\n           Copyright 1990-1999 The Internet Movie Database Ltd.\n" ) ;
     (void) printf ( "      Support the IMDb by visiting our web site: http://www.imdb.com/\n\n" ) ;
   }
   else

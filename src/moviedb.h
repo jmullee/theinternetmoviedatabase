@@ -2,13 +2,13 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.4a
+ *  Version: 3.7
  *
  *  Purpose: general constant and type definitions for movie database
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996-1998 The Internet Movie Database Ltd
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -44,10 +44,10 @@
 #define   MAXLITENTRIES         20000
 #define   MAXLDENTRIES          25000
 #define   MAXBUSENTRIES         20000
-#define   MAXBIOENTRIES         80000
+#define   MAXBIOENTRIES        150000
 #define   MAXMRRENTRIES         40000
 #define   MAXAKAENTRIES        100000
-#define   MAXNAKAENTRIES        40000
+#define   MAXNAKAENTRIES        50000
 #define   MAXTITLEINFO         300000
 #define   MAXPOS                  255
 #define   MAXLINKS             200000
@@ -70,6 +70,7 @@
 #define   TIMESDB     DBDIR "running-times.data"
 #define   CERTDB      DBDIR "certificates.data"
 #define   GENREDB     DBDIR "genres.data"
+#define   KYWDDB      DBDIR "keywords.data"
 #define   CNTRYDB     DBDIR "countries.data"
 #define   PRODCODB    DBDIR "production-companies.data"
 #define   DISTDB      DBDIR "distributors.data"
@@ -109,6 +110,17 @@
 #define   CDESSTEM    DBDIR "costume-designers"
 #define   PRDCRSTEM   DBDIR "producers"
 #define   MISCSTEM    DBDIR "miscellaneous"
+#ifdef INTERNAL
+#define   CASSTEM     DBDIR "casting-directors"
+#define   ARTSTEM     DBDIR "art-directors"
+#define   SETSTEM     DBDIR "set-decorators"
+#define   STUSTEM     DBDIR "stunts"
+#define   ASDSTEM     DBDIR "assistant-directors"
+#define   PMGSTEM     DBDIR "production-managers"
+#define   SOUSTEM     DBDIR "sound-department"
+#define   SPESTEM     DBDIR "special-effects-department"
+#define   MAKSTEM     DBDIR "make-up-department"
+#endif
 
 #define   TITLEIDX    DBDIR "titles.index"
 #define   ATTRIDX     DBDIR "attributes.index"
@@ -138,6 +150,7 @@
 
 #define   CERTIDX   DBDIR "certificates.index"
 #define   GENREIDX  DBDIR "genres.index"
+#define   KYWDIDX   DBDIR "keywords.index"
 #define   CNTRYIDX  DBDIR "countries.index"
 #define   TIMESIDX  DBDIR "running-times.index"
 #define   PRODCOIDX DBDIR "production-companies.index"
@@ -178,6 +191,7 @@
 #define   NAKALIST     RAWDIR "aka-names.list"
 #define   CERTLIST     RAWDIR "certificates.list"
 #define   GENRELIST    RAWDIR "genres.list"
+#define   KYWDLIST     RAWDIR "keywords.list"
 #define   CNTRYLIST    RAWDIR "countries.list"
 #define   PRODCOLIST   RAWDIR "production-companies.list"
 #define   SFXCOLIST    RAWDIR "special-effects-companies.list"
@@ -196,18 +210,33 @@
 #define   VERSLIST     RAWDIR "alternate-versions.list"
 #define   LANGLIST     RAWDIR "language.list"
 #define   DISTLIST     RAWDIR "distributors.list"
+#ifdef INTERNAL
+#define   CASLIST      RAWDIR "casting-directors.list"
+#define   ARTLIST      RAWDIR "art-directors.list"
+#define   SETLIST      RAWDIR "set-decorators.list"
+#define   STULIST      RAWDIR "stunts.list"
+#define   ASDLIST      RAWDIR "assistant-directors.list"
+#define   PMGLIST      RAWDIR "production-managers.list"
+#define   SOULIST      RAWDIR "sound-department.list"
+#define   SPELIST      RAWDIR "special-effects-department.list"
+#define   MAKLIST      RAWDIR "make-up-department.list"
+#endif
 
 #define   TRUE      1
 #define   FALSE     0
 
+#ifdef INTERNAL
+#define   NO_OF_FILMOGRAPHY_LISTS   20
+#else
 #define   NO_OF_FILMOGRAPHY_LISTS   11
+#endif
 #define   NO_OF_CAST_LISTS           2
 #define   NO_OF_CHAR_LISTS           2
-#define   NO_OF_SEARCH_OPTS         13
-#define   GLOBAL_NAME_SEARCH        12
+#define   NO_OF_SEARCH_OPTS         (NO_OF_FILMOGRAPHY_LISTS+2)
+#define   GLOBAL_NAME_SEARCH        (NO_OF_SEARCH_OPTS-1)
 #define   WRITER_LIST_ID             3
 #define   NO_OF_TRIV_LISTS           7
-#define   NO_OF_TITLE_INFO_LISTS    13
+#define   NO_OF_TITLE_INFO_LISTS    14
 
 #define   ACRSRCH     0
 #define   ACSSRCH     1
@@ -219,7 +248,18 @@
 #define   PDESSRCH    7
 #define   CDESSRCH    8
 #define   PRDCRSRCH   9
-#define   MISCSRCH   10
+#ifdef INTERNAL
+#define   CASSRCH    10
+#define   ARTSRCH    11
+#define   SETSRCH    12
+#define   STUSRCH    13
+#define   ASDSRCH    14
+#define   PMGSRCH    15
+#define   SOUSRCH    16
+#define   SPESRCH    17
+#define   MAKSRCH    18
+#endif
+#define   MISCSRCH   (NO_OF_FILMOGRAPHY_LISTS-1)
 
 #define   NONE   0
 #define   MRR    1

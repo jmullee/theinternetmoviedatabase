@@ -2,11 +2,11 @@
  *
  *  Program: alist.c
  *
- *  Version: 3.5a
+ *  Version: 3.7
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996-1998 The Internet Movie Database Ltd
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -517,7 +517,7 @@ int main ( int argc, char **argv )
   }
 
   if ( err )
-    moviedbUsage ( ALIST_USAGE1, ALIST_USAGE2, ALIST_USAGE3, NULL, NULL ) ;
+    moviedbUsage ( ALIST_USAGE1, ALIST_USAGE2, ALIST_USAGE3, NULL, NULL, NULL ) ;
 
   if ( yropt )
     nyears = readTitleDb ( years ) ;

@@ -2,13 +2,13 @@
  *
  *  Program: mkballot.c
  *
- *  Version: 3.1
+ *  Version: 3.7
  *
  *  Purpose: generate movie ratings ballots
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -78,7 +78,7 @@ int main ( int argc, char **argv )
   }
 
   if ( err || nchain == NULL )
-    moviedbUsage ( MKBALLOT_USAGE1, MKBALLOT_USAGE2, NULL, NULL, NULL ) ;
+    moviedbUsage ( MKBALLOT_USAGE1, MKBALLOT_USAGE2, NULL, NULL, NULL, NULL ) ;
 
   if ( nchain -> next != NULL )
     moviedbError ( "mkballot: only one name allowed" ) ;

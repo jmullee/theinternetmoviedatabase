@@ -2,13 +2,13 @@
  *
  *  Program: lindex.c
  *
- *  Version: 3.4a
+ *  Version: 3.7
  *
  *  Purpose: index list databases
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996-1997 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -46,6 +46,7 @@
  *      -yrto <y>  limit title search to movies released up to <y>
  *
  *   -genre <str>  limit title search by genre
+ *   -keyword <str> limit title search by keyword
  *    -cert <str>  limit title search by certificate
  *    -time <str>  limit title search by running time
  *  -prodco <str>  limit title search by production company
@@ -75,8 +76,9 @@
 #define LINDEX_USAGE1 "usage: lindex [-acr -acs -dir -write -comp -cine -edit -prodes -costdes -prdcr"
 #define LINDEX_USAGE2 "               -misc] [-title] [-mrr|-smrr|-vmrr] [-match] [-s <s>] [-m -i]"
 #define LINDEX_USAGE3 "              [-yr|-yru] [-yreq <year>|-yrfrom <year> -yrto <year>] [-mix <s>]"
-#define LINDEX_USAGE4 "              [-genre <s>] [-time <s>] [-prodco <s>] [-cert <s>] [-cntry <s>]"
-#define LINDEX_USAGE5 "              [-color <s>] [-lang <s>] [-veq <votes>|-vmin <votes>|-vmax <votes>]"
+#define LINDEX_USAGE4 "              [-genre <s>] [-keyword <s>] [-time <s>] [-prodco <s>] [-cert <s>]"
+#define LINDEX_USAGE5 "              [-cntry <s>] [-color <s>] [-lang <s>]"
+#define LINDEX_USAGE6 "              [-veq <votes>|-vmin <votes>|-vmax <votes>]"
 
 int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struct searchConstraints *constraints )
 {
@@ -585,7 +587,7 @@ int main ( int argc, char **argv )
 
 
   if ( err )
-   moviedbUsage ( LINDEX_USAGE1, LINDEX_USAGE2, LINDEX_USAGE3, LINDEX_USAGE4, LINDEX_USAGE5 ) ;
+   moviedbUsage ( LINDEX_USAGE1, LINDEX_USAGE2, LINDEX_USAGE3, LINDEX_USAGE4, LINDEX_USAGE5, LINDEX_USAGE6 ) ;
 
   if ( nmopt )
     lindexFilmographyDatabases ( dbcount, recs, &constraints ) ;

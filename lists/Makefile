@@ -4,7 +4,7 @@ ORIGLISTS = actors.list actresses.list aka-titles.list biographies.list \
             movies.list plot.list producers.list production-designers.list \
             quotes.list ratings.list soundtracks.list trivia.list votelog \
             writers.list running-times.list miscellaneous.list \
-            aka-names.list certificates.list genres.list \
+            aka-names.list certificates.list genres.list keywords.list \
             production-companies.list sound-mix.list color-info.list \
             countries.list release-dates.list locations.list literature.list \
             technical.list movie-links.list taglines.list complete-cast.list \
@@ -28,6 +28,7 @@ ZORIGLISTS = actors.list$(ZLISTEXT) actresses.list$(ZLISTEXT) \
              writers.list$(ZLISTEXT) running-times.list$(ZLISTEXT) \
              miscellaneous.list$(ZLISTEXT) aka-names.list$(ZLISTEXT) \
              certificates.list$(ZLISTEXT) genres.list$(ZLISTEXT) \
+             keywords.list$(ZLISTEXT) \
              production-companies.list$(ZLISTEXT) sound-mix.list$(ZLISTEXT) \
              color-info.list$(ZLISTEXT) countries.list$(ZLISTEXT) \
              release-dates.list$(ZLISTEXT) locations.list$(ZLISTEXT) \
@@ -90,6 +91,7 @@ autouncompress :
 	-[ -s distributors.list$(ZLISTEXT) ] && $(ZLISTCAT) distributors.list$(ZLISTEXT) > distributors.list && rm -f distributors.list$(ZLISTEXT)
 	-[ -s editors.list$(ZLISTEXT) ] && $(ZLISTCAT) editors.list$(ZLISTEXT) > editors.list && rm -f editors.list$(ZLISTEXT)
 	-[ -s genres.list$(ZLISTEXT) ] && $(ZLISTCAT) genres.list$(ZLISTEXT) > genres.list && rm -f genres.list$(ZLISTEXT)
+	-[ -s keywords.list$(ZLISTEXT) ] && $(ZLISTCAT) keywords.list$(ZLISTEXT) > keywords.list && rm -f keywords.list$(ZLISTEXT)
 	-[ -s goofs.list$(ZLISTEXT) ] && $(ZLISTCAT) goofs.list$(ZLISTEXT) > goofs.list && rm -f goofs.list$(ZLISTEXT)
 	-[ -s alternate-versions.list$(ZLISTEXT) ] && $(ZLISTCAT) alternate-versions.list$(ZLISTEXT) > alternate-versions.list && rm -f alternate-versions.list$(ZLISTEXT)
 	-[ -s language.list$(ZLISTEXT) ] && $(ZLISTCAT) language.list$(ZLISTEXT) > language.list && rm -f language.list$(ZLISTEXT)

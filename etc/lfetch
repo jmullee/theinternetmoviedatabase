@@ -52,6 +52,7 @@
 # -naka     update alternative names list
 # -cert     update certificates list
 # -genre    update genres list
+# -keyword  update keywords list
 # -prodco   update production companies list
 # -mix      update sound mix list
 # -color    update color information list
@@ -128,6 +129,7 @@ misc=miscellaneous.list
 naka=aka-names.list
 cert=certificates.list
 genre=genres.list
+keyword=keywords.list
 prodco=production-companies.list
 mix=sound-mix.list
 color=color-info.list
@@ -149,9 +151,9 @@ crewcom=complete-crew.list
 
 ftpnames="$acr $acs $dir $write $cine $comp $movie $aka\
           $plot $triv $mrr $bio $crazy $edit $prodes $costdes $goof $quote\
-          $prdcr $strack $times $misc $naka $cert $genre $prodco $mix $color\
-          $cntry $castcom $tag $tech $lit $loc $link $versions $release $lang\
-          $sfxco $businfo $ld $dist $crewcom"
+          $prdcr $strack $times $misc $naka $cert $genre $keyword $prodco $mix \
+          $color $cntry $castcom $tag $tech $lit $loc $link $versions $release \
+          $lang $sfxco $businfo $ld $dist $crewcom"
 
 # any options?
 if [ $# -eq 0 ]
@@ -228,6 +230,8 @@ do case $1 in
          shift ;;
 -genre) ffiles="$ffiles $genre"
 	 shift ;;
+-keyword) ffiles="$ffiles $keyword"
+	 shift ;;
 -castcom) ffiles="$ffiles $castcom"
          shift ;;
   -tech) ffiles="$ffiles $tech"
@@ -285,9 +289,9 @@ then
  echo "              [-acr] [-acs] [-dir] [-write] [-comp] [-cine] [-movie] [-aka]"
  echo "              [-plot] [-triv] [-mrr] [-crazy] [-bio] [-mix] [-color] [-alt]"
  echo "              [-edit] [-prodes] [-costdes] [-goof] [-quote] [-prdcr] [-cntry]"
- echo "              [-strack] [-time] [-misc] [-naka] [-cert] [-genre] [-prodco]"
- echo "              [-castcom] [-tag] [-tech] [-lit] [-loc] [-link] [-release]"
- echo "              [-lang] [-sfxco] [-businfo] [-ld] [-crewcom] [-dist]"
+ echo "              [-strack] [-time] [-misc] [-naka] [-cert] [-genre] [-keyword]"
+ echo "              [-prodco] [-castcom] [-tag] [-tech] [-lit] [-loc] [-link]"
+ echo "              [-release] [-lang] [-sfxco] [-businfo] [-ld] [-crewcom] [-dist]"
  exit 1
 fi
 

@@ -1,8 +1,9 @@
 DBS = actors.data actresses.data aka-names.data aka-titles.data \
       biographies.data certificates.data cinematographers.data composers.data \
       costume-designers.data crazy-credits.data directors.data editors.data \
-      genres.data goofs.data miscellaneous.data movies.data plot.data \
-      producers.data production-companies.data production-designers.data \
+      genres.data keywords.data goofs.data miscellaneous.data movies.data \
+      plot.data producers.data production-companies.data \
+      production-designers.data \
       quotes.data ratings.data running-times.data soundtracks.data \
       trivia.data votes.data writers.data sound-mix.data color-info.data \
       countries.data release-dates.data locations.data literature.data \
@@ -22,7 +23,8 @@ TITLES = actors.titles actresses.titles cinematographers.titles \
          production-designers.titles writers.titles
 
 IDX = aka-names.index aka-titles.index attributes.index biographies.index \
-      certificates.index crazy-credits.index genres.index goofs.index \
+      certificates.index crazy-credits.index genres.index keywords.index \
+      goofs.index \
       names.index plot.index production-companies.index quotes.index \
       running-times.index soundtracks.index titles.index trivia.index \
       sound-mix.index color-info.index countries.index release-dates.index \
@@ -41,6 +43,7 @@ ZDBS = actors.data$(ZDBSEXT) actresses.data$(ZDBSEXT) \
        cinematographers.data$(ZDBSEXT) composers.data$(ZDBSEXT) \
        costume-designers.data$(ZDBSEXT) crazy-credits.data$(ZDBSEXT) \
        directors.data$(ZDBSEXT) editors.data$(ZDBSEXT) genres.data$(ZDBSEXT) \
+       keywords.data$(ZDBSEXT) \
        goofs.data$(ZDBSEXT) miscellaneous.data$(ZDBSEXT) \
        movies.data$(ZDBSEXT) plot.data$(ZDBSEXT) producers.data$(ZDBSEXT) \
        production-companies.data$(ZDBSEXT) \
@@ -75,7 +78,8 @@ ZTITLES = actors.titles$(ZDBSEXT) actresses.titles$(ZDBSEXT) \
 ZIDX = aka-names.index$(ZDBSEXT) aka-titles.index$(ZDBSEXT) \
        attributes.index$(ZDBSEXT) biographies.index$(ZDBSEXT) \
        certificates.index$(ZDBSEXT) crazy-credits.index$(ZDBSEXT) \
-       genres.index$(ZDBSEXT) goofs.index$(ZDBSEXT) names.index$(ZDBSEXT) \
+       genres.index$(ZDBSEXT) keywords.index$(ZDBSEXT) goofs.index$(ZDBSEXT) \
+       names.index$(ZDBSEXT) \
        production-companies.index$(ZDBSEXT) plot.index$(ZDBSEXT) \
        quotes.index$(ZDBSEXT)  running-times.index$(ZDBSEXT) \
        soundtracks.index$(ZDBSEXT) titles.index$(ZDBSEXT) \
@@ -99,11 +103,13 @@ all :
 
 # do-movies must be first
 DOALL = do-movies do-actors do-actress do-cine do-composers \
-	do-directs do-writers do-editors do-prodes do-costdes do-prdcr \
+        do-directs do-writers do-editors do-prodes do-costdes do-prdcr \
         do-misc do-aka do-naka do-plot do-bio do-crazy do-goofs do-quotes \
         do-stracks do-trivia do-ratings do-votes do-times do-certs do-genres \
+        do-keywords \
         do-prodco do-color do-mix do-cntry do-rel do-loc do-lit do-tech \
-        do-link do-tag do-castcom do-crewcom do-vers do-lang do-sfxco do-bus do-ld do-dist
+        do-link do-tag do-castcom do-crewcom do-vers do-lang do-sfxco \
+        do-bus do-ld do-dist
 
 databases : $(DOALL) touch-dbs recompress
 
@@ -218,6 +224,10 @@ do-genres :
 	@$(ETCDIR)make-base genres $(RAWDIR)genres.list "$(ETCDIR)mkdb $(MKDBOPT) -genre" "$(ZDBSEXT)" "$(ZLISTEXT)" "$(MAKE)"
 	$(KEEPLIST) rm -f $(RAWDIR)genres.list $(RAWDIR)genres.list$(ZLISTEXT)
 
+do-keywords :
+	@$(ETCDIR)make-base keywords $(RAWDIR)keywords.list "$(ETCDIR)mkdb $(MKDBOPT) -keyword" "$(ZDBSEXT)" "$(ZLISTEXT)" "$(MAKE)"
+	$(KEEPLIST) rm -f $(RAWDIR)keywords.list $(RAWDIR)keywords.list$(ZLISTEXT)
+
 do-prodco :
 	@$(ETCDIR)make-base production-companies $(RAWDIR)production-companies.list "$(ETCDIR)mkdb $(MKDBOPT) -prodco" "$(ZDBSEXT)" "$(ZLISTEXT)" "$(MAKE)"
 	$(KEEPLIST) rm -f $(RAWDIR)production-companies.list $(RAWDIR)production-companies.list$(ZLISTEXT)
@@ -316,6 +326,7 @@ compress :
 	-[ -s distributors.data ] && $(ZDBSCOMPRESS) distributors.data
 	-[ -s editors.data ] && $(ZDBSCOMPRESS) editors.data
 	-[ -s genres.data ] && $(ZDBSCOMPRESS) genres.data
+	-[ -s keywords.data ] && $(ZDBSCOMPRESS) keywords.data
 	-[ -s goofs.data ] && $(ZDBSCOMPRESS) goofs.data
 	-[ -s laserdisc.data ] && $(ZDBSCOMPRESS) laserdisc.data
 	-[ -s literature.data ] && $(ZDBSCOMPRESS) literature.data
@@ -369,6 +380,7 @@ maxcompress : compress
 	-[ -s editors.names ] && $(ZDBSCOMPRESS) editors.names
 	-[ -s editors.titles ] && $(ZDBSCOMPRESS) editors.titles
 	-[ -s genres.index ] && $(ZDBSCOMPRESS) genres.index
+	-[ -s keywords.index ] && $(ZDBSCOMPRESS) keywords.index
 	-[ -s goofs.index ] && $(ZDBSCOMPRESS) goofs.index
 	-[ -s laserdisc.index ] && $(ZDBSCOMPRESS) laserdisc.index
 	-[ -s literature.index ] && $(ZDBSCOMPRESS) literature.index
@@ -442,6 +454,8 @@ recompress :
 	@$(ETCDIR)recompress editors.titles $(ZDBSCOMPRESS) $(ZDBSEXT)
 	@$(ETCDIR)recompress genres.data $(ZDBSCOMPRESS) $(ZDBSEXT)
 	@$(ETCDIR)recompress genres.index $(ZDBSCOMPRESS) $(ZDBSEXT)
+	@$(ETCDIR)recompress keywords.data $(ZDBSCOMPRESS) $(ZDBSEXT)
+	@$(ETCDIR)recompress keywords.index $(ZDBSCOMPRESS) $(ZDBSEXT)
 	@$(ETCDIR)recompress goofs.data $(ZDBSCOMPRESS) $(ZDBSEXT)
 	@$(ETCDIR)recompress goofs.index $(ZDBSCOMPRESS) $(ZDBSEXT)
 	@$(ETCDIR)recompress laserdisc.data $(ZDBSCOMPRESS) $(ZDBSEXT)

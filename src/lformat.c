@@ -2,13 +2,13 @@
  *
  *  Program: lformat.c
  *
- *  Version: 3.5a
+ *  Version: 3.7
  *
  *  Purpose: format list databases
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996-1998 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1999 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -390,7 +390,7 @@ int main ( int argc, char **argv )
   }
 
   if ( err )
-    moviedbUsage ( LFORMAT_USAGE1, LFORMAT_USAGE2, NULL, NULL, NULL ) ;
+    moviedbUsage ( LFORMAT_USAGE1, LFORMAT_USAGE2, NULL, NULL, NULL, NULL ) ;
 
   if ( raw && mrropt != NONE )
     moviedbError ( "lformat: -r not available with ratings report options" ) ;

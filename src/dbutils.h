@@ -43,7 +43,7 @@ void stripSep ( char *str ) ;
 
 void moviedbError ( const char *message ) ;
 void moviedbWriteError ( const char *filename ) ;
-void moviedbUsage ( const char *s1, const char *s2, const char *s3, const char *s4, const char *s5 ) ;
+void moviedbUsage ( const char *s1, const char *s2, const char *s3, const char *s4, const char *s5, const char *s6 ) ;
 
 void upperCaseString ( char *str ) ;
 
