@@ -2,13 +2,13 @@
  *
  *  Program: lindex.c
  *
- *  Version: 3.7
+ *  Version: 3.22
  *
  *  Purpose: index list databases
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1999 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -184,8 +184,8 @@ int getNextLindexTitle ( FILE *dbFp, FILE *indexFp, FILE *keyFp, struct searchCo
     *yearVal = getInt ( dbFp ) ;
     (void) getInt ( dbFp ) ;
     (void) getAttr ( dbFp ) ;
-    (void) fseek ( indexFp, *titleKey * 3, SEEK_SET ) ;
-    offset = getOffset ( indexFp ) ;
+    (void) fseek ( indexFp, *titleKey * 4, SEEK_SET ) ;
+    offset = getFullOffset ( indexFp ) ;
     (void) fseek ( keyFp, offset, SEEK_SET ) ;
     (void) fgets ( title, MXLINELEN, keyFp ) ;
     stripSep ( title ) ;

@@ -2,7 +2,7 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.21
+ *  Version: 3.22
  *
  *  Purpose: make databases from list files
  *
@@ -192,7 +192,7 @@ void writeTitleIndexKey ( TitleID titleCount )
   (void) qsort ( (void*) titleIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
   for ( i = 0 ; i < count ; i++ )
-    putOffset ( titleIndex [ i ] . offset, indexFp ) ;
+    putFullOffset ( titleIndex [ i ] . offset, indexFp ) ;
 
   (void) fclose ( keyFp ) ;
   (void) fclose ( indexFp ) ;

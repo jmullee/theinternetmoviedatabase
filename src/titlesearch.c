@@ -2,7 +2,7 @@
  *
  *  Program: titlesearch.c
  *
- *  Version: 3.21
+ *  Version: 3.22
  *
  *  Purpose: title searching procedures
  *
@@ -199,8 +199,8 @@ void swapAkaTitles (struct titleSearchRec *tchain)
         indexFp = openFile ( TITLEIDX ) ;
       }
       trec -> titleKey = getTitle ( dbFp ) ;
-      (void) fseek ( indexFp, 3 * trec -> titleKey, SEEK_SET ) ;
-      offset = getOffset ( indexFp ) ;
+      (void) fseek ( indexFp, 4 * trec -> titleKey, SEEK_SET ) ;
+      offset = getFullOffset ( indexFp ) ;
       (void) fseek ( keyFp, offset, SEEK_SET ) ;
       (void) fgets ( line, MXLINELEN, keyFp ) ;
       (void) free ( (void*) trec -> title ) ;

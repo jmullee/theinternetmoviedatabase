@@ -2,13 +2,13 @@
  *
  *  Program: dbutils.c
  *
- *  Version: 3.18
+ *  Version: 3.22
  *
  *  Program: general database functions
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-2002 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
  *
  *  OpenFile function by: Timo Lamminjoki <lamminjo@pcu.helsinki.fi>
  *
@@ -1041,8 +1041,8 @@ char *mapTitleKeyToText ( TitleID titleKey, FILE *titleKeyFp, FILE *titleIndexFp
   char line [ MXLINELEN ] ;
   long offset ;
 
-  (void) fseek ( titleIndexFp, 3 * titleKey, SEEK_SET ) ;
-  offset = getOffset ( titleIndexFp ) ;
+  (void) fseek ( titleIndexFp, 4 * titleKey, SEEK_SET ) ;
+  offset = getFullOffset ( titleIndexFp ) ;
   (void) fseek ( titleKeyFp, offset, SEEK_SET ) ;
   (void) fgets ( line, MXLINELEN, titleKeyFp ) ;
   return ( duplicateField ( line ) ) ;

@@ -2,13 +2,13 @@
  *
  *  Program: display.c
  *
- *  Version: 3.20
+ *  Version: 3.22
  *
  *  Purpose: display procedures
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1990-2002 The Internet Movie Database Inc.
+ *  Copyright (c) 1990-2003 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -527,7 +527,7 @@ void displayNameSearchResults ( struct nameSearchRec *chain, int tidy )
             displayTitleAttrPairs ( nrec -> lists [ i ] -> entries, nrec -> lists [ i ] -> count, tidy, nrec -> searchparams . mrropt, nrec -> searchparams . mvsonly, nrec -> searchparams . chopt ) ;
             (void) printf ( "\n" ) ;
           }
-        (void) printf ( "\n           Copyright 1990-2002 The Internet Movie Database Inc.\n" ) ;
+        (void) printf ( "\n           Copyright 1990-2003 The Internet Movie Database Inc.\n" ) ;
         (void) printf ( "      Support the IMDb by visiting our web site: http://www.imdb.com/\n\n" ) ;
       }
       else
