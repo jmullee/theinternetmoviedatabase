@@ -288,7 +288,7 @@ void writeTitleAlphaKey ( TitleID titleCount, struct titleIndexRec *titles )
 }
 
 
-void writeAttrAlphaKey ( AttributeID attrCount, struct attrIndexRec *attributes)
+void writeAttrAlphaKey ( AttributeID attrCount )
 {
   AttributeID i ;
   FILE *indexFp ;
@@ -296,7 +296,7 @@ void writeAttrAlphaKey ( AttributeID attrCount, struct attrIndexRec *attributes)
   indexFp = writeFile ( ATTRKEY ) ;
 
   for ( i = 0 ; i < attrCount ; i++ )
-    (void) fprintf ( indexFp , "%s|%lx\n", attributes [ i ] . attr, attributes [ i ] . attrKey ) ;
+    (void) fprintf ( indexFp , "%s|%lx\n", attributeIndex [ i ] . attr, attributeIndex [ i ] . attrKey ) ;
 
   (void) fclose ( indexFp ) ;
 }
@@ -328,8 +328,9 @@ TitleID readTitleAlphaKey ( struct titleIndexRec *titles )
 }
 
 
-AttributeID readAttrAlphaKey (struct attrIndexRec *attributes)
+AttributeID readAttrAlphaKey ( void )
 {
+  struct attrIndexRec *attributes = attributeIndex ;
   FILE *listFP ;
   char line [ MXLINELEN ] ;
   char *p ;
@@ -346,14 +347,11 @@ AttributeID readAttrAlphaKey (struct attrIndexRec *attributes)
       attributes [ i ] . attr = duplicateString ( line ) ;
       attributes [ i++ ] . attrKey = strtol ( p + 1, (char **) NULL, 16) ;
       if ( i >= attributeIndexSize ) {
-	struct attrIndexRec *attributeIndexNew ;
-
 	attributeIndexSize += ATTRGROW ;
-	attributeIndexNew = realloc ( attributeIndex, sizeof ( struct attrIndexRec ) * attributeIndexSize ) ;
-	if ( attributeIndexNew == NULL )
+	attributes = realloc ( attributeIndex, sizeof ( struct attrIndexRec ) * attributeIndexSize ) ;
+	if ( attributes == NULL )
 	  moviedbError ( "mkdb: not enough memory to generate attributes index" ) ;
-	attributes = attributeIndexNew ;
-	attributeIndex = attributeIndexNew ;
+	attributeIndex = attributes ;
       }
     }
    (void) fclose ( listFP ) ;
@@ -466,8 +464,9 @@ struct attrIndexRec *findAttrKeyPos (char *attr, struct attrIndexRec *attributes
 }
 
 
-AttributeID attrKeyLookup (char *attr, struct attrIndexRec *attributes, AttributeID *attrCount)
+AttributeID attrKeyLookup (char *attr, AttributeID *attrCount)
 {
+   struct attrIndexRec *attributes = attributeIndex ;
    struct attrIndexRec *matched ;
    AttributeID attrKey = *attrCount, insert, i ;
    char *ptr ;
@@ -494,14 +493,11 @@ AttributeID attrKeyLookup (char *attr, struct attrIndexRec *attributes, Attribut
      attributes [ insert ] . attrKey = attrKey ;
      *attrCount = *attrCount + 1 ;
      if ( *attrCount >= attributeIndexSize )  {
-	struct attrIndexRec *attributeIndexNew ;
-
 	attributeIndexSize += ATTRGROW ;
-	attributeIndexNew = realloc ( attributeIndex, sizeof ( struct attrIndexRec ) * attributeIndexSize ) ;
-	if ( attributeIndexNew == NULL )
+	attributes = realloc ( attributeIndex, sizeof ( struct attrIndexRec ) * attributeIndexSize ) ;
+	if ( attributes == NULL )
 	  moviedbError ( "mkdb: not enough memory to generate attributes index" ) ;
-	attributes = attributeIndexNew ;
-	attributeIndex = attributeIndexNew ;
+	attributeIndex = attributes ;
      }
      return ( attrKey ) ;
    }
@@ -514,7 +510,7 @@ int yearDataSort (struct yearData *y1, struct yearData *y2)
 }
 
 
-TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, struct attrIndexRec *attributes, AttributeID *attrCount)
+TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount)
 {
   char  *yrptr, *attrptr, *p ;
   FILE  *listFp, *dbFp ;
@@ -547,7 +543,7 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, st
             if ( ( p = strchr ( attrptr, '\n' ) ) == NULL )
               moviedbError ( "mkdb: movies list corrupt" ) ;
             *p = '\0' ;
-            years [ count ] . attrKey = attrKeyLookup ( attrptr, attributes, attrCount ) ;
+            years [ count ] . attrKey = attrKeyLookup ( attrptr, attrCount ) ;
           }
           else
             years [ count ] . attrKey = NOATTR ;
@@ -850,7 +846,7 @@ void writeCastEntry (struct castFilmography *currentEntry, FILE *stream)
 }
 
 
-long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, struct attrIndexRec *attributes, AttributeID *attrCount, int listId, int moviesOnly, int nochar )
+long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId, int moviesOnly, int nochar )
 {
   FILE   *listFp, *dbFp, *nameKeyFp, *tmpFp ;
   char   line [ MXLINELEN ] ;
@@ -982,7 +978,7 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
             else
             {
               currentEntry . withAttrs [ currentEntry . noWithAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
-              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attributes, attrCount ) ;
+              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attrCount ) ;
               if ( cname == NULL || nochar )
                 currentEntry . withAttrs [ currentEntry . noWithAttr ] . cname = NULL ;
               else
@@ -1156,7 +1152,7 @@ void writeFilmographyEntry (struct filmography *currentEntry, FILE *stream)
 }
 
 
-long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, struct attrIndexRec *attributes, AttributeID *attrCount, int listId, int moviesOnly )
+long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId, int moviesOnly )
 {
   FILE   *listFp, *dbFp, *nameKeyFp, *tmpFp ;
   char   line [ MXLINELEN ] ;
@@ -1280,7 +1276,7 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
             else
             {
               currentEntry . withAttrs [ currentEntry . noWithAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
-              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attributes, attrCount ) ;
+              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attrCount ) ;
               currentEntry . noWithAttr++ ;
             }
             nentries++ ;
@@ -1489,7 +1485,7 @@ void writeWriterFilmographyEntry (struct writerFilmography *currentEntry, FILE *
 }
 
 
-long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, struct attrIndexRec *attributes, AttributeID *attrCount, int listId, int moviesOnly )
+long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId, int moviesOnly )
 {
   FILE   *listFp, *dbFp, *nameKeyFp, *tmpFp ;
   char   line [ MXLINELEN ] ;
@@ -1618,7 +1614,7 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
             else
             {
               currentEntry . withAttrs [ currentEntry . noWithAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
-              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attributes, attrCount ) ;
+              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attrCount ) ;
               currentEntry . withAttrs [ currentEntry . noWithAttr ] . lineOrder = lineOrder ;
               currentEntry . withAttrs [ currentEntry . noWithAttr ] . groupOrder = groupOrder ;
               currentEntry . withAttrs [ currentEntry . noWithAttr ] . subgroupOrder = subgroupOrder ;
@@ -2179,7 +2175,7 @@ int akaIndexDataSort (struct akaData *a1, struct akaData *a2)
 }
 
 
-TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, struct attrIndexRec *attributes, AttributeID *attrCount, char *akaFile )
+TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, char *akaFile )
 {
   FILE *dbFp, *listFp ;
   struct akaData aka [ MAXAKAENTRIES ] ;
@@ -2220,7 +2216,7 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, struc
         if ( ( ptr = strchr ( line, '\t' ) ) != NULL )
         {
           *(ptr - 1) = '\0' ;
-          aka [ count ] . attrKey = attrKeyLookup ( ++ptr, attributes, attrCount ) ;
+          aka [ count ] . attrKey = attrKeyLookup ( ++ptr, attrCount ) ;
         }
         else
         {
@@ -2518,7 +2514,7 @@ NameID processAkaNamesList ( NameID *nameCount )
 }
 
 
-TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount, struct attrIndexRec *attributes, AttributeID *attrCount, int listId )
+TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId )
 {
   char  *tmptr, *attrptr ;
   FILE  *listFp, *dbFp, *indexFp ;
@@ -2555,7 +2551,7 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
           {
             *attrptr = '\0' ;
             attrptr++ ;
-            attrKey = attrKeyLookup ( attrptr, attributes, attrCount ) ;
+            attrKey = attrKeyLookup ( attrptr, attrCount ) ;
           }
           else
             attrKey = NOATTR ;
@@ -3120,15 +3116,15 @@ int main (int argc, char **argv)
   AttributeID attrCount = 0 ;
   NameID  nameCount = 0 ;
 
-  sharedTitleIndex = malloc ( sizeof (struct titleKeyOffset) * TISTART ) ;
+  sharedTitleIndexSize = TISTART ;
+  sharedTitleIndex = malloc ( sizeof (struct titleKeyOffset) * sharedTitleIndexSize ) ;
   if ( sharedTitleIndex == NULL )
     moviedbError ( "mkdb: not enough memory to generate titles index" ) ;
-  sharedTitleIndexSize = TISTART ;
 
-  attributeIndex = malloc ( sizeof (struct attrIndexRec) * ATTRSTART ) ;
+  attributeIndexSize = ATTRSTART ;
+  attributeIndex = malloc ( sizeof (struct attrIndexRec) * attributeIndexSize ) ;
   if ( attributeIndex == NULL )
     moviedbError ( "mkdb: not enough memory to generate attribute index" ) ;
-  attributeIndexSize = ATTRSTART ;
 
   akaFile [ 0 ] = '\0' ;
 
@@ -3326,12 +3322,12 @@ int main (int argc, char **argv)
   if ( loadTitles )
     titleCount = readTitleAlphaKey ( titles ) ;
   if ( loadAttrs )
-    attrCount = readAttrAlphaKey ( attributeIndex ) ;
+    attrCount = readAttrAlphaKey ( ) ;
 
   if ( addmovie && isReadable ( MOVIELIST ) )
   {
     (void) printf ( "Adding Movies List...\n" ) ;
-    count = processMoviesList ( titles, &titleCount, attributeIndex, &attrCount ) ;
+    count = processMoviesList ( titles, &titleCount, &attrCount ) ;
     (void) printf ( " ...%d read\n", count ) ;
   }
 
@@ -3340,7 +3336,7 @@ int main (int argc, char **argv)
     if ( addflags [ i ] && isReadable ( filmographyDefs [ i ] . list ) )
     {
       (void) printf ( "Adding %s...\n", filmographyDefs [ i ] . desc ) ;
-      listCount = processCastList ( &nameCount, titles, &titleCount, attributeIndex, &attrCount, i, moviesOnly, nochar ) ;
+      listCount = processCastList ( &nameCount, titles, &titleCount, &attrCount, i, moviesOnly, nochar ) ;
       (void) printf ( " ...%ld read\n", listCount ) ;
     }
   }
@@ -3351,9 +3347,9 @@ int main (int argc, char **argv)
     {
       (void) printf ( "Adding %s...\n", filmographyDefs [ i ] . desc ) ;
       if ( i == WRITER_LIST_ID )
-        listCount = processWriterFilmographyList ( &nameCount, titles, &titleCount, attributeIndex, &attrCount, i, moviesOnly ) ;
+        listCount = processWriterFilmographyList ( &nameCount, titles, &titleCount, &attrCount, i, moviesOnly ) ;
       else
-        listCount = processFilmographyList ( &nameCount, titles, &titleCount, attributeIndex, &attrCount, i, moviesOnly ) ;
+        listCount = processFilmographyList ( &nameCount, titles, &titleCount, &attrCount, i, moviesOnly ) ;
       (void) printf ( " ...%ld read\n", listCount ) ;
     }
   }
@@ -3370,21 +3366,21 @@ int main (int argc, char **argv)
     if ( titleInfoFlags [ i ] && isReadable ( titleInfoDefs [ i ] . list ) )
     {
       (void) printf ( "Adding %s List...\n", titleInfoDefs [ i ] . desc ) ;
-      count = processTitleInfoList ( titles, &titleCount, attributeIndex, &attrCount, i ) ;
+      count = processTitleInfoList ( titles, &titleCount, &attrCount, i ) ;
       (void) printf ( " ...%d read\n", count ) ;
     }
 
   if ( addaka && isReadable ( AKALIST ) )
   {
     (void) printf ( "Adding Aka Titles...\n" ) ;
-    count = processAkaList ( titles, &titleCount, attributeIndex, &attrCount, AKALIST ) ;
+    count = processAkaList ( titles, &titleCount, &attrCount, AKALIST ) ;
     (void) printf ( " ...%d read\n", count ) ;
   }
 
   if ( addakaf && isReadable ( akaFile ) )
   {
     (void) printf ( "Adding Local Aka Titles...\n" ) ;
-    count = processAkaList ( titles, &titleCount, attributeIndex, &attrCount, akaFile ) ;
+    count = processAkaList ( titles, &titleCount, &attrCount, akaFile ) ;
     (void) printf ( " ...%d read\n", count ) ;
     createFlag = TRUE ;
   }
@@ -3479,7 +3475,7 @@ int main (int argc, char **argv)
     writeTitleAlphaKey ( titleCount, titles ) ;
 
   if ( loadAttrs )
-    writeAttrAlphaKey ( attrCount, attributeIndex ) ;
+    writeAttrAlphaKey ( attrCount ) ;
 
   if ( createFlag )
     touchDatabases ( nameCount, titleCount, attrCount ) ;
