@@ -2747,7 +2747,7 @@ examples[NICK] =
 "# Well known nicknames given to this person.\n\n";
 
 examples[REAL] =
-"Real Name:\n"
+"Birth Name:\n"
 "# If this person is using an assumed name, enter their real name\n"
 "# below in:\n"
 "# Surname, Firstname format\n\n";

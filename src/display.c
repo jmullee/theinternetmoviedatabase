@@ -2,7 +2,7 @@
  *
  *  Program: display.c
  *
- *  Version: 3.3e
+ *  Version: 3.8
  *
  *  Purpose: display procedures
  *
@@ -61,7 +61,7 @@ void displayNameURL ( char *name )
    char url [ MXLINELEN ] ;
    char *ptr ;
 
-   (void) strcpy ( url, "http://www.imdb.com/Person?" ) ;
+   (void) strcpy ( url, "http://www.imdb.com/Name?" ) ;
    for ( ptr = url + strlen(url) ; *name != 0 ; ptr++, name++ )
    {
      if ( isalnum ( *name ) )
@@ -176,7 +176,7 @@ void displayBiography ( struct personRec *rec, char *name, int biopt, struct aka
   if ( rec != NULL )
   {
     if ( rec -> RN != NULL )
-      (void) printf ( "Real Name:\n\n  %s\n", rec -> RN ) ;
+      (void) printf ( "Birth Name:\n\n  %s\n", rec -> RN ) ;
 
     if ( rec -> DB != NULL )
       (void) printf ( "Birth Date:\n\n  %s\n", rec -> DB ) ;
@@ -418,6 +418,12 @@ void displayLaserDisc ( struct laserRec *rec )
             (void) printf ( "  THX:\n" ) ;
           else if ( strncmp ( current -> text, "IN", 2 ) == 0 )
             (void) printf ( "  Additional Information:\n" ) ;
+          else if ( strncmp ( current -> text, "SL", 2 ) == 0 )
+            (void) printf ( "  Supplements:\n" ) ;
+          else if ( strncmp ( current -> text, "RV", 2 ) == 0 )
+            (void) printf ( "  Review:\n" ) ;
+          else if ( strncmp ( current -> text, "RC", 2 ) == 0 )
+            (void) printf ( "  Release Country:\n" ) ;
           else
             (void) printf ( "  Unknown:\n" ) ;
         }
