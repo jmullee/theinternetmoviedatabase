@@ -2,7 +2,7 @@
  *
  *  Program: dbutils.c
  *
- *  Version: 3.3e
+ *  Version: 3.5a
  *
  *  Program: general database functions
  *
@@ -130,7 +130,7 @@ struct movieLinksDefRec movieLinkDefs [ NO_OF_LINK_TYPES ] =
     { similarToLink,    "similar to", 10 },
     { editedIntoLink,   "edited into", 11 },
     { editedFromLink,   "edited from", 11 },
-    { alternateLanguageVersionOfLink,  "alternate language version of", 28 },
+    { alternateLanguageVersionOfLink,  "alternate language version of", 29 },
     { unknownLink,      "unknown link", 12 }
   } ;
 

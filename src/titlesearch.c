@@ -2,13 +2,13 @@
  *
  *  Program: titlesearch.c
  *
- *  Version: 3.3
+ *  Version: 3.5a
  *
  *  Purpose: title searching procedures
  *
  *  Author:  C J Needham <cn@imdb.com>
  *
- *  Copyright (c) 1996 The Internet Movie Database Ltd.
+ *  Copyright (c) 1996-1998 The Internet Movie Database Ltd.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -171,7 +171,7 @@ void swapAkaTitles (struct titleSearchRec *tchain)
 
   dbFp = openFile ( AKAIDX ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( dbFp ) / AKABYTES ;
+  saveUpper = ftell ( dbFp ) / 6 ;
 
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
   {
@@ -182,7 +182,7 @@ void swapAkaTitles (struct titleSearchRec *tchain)
     while ( !found && upper >= lower )
     {
       mid = ( upper + lower ) / 2 ;
-      (void) fseek ( dbFp, mid * AKABYTES, SEEK_SET ) ;
+      (void) fseek ( dbFp, mid * 6, SEEK_SET ) ;
       dbKey = getTitle ( dbFp ) ;
       if ( titleKey == dbKey )
         found = TRUE ;
