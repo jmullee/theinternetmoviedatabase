@@ -186,8 +186,8 @@ void swapAkaNames (struct nameSearchRec *nchain)
         indexFp = openFile ( NAMEIDX ) ;
       }
       nrec -> nameKey = getName ( dbFp ) ;
-      (void) fseek ( indexFp, 3 * nrec -> nameKey, SEEK_SET ) ;
-      offset = getOffset ( indexFp ) ;
+      (void) fseek ( indexFp, 4 * nrec -> nameKey, SEEK_SET ) ;
+      offset = getFullOffset ( indexFp ) ;
       (void) fseek ( keyFp, offset, SEEK_SET ) ;
       (void) fgets ( line, MXLINELEN, keyFp ) ;
       (void) free ( (void*) nrec -> name ) ;
@@ -230,9 +230,9 @@ void approxFilmographySearchKeyLookup (struct nameSearchRec *chain)
       {
         nameKey = getName ( indexFp ) ;
         matched = FALSE ;
-        (void) getOffset ( indexFp ) ;
-        (void) fseek ( nameIndexFp, 3 * nameKey, SEEK_SET ) ;
-        offset = getOffset ( nameIndexFp ) ;
+        (void) getFullOffset ( indexFp ) ;
+        (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
+        offset = getFullOffset ( nameIndexFp ) ;
         (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
         (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
         stripSep ( line ) ;
@@ -295,9 +295,9 @@ void substringFilmographySearchKeyLookup (struct nameSearchRec *chain)
       {
         nameKey = getName ( indexFp ) ;
         matched = FALSE ;
-        (void) getOffset ( indexFp ) ;
-        (void) fseek ( nameIndexFp, 3 * nameKey, SEEK_SET ) ;
-        offset = getOffset ( nameIndexFp ) ;
+        (void) getFullOffset ( indexFp ) ;
+        (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
+        offset = getFullOffset ( nameIndexFp ) ;
         (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
         (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
         if ( casesen )
@@ -418,12 +418,12 @@ long lookupNamesIndex ( FILE *indexFp, NameID nameKey )
 
   (void) fseek ( indexFp, 0, SEEK_END ) ;
   upper = ftell ( indexFp ) ;
-  upper = upper / 6 ;
+  upper = upper / 7 ;
 
   while ( !found && upper >= lower )
   {
      mid = ( upper + lower ) / 2 ;
-     (void) fseek ( indexFp, mid * 6, SEEK_SET ) ;
+     (void) fseek ( indexFp, mid * 7, SEEK_SET ) ;
      indexName = getName ( indexFp ) ;
      if ( nameKey == indexName )
        found = TRUE ;

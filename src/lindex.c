@@ -92,9 +92,9 @@ int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struc
     nameKey = getName ( rec -> fp ) ;
     if ( feof ( rec -> fp ) )
       break ;
-    (void) getOffset ( rec -> fp ) ;
-    (void) fseek ( indexFp, 3 * nameKey, SEEK_SET ) ;
-    offset = getOffset ( indexFp ) ;
+    (void) getFullOffset ( rec -> fp ) ;
+    (void) fseek ( indexFp, 4 * nameKey, SEEK_SET ) ;
+    offset = getFullOffset ( indexFp ) ;
     (void) fseek ( keyFp, offset, SEEK_SET ) ;
     (void) fgets ( line, MXLINELEN, keyFp ) ;
     stripSep ( line ) ;

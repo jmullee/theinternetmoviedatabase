@@ -1037,8 +1037,8 @@ char *mapNameKeyToText ( NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp )
   char line [ MXLINELEN ] ;
   long offset ;
 
-  (void) fseek ( nameIndexFp, 3 * nameKey, SEEK_SET ) ;
-  offset = getOffset ( nameIndexFp ) ;
+  (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
+  offset = getFullOffset ( nameIndexFp ) ;
   (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
   (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
   return ( duplicateField ( line ) ) ;
@@ -1082,8 +1082,8 @@ char *mapfastNameKeyToText ( NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp 
   long offset ;
   char *p;
 
-  (void) fseek ( nameIndexFp, 3 * nameKey, SEEK_SET ) ;
-  offset = getOffset ( nameIndexFp ) ;
+  (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
+  offset = getFullOffset ( nameIndexFp ) ;
   (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
   (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
   if ( (p = strchr ( line, FSEP ) ) == NULL )

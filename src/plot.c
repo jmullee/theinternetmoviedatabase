@@ -116,7 +116,7 @@ void addPlotToTitleSearch (struct titleSearchRec *tchain)
   dbFp = openFile ( PLOTDB ) ;
   indexFp = openFile ( PLOTIDX ) ;
   (void) fseek ( indexFp, 0, SEEK_END ) ;
-  saveUpper = ftell ( indexFp ) / 6 ;
+  saveUpper = ftell ( indexFp ) / 7 ;
 
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
     if ( trec -> searchparams . plotopt )
@@ -128,7 +128,7 @@ void addPlotToTitleSearch (struct titleSearchRec *tchain)
       while ( !found && upper >= lower )
       {
         mid = ( upper + lower ) / 2 ;
-        (void) fseek ( indexFp, mid * 6, SEEK_SET ) ;
+        (void) fseek ( indexFp, mid * 7, SEEK_SET ) ;
         indexTitleKey = getTitle ( indexFp ) ;
         if ( titleKey == indexTitleKey )
           found = TRUE ;
@@ -139,7 +139,7 @@ void addPlotToTitleSearch (struct titleSearchRec *tchain)
       }
       if ( found )
       {
-        offset = getOffset ( indexFp ) ;
+        offset = getFullOffset ( indexFp ) ;
         trec -> plot = readPlot ( dbFp, offset ) ;
       }
   }

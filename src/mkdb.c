@@ -2,7 +2,7 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.7
+ *  Version: 3.9
  *
  *  Purpose: make databases from list files
  *
@@ -73,6 +73,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "moviedb.h"
 #include "dbutils.h"
 
@@ -260,7 +261,7 @@ void writeNameIndexKey ( NameID nameCount )
   (void) qsort ( (void*) namesIndex, (size_t) count, sizeof ( struct nameKeyOffset ), (int (*) (const void*, const void*)) nameKeyOffsetSort ) ;
 
   for ( i = 0 ; i < count ; i++ )
-    putOffset ( namesIndex [ i ] . offset, indexFp ) ;
+    putFullOffset ( namesIndex [ i ] . offset, indexFp ) ;
 
   (void) fclose ( keyFp ) ;
   (void) fclose ( indexFp ) ;
@@ -637,6 +638,10 @@ char *splitChar ( char *line )
     if ( ( endptr = strrchr ( ptr, ']' ) ) == NULL )
       return ( NULL ) ;
 
+/* string length is stored in one byte; chop it if it's too long */
+  if ( ( endptr - ptr ) > UCHAR_MAX ) {
+    endptr = ptr + UCHAR_MAX ;
+  }
   *endptr = '\0' ;
   *(ptr-2) = '\0' ;
   return ( ++ptr ) ;
@@ -724,7 +729,7 @@ void makeCastDatabaseNamesIndex ( int listId, NameID namesOnList )
   for ( i = 0 ; i < count ; i++ )
   {
      putName ( namesIndex [ i ] . nameKey, ndxFp ) ;
-     putOffset ( namesIndex [ i ] . offset, ndxFp ) ;
+     putFullOffset ( namesIndex [ i ] . offset, ndxFp ) ;
   }
 
   (void) fclose ( dbFp ) ;
@@ -1052,7 +1057,7 @@ void makeDatabaseNamesIndex ( int listId, NameID namesOnList )
   for ( i = 0 ; i < count ; i++ )
   {
      putName ( namesIndex [ i ] . nameKey, ndxFp ) ;
-     putOffset ( namesIndex [ i ] . offset, ndxFp ) ;
+     putFullOffset ( namesIndex [ i ] . offset, ndxFp ) ;
   }
 
   (void) fclose ( dbFp ) ;
@@ -1379,7 +1384,7 @@ void makeWriterDatabaseNamesIndex ( int listId, NameID namesOnList )
   for ( i = 0 ; i < count ; i++ )
   {
      putName ( namesIndex [ i ] . nameKey, ndxFp ) ;
-     putOffset ( namesIndex [ i ] . offset, ndxFp ) ;
+     putFullOffset ( namesIndex [ i ] . offset, ndxFp ) ;
   }
 
   (void) fclose ( dbFp ) ;
@@ -1753,7 +1758,7 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
   for ( i = 0 ; i < count ; i++ )
   {
      putTitle ( titlesIndex [ i ] . titleKey, indexFp ) ;
-     putOffset ( titlesIndex [ i ] . offset, indexFp ) ;
+     putFullOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
   (void) fclose ( indexFp ) ;
