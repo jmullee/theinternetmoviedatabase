@@ -2,7 +2,7 @@
  *
  *  Program: mkdb.c
  *
- *  Version: 3.20
+ *  Version: 3.21
  *
  *  Purpose: make databases from list files
  *
@@ -514,10 +514,14 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, At
 {
   char  *yrptr, *attrptr, *p ;
   FILE  *listFp, *dbFp ;
-  struct yearData years [ MAXTITLES ] ;
+  struct yearData *years ;
   char  line [ MXLINELEN ] ;
   int   inMovie = FALSE ;
   TitleID count = 0, i ;
+
+  years = malloc ( MAXTITLES * sizeof (struct yearData) ) ;
+  if ( ! years )
+    moviedbError ( "mkdb: cannot allocate years structure" ) ;
 
   if ( *titleCount == 0 )
     *titleCount = readMoviesList ( titles ) ;

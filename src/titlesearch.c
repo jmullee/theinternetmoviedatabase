@@ -2,13 +2,13 @@
  *
  *  Program: titlesearch.c
  *
- *  Version: 3.5a
+ *  Version: 3.21
  *
  *  Purpose: title searching procedures
  *
  *  Author:  C J Needham <col@imdb.com>
  *
- *  Copyright (c) 1996-1998 The Internet Movie Database Inc.
+ *  Copyright (c) 1996-2003 The Internet Movie Database Inc.
  *
  *  Permission is granted by the copyright holder to distribute this program
  *  is source form only, providing this notice remains intact, and no fee
@@ -616,6 +616,8 @@ void lookupTitles ( FILE *dbFp, FILE *indexFp, struct titleSearchRec *trec, int 
         trec -> entries [ trec -> nameCount ] . subgroupOrder = subgroupOrder ;
         trec -> results [ listId ] . count++ ;
         trec -> nameCount++ ;
+	if ( trec -> nameCount > MAXTITLERESULTS )
+	  moviedbError ( "Too many names -- increase MAXTITLERESULTS" ) ;
         titleKey = getTitle ( indexFp ) ;
         prevOffset = offset ;
         offset = getFullOffset ( indexFp ) ;

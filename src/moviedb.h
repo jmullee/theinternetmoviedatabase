@@ -2,7 +2,7 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.20
+ *  Version: 3.21
  *
  *  Purpose: general constant and type definitions for movie database
  *
@@ -28,10 +28,10 @@
 #define   FSEP                    '|'
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
-#define   MAXTITLES            500000
+#define   MAXTITLES            750000
 #define   MAXFILMOGRAPHIES       1023
 #define   MAXWITHATTRS           4095
-#define   MAXTITLERESULTS        4095
+#define   MAXTITLERESULTS       16383
 #define   MAXALISTRESULTS        5000
 #define   MAXALISTTITLES         3000
 #define   NOTITLE            0xffffff
