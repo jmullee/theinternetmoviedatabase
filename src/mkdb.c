@@ -1765,6 +1765,64 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
   return ( count ) ;
 }
 
+#ifdef INTERNAL
+TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
+{
+  FILE *dbFp, *listFp, *indexFp ;
+  struct titleKeyOffset titlesIndex [ MAXPLOTENTRIES ] ;
+  char line [ MXLINELEN ] ;
+  int  inplot = FALSE ;
+  TitleID  count = 0, i ;
+  long currentOffset ;
+
+  listFp = openFile ( OUTLLIST ) ;
+  dbFp = writeFile ( OUTLDB ) ;
+
+  while ( fgets ( line, MXLINELEN, listFp ) != NULL )
+    if ( inplot )
+    {
+       if ( line [ 0 ] != '-' && line [ 0 ] != '\n' )
+       {
+         currentOffset = ftell ( dbFp ) ;
+         (void) fprintf ( dbFp, "%s", line ) ;
+         if ( strncmp ( line, "MV: ", 4 ) == 0 )
+         {
+           stripEOL ( line ) ;
+           if ( debugFlag )
+             (void) printf ( "%s\n", line + 4 ) ;
+           titlesIndex [ count ] . titleKey = titleKeyLookup ( line + 4, titles, titleCount ) ;
+           titlesIndex [ count ] . offset = currentOffset ;
+           count++ ;
+	   if (count >= MAXPLOTENTRIES)
+	     moviedbError ( "mkdb: too many outline entries -- increase MAXPLOTENRIES" );
+         }
+       }
+    }
+    else
+      if ( strncmp ( line, "OUTLINES LIST", 13 ) == 0 )
+      {
+        inplot = TRUE ;
+        (void) fprintf ( dbFp, "%s", line ) ;
+      }
+
+  (void) fclose ( dbFp ) ;
+  (void) fclose ( listFp ) ;
+
+  (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
+
+  indexFp = writeFile ( OUTLIDX ) ;
+
+  for ( i = 0 ; i < count ; i++ )
+  {
+     putTitle ( titlesIndex [ i ] . titleKey, indexFp ) ;
+     putFullOffset ( titlesIndex [ i ] . offset, indexFp ) ;
+  }
+
+  (void) fclose ( indexFp ) ;
+  return ( count ) ;
+}
+#endif
+
 
 NameID processBiographiesList ( NameID *nameCount )
 {
@@ -2919,6 +2977,10 @@ void touchDatabases ( NameID nameCount, TitleID titleCount, AttributeID attrCoun
   touchFile ( NAKAIDX ) ;
   touchFile ( PLOTDB ) ;
   touchFile ( PLOTIDX ) ;
+#ifdef INTERNAL
+  touchFile ( OUTLDB ) ;
+  touchFile ( OUTLIDX ) ;
+#endif
   touchFile ( BIODB ) ;
   touchFile ( BIOIDX ) ;
   touchFile ( LITDB ) ;
@@ -2977,6 +3039,9 @@ int main (int argc, char **argv)
 {
   int  addaka = FALSE, addrate = FALSE, addmovie = FALSE, addnaka = FALSE ;
   int  addplot = FALSE, addbio = FALSE, addvotes = FALSE, addakaf = FALSE ;
+#ifdef INTERNAL
+  int  addoutline = FALSE ;
+#endif
   int  addlit = FALSE, addcastcom = FALSE, addlinks = FALSE, addbus = FALSE ;
   int  addld = FALSE, addcrewcom = FALSE, moviesOnly = FALSE, nochar = FALSE ;
   int  specific = FALSE ;
@@ -3052,6 +3117,14 @@ int main (int argc, char **argv)
       loadTitles = TRUE ;
       specific = TRUE ;
     }
+#ifdef INTERNAL
+    else if ( strcmp ( "-outline", argv [ i ] ) == 0 )
+    {
+      addoutline =  TRUE ;
+      loadTitles = TRUE ;
+      specific = TRUE ;
+    }
+#endif
     else if ( strcmp ( "-bio", argv [ i ] ) == 0 )
     {
       addbio =  TRUE ;
@@ -3165,6 +3238,9 @@ int main (int argc, char **argv)
     addnaka = TRUE ;
     addrate = TRUE ;
     addplot = TRUE ;
+#ifdef INTERNAL
+    addoutline = TRUE ;
+#endif
     addbio = TRUE ;
     addvotes = TRUE ;
     addlit = TRUE ;
@@ -3259,6 +3335,15 @@ int main (int argc, char **argv)
     count = processPlotList ( titles, &titleCount ) ;
     (void) printf ( " ...%d read\n", count ) ;
   }
+
+#ifdef INTERNAL
+  if ( addoutline && isReadable ( OUTLLIST ) )
+  {
+    (void) printf ( "Adding Plot Outlines...\n" ) ;
+    count = processOutlineList ( titles, &titleCount ) ;
+    (void) printf ( " ...%d read\n", count ) ;
+  }
+#endif
 
   if ( addbio && isReadable ( BIOLIST ) )
   {

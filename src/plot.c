@@ -145,4 +145,48 @@ void addPlotToTitleSearch (struct titleSearchRec *tchain)
   }
   (void) fclose ( dbFp ) ;
   (void) fclose ( indexFp ) ;
+
+#ifdef INTERNAL
+  dbFp = openFile ( OUTLDB ) ;
+  indexFp = openFile ( OUTLIDX ) ;
+  (void) fseek ( indexFp, 0, SEEK_END ) ;
+  saveUpper = ftell ( indexFp ) / 7 ;
+
+  for ( trec = tchain ; trec != NULL ; trec = trec -> next )
+    if ( trec -> searchparams . plotopt )
+    {
+      titleKey = trec -> titleKey ;
+      lower = 0 ;
+      upper = saveUpper ;
+      found = FALSE ;
+      while ( !found && upper >= lower )
+      {
+        mid = ( upper + lower ) / 2 ;
+        (void) fseek ( indexFp, mid * 7, SEEK_SET ) ;
+        indexTitleKey = getTitle ( indexFp ) ;
+        if ( titleKey == indexTitleKey )
+          found = TRUE ;
+        else if ( indexTitleKey < titleKey )
+          lower = mid + 1 ;
+        else
+          upper = mid - 1 ;
+      }
+      if ( found )
+      {
+	struct plotRec *olrec ;
+
+        offset = getFullOffset ( indexFp ) ;
+        olrec = readPlot ( dbFp, offset ) ;
+	if ( trec -> plot ) {
+	  olrec -> outline -> next = trec -> plot -> outline ;
+	  trec -> plot -> outline = olrec -> outline ;
+	  free ( olrec ) ;
+	}
+	else
+	  trec -> plot = olrec ;
+      }
+  }
+  (void) fclose ( dbFp ) ;
+  (void) fclose ( indexFp ) ;
+#endif
 }

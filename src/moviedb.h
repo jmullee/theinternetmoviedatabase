@@ -2,7 +2,7 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.7
+ *  Version: 3.13
  *
  *  Purpose: general constant and type definitions for movie database
  *
@@ -40,17 +40,17 @@
 #define   NONAME           0xffffffff
 #define   NOPOS                     0
 #define   MAXTRIVENTRIES        30000
-#define   MAXPLOTENTRIES        50000
-#define   MAXLITENTRIES         20000
+#define   MAXPLOTENTRIES        75000
+#define   MAXLITENTRIES         25000
 #define   MAXLDENTRIES          25000
-#define   MAXBUSENTRIES         20000
+#define   MAXBUSENTRIES         40000
 #define   MAXBIOENTRIES        150000
 #define   MAXMRRENTRIES         60000
 #define   MAXAKAENTRIES        150000
 #define   MAXNAKAENTRIES        75000
 #define   MAXTITLEINFO         300000
 #define   MAXPOS                  255
-#define   MAXLINKS             200000
+#define   MAXLINKS             400000
 #define   MAXLINKSPERMOVIE        250
 
 #ifndef DBDIR
@@ -75,9 +75,15 @@
 #define   PRODCODB    DBDIR "production-companies.data"
 #define   DISTDB      DBDIR "distributors.data"
 #define   SFXCODB     DBDIR "special-effects-companies.data"
+#ifdef INTERNAL
+#define   MSCCODB     DBDIR "miscellaneous-companies.data"
+#endif
 #define   COLORDB     DBDIR "color-info.data"
 #define   MIXDB       DBDIR "sound-mix.data"
 #define   PLOTDB      DBDIR "plot.data"
+#ifdef INTERNAL
+#define   OUTLDB      DBDIR "outlines.data"
+#endif
 #define   BIODB       DBDIR "biographies.data"
 #define   VOTEDB      DBDIR "votes.data"
 #define   RELDB       DBDIR "release-dates.data"
@@ -136,6 +142,9 @@
 #define   AKAIDX      DBDIR "aka-titles.index"
 #define   NAKAIDX     DBDIR "aka-names.index"
 #define   PLOTIDX     DBDIR "plot.index"
+#ifdef INTERNAL
+#define   OUTLIDX     DBDIR "outlines.index"
+#endif
 #define   LITIDX      DBDIR "literature.index"
 #define   LDIDX       DBDIR "laserdisc.index"
 #define   BUSIDX      DBDIR "business.index"
@@ -156,6 +165,9 @@
 #define   PRODCOIDX DBDIR "production-companies.index"
 #define   DISTIDX   DBDIR "distributors.index"
 #define   SFXCOIDX  DBDIR "special-effects-companies.index"
+#ifdef INTERNAL
+#define   MSCCOIDX  DBDIR "miscellaneous-companies.index"
+#endif
 #define   COLORIDX  DBDIR "color-info.index"
 #define   MIXIDX    DBDIR "sound-mix.index"
 #define   RELIDX    DBDIR "release-dates.index"
@@ -175,6 +187,9 @@
 #define   AKALIST      RAWDIR "aka-titles.list"
 #define   TRIVIA       RAWDIR "trivia.list"
 #define   PLOTLIST     RAWDIR "plot.list"
+#ifdef INTERNAL
+#define   OUTLLIST     RAWDIR "outlines.list"
+#endif
 #define   CRAZYLIST    RAWDIR "crazy-credits.list"
 #define   BIOLIST      RAWDIR "biographies.list"
 #define   EDITLIST     RAWDIR "editors.list"
@@ -195,6 +210,9 @@
 #define   CNTRYLIST    RAWDIR "countries.list"
 #define   PRODCOLIST   RAWDIR "production-companies.list"
 #define   SFXCOLIST    RAWDIR "special-effects-companies.list"
+#ifdef INTERNAL
+#define   MSCCOLIST    RAWDIR "miscellaneous-companies.list"
+#endif
 #define   COLORLIST    RAWDIR "color-info.list"
 #define   MIXLIST      RAWDIR "sound-mix.list"
 #define   RELLIST      RAWDIR "release-dates.list"
@@ -236,7 +254,11 @@
 #define   GLOBAL_NAME_SEARCH        (NO_OF_SEARCH_OPTS-1)
 #define   WRITER_LIST_ID             3
 #define   NO_OF_TRIV_LISTS           7
+#ifdef INTERNAL
+#define   NO_OF_TITLE_INFO_LISTS    15
+#else
 #define   NO_OF_TITLE_INFO_LISTS    14
+#endif
 
 #define   ACRSRCH     0
 #define   ACSSRCH     1
