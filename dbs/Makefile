@@ -103,7 +103,7 @@ DOALL = do-movies do-actors do-actress do-cine do-composers \
         do-misc do-aka do-naka do-plot do-bio do-crazy do-goofs do-quotes \
         do-stracks do-trivia do-ratings do-votes do-times do-certs do-genres \
         do-prodco do-color do-mix do-cntry do-rel do-loc do-lit do-tech \
-        do-link do-tag do-castcom do-vers do-lang do-sfxco do-bus do-ld do-dist
+        do-link do-tag do-castcom do-crewcom do-vers do-lang do-sfxco do-bus do-ld do-dist
 
 databases : $(DOALL) touch-dbs recompress
 

@@ -2,11 +2,11 @@ From: cn@imdb.com (Col Needham)
 Newsgroups: rec.arts.movies.misc,rec.arts.movies.people,rec.arts.movies.current-films,rec.arts.movies.past-films,alt.cult-movies,rec.arts.sf.movies,alt.answers,rec.answers,news.answers
 Subject: Movie Database: Frequently Asked Questions List
 Approved: news-answers-request@MIT.EDU
-Message-ID: <moviedb-faq-980330@nntp.pcug.co.uk>
-Supersedes: <moviedb-faq-971002@nntp.pcug.co.uk>
+Message-ID: <moviedb-faq-980702@nntp.pcug.co.uk>
+Supersedes: <moviedb-faq-980330@nntp.pcug.co.uk>
 Followup-To: rec.arts.movies.misc
 Organization: The Internet Movie Database Ltd.
-Expires: 30 Apr 1998 00:00:00 GMT
+Expires: 31 Jul 1998 00:00:00 GMT
 Reply-To: cn@imdb.com (Col Needham)
 Summary: An introduction to The Internet Movie Database (IMDb), which provides
          on-line movie information, including filmographies of actors, 
@@ -15,8 +15,8 @@ Keywords: movie database FAQ
 
 Archive-name: movies/movie-database-faq
 Posting-Frequency: weekly
-Last-modified: 1998/3/17
-Version: 1.66
+Last-modified: 1998/7/2
+Version: 1.67
 
 Copies of this article may be obtained by anonymous ftp to rtfm.mit.edu
 under /pub/usenet/news.answers/movies/movie-database-faq, or by sending e-mail
@@ -73,7 +73,7 @@ SECTION ONE
 The Internet Movie Database (IMDb) is an international organization whose 
 objective is to provide useful and up to date movie information *freely* 
 available on-line, across as many systems and platforms as possible. It 
-currently covers over 130,000 movies with over 2,100,000 filmography entries
+currently covers over 150,000 movies with over 2,100,000 filmography entries
 and is expanding continuously. The service is financed by advertising and 
 sponsorship. The Internet Movie Database is a Limited Company registered
 in the UK.
@@ -118,10 +118,6 @@ locate identical(*) copies of the www interface:
 
     http://us.imdb.com/                                 [USA]
     http://uk.imdb.com/                                 [UK]
-    http://italy.imdb.com/                              [Italy]
-
-(*) The Italian site has additional information of use to Italian speakers,
-    such as Italian translations of non-Italian movies.
 
 News and pointers to the other IMDb sites are available at IMDb HQ:
 
@@ -261,8 +257,8 @@ expert editor. The following table gives an overview:
 
  List                 | Maintained by
  ---------------------|-------------------------------------------|
- Actors               | Col Needham <actors@imdb.com>
- Actresses            | Col Needham <actresses@imdb.com>
+ Actors               | Giancarlo Cairella <actors@imdb.com>
+ Actresses            | Giancarlo Cairella <actresses@imdb.com>
  Alternative Names    | Michel Hafner <aka-names@imdb.com>
  Alternative Titles   | Michel Hafner <aka-titles@imdb.com>
  Alternative Versions | Giancarlo Cairella <versions@imdb.com>
@@ -282,7 +278,7 @@ expert editor. The following table gives an overview:
  Distributors         | Rob Hartill <prod-companies@imdb.com>
  DVDs                 | Peter Simeon <dvd@imdb.com>
  Editors              | Peter Simeon <editors@imdb.com>
- Genres               | Colin Tinto <genres@imdb.com>
+ Genres               | Jake Dias <genres@imdb.com>
  Goofs                | Murray Chapman <goofs@imdb.com>
  Language             | Mark Harding <release-dates@imdb.com>
  Laser Discs          | Peter Simeon <laserdiscs@imdb.com>
@@ -299,7 +295,7 @@ expert editor. The following table gives an overview:
  Production Designers | Peter Simeon <prod-designers@imdb.com>
  Quotes               | Bob Glickstein <quotes@imdb.com>
  Ratings              | Col Needham <cn@imdb.com>
- Release Dates        | Mark Harding <release-dates@imdb.com>
+ Release Dates        | Jon Reeves <release-dates@imdb.com>
  Running Times        | Mark Harding <running-times@imdb.com>
  SFX Companies        | Rob Hartill <prod-companies@imdb.com>
  Sound Mix            | Mark Harding <sound-mix@imdb.com>
@@ -331,8 +327,8 @@ The following subsections describe the database sections (lists) in more detail.
 
   List                 | Maintained by
   ---------------------|-------------------------------------------
-  Actors               | Col Needham <actors@imdb.com>
-  Actresses            | Col Needham <actresses@imdb.com>
+  Actors               | Giancarlo Cairella <actors@imdb.com>
+  Actresses            | Giancarlo Cairella <actresses@imdb.com>
   Cast Completion      | Col Needham <cn@imdb.com>
   ---------------------|-------------------------------------------
 
@@ -412,7 +408,7 @@ The following sections contain information relating to individual titles:
   Production Companies | Rob Hartill <prod-companies@imdb.com>
   Quotes               | Bob Glickstein <quotes@imdb.com>
   Ratings              | Col Needham <cn@imdb.com>
-  Release Dates        | Mark Harding <release-dates@imdb.com>
+  Release Dates        | Jon Reeves <release-dates@imdb.com>
   Running Times        | Mark Harding <running-times@imdb.com>
   SFX Companies        | Rob Hartill <prod-companies@imdb.com>
   Sound Mix            | Mark Harding <sound-mix@imdb.com>
@@ -1101,4 +1097,4 @@ The Internet Movie Database Ltd.
 
 -----------------------------------------------------------------------------
 Winner of 1997 & 1998 best film site Webby awards        http://www.imdb.com/
-130,000+ movies 1892-2000                          The site that means movies
+150,000+ movies 1892-2000                          The site that means movies

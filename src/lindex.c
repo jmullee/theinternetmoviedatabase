@@ -2,7 +2,7 @@
  *
  *  Program: lindex.c
  *
- *  Version: 3.3c
+ *  Version: 3.4a
  *
  *  Purpose: index list databases
  *
@@ -247,7 +247,7 @@ void lindexTitles ( int yropt, int mrropt, struct searchConstraints *constraints
   char  title [ MXLINELEN ] ;
   int   i, count = 0, quitLoop ;
   struct mrrRec mrr ;
-  struct lindexTitleRec array [ MAXTITLES ] ;
+  struct lindexTitleRec *array ;
   int year ;
   TitleID titleKey, mrrKey, titleInfoKey [ NO_OF_TITLE_INFO_LISTS ] ;
   long titleInfoOffset [ NO_OF_TITLE_INFO_LISTS ] ;
@@ -276,6 +276,8 @@ void lindexTitles ( int yropt, int mrropt, struct searchConstraints *constraints
     mrrFp = openFile ( MRRDB ) ;
     (void) readMrrRec ( mrrFp, &mrrKey, &mrr ) ;
   }
+
+  array = malloc ( sizeof (struct lindexTitleRec) * MAXTITLES ) ;
 
   while ( getNextLindexTitle ( dbFp, indexFp, keyFp, constraints, title, &titleKey, &year ) )
   {

@@ -2,7 +2,7 @@
  *
  *  Program: moviedb.h
  *
- *  Version: 3.3e
+ *  Version: 3.4a
  *
  *  Purpose: general constant and type definitions for movie database
  *
@@ -26,7 +26,7 @@
 #define   MAXATTRS              65500
 #define   MAXFILMOGRAPHIES       1023
 #define   MAXWITHATTRS           4095
-#define   MAXTITLERESULTS        1023
+#define   MAXTITLERESULTS        4095
 #define   MAXALISTRESULTS        5000
 #define   MAXALISTTITLES         3000
 #define   NOTITLE            0xffffff
