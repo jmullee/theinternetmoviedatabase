@@ -64,6 +64,8 @@
 #
 #-------------------------------------------------------------------------
 
+BASEDIR=/home/jmullee/projects/imdb/moviedb/src
+
 # Options for lfetch
 # YOU MUST SET THE -user option to your e-mail address
 # for example: LFETCHOPT = -auto -user userid@machine.domain
@@ -139,41 +141,41 @@ AUTOUNCOMPRESS = autouncompress
 
 # Options for mkdb (for instance -m, -debug or -nochar)
 # set to -nochar to ignore character names when processing the cast lists
-#MKDBOPT = -nochar
+#MKDBOPT = -debug -nochar
 MKDBOPT =
 
 
 # Where are the source lists?
 #RAWDIR = ../lists/
-RAWDIR = `pwd`/lists/
+RAWDIR = $(BASEDIR)/lists/
 
 # Where will the databases be?
 #DBDIR = ../dbs/
-DBDIR = `pwd`/dbs/
+DBDIR = $(BASEDIR)/dbs/
 
 # Secondary files
 #ETCDIR = ../etc/
-ETCDIR = `pwd`/etc/
+ETCDIR = $(BASEDIR)/etc/
 
 # Source files
 #SRCDIR = ../src/
-SRCDIR = `pwd`/src/
+SRCDIR = $(BASEDIR)/src/
 
 # Executable files
 #BINDIR = ../bin/
-BINDIR = `pwd`/bin/
+BINDIR = $(BASEDIR)/bin/
 
 # Top-level manpages directory (man1 should be a subdirectory of this)
 #MANDIR = /usr/man/
-MANDIR = `pwd`/man/
+MANDIR = $(BASEDIR)/man/
 
 # Main directory
 #MAINDIR = ./
-MAINDIR = `pwd`/
+MAINDIR = $(BASEDIR)/
 
 # Documentation directory
 #DOCDIR = ../docs/
-DOCDIR = `pwd`/docs/
+DOCDIR = $(BASEDIR)/docs/
 
 # --------------------------------------------------------------------------
 #
