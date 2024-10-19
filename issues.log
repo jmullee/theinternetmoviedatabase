@@ -1,0 +1,82 @@
+## compile issues
+
+	script -c 'make compile' make-compile.log
+	grep -iE 'warning|error' make-compile.log | cut -d: -f 4- | sort | uniq -c
+		  1  warning: ‘__builtin___sprintf_chk’ may write a terminating nul past the end of the destination [-Wformat-overflow=]
+		  3  warning: ‘ ’ directive writing 1 byte into a region of size between 0 and 699 [-Wformat-overflow=]
+		 14  warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+		  1  warning: format not a string literal and no format arguments [-Wformat-security]
+		  1  warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+		 38  warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+		  1  warning: implicit declaration of function ‘vmrrLindexSort’; did you mean ‘smrrLindexSort’? [-Wimplicit-function-declaration]
+		  1  warning: return type defaults to ‘int’ [-Wimplicit-int]
+		  4  warning: ‘%s’ directive writing up to 699 bytes into a region of size 697 [-Wformat-overflow=]
+		  1  warning: too many arguments for format [-Wformat-extra-args]
+
+## run issues (with lists trimmed to 50k lines: ./lists/get_smol_lists.sh)
+
+	script -c 'make databases' make-databases.log
+	grep -niE -B 3 -A 1 'core dumped' makedb.log | grep -v 'ing directory'
+		23-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -acs
+		24-Adding Actresses...
+		25:make[3]: *** [/tmp/make.2266899:2: actresses.data] Segmentation fault (core dumped)
+		26-make[3]: *** Deleting file 'actresses.data'
+		--
+		44-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -write
+		45-Adding Writers...
+		46-*** stack smashing detected ***: terminated
+		47:make[3]: *** [/tmp/make.2266937:2: writers.data] Aborted (core dumped)
+		48-make[3]: *** Deleting file 'writers.data'
+		--
+		84-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -naka
+		85-Adding Aka Names...
+		86:make[3]: *** [/tmp/make.2266998:2: aka-names.data] Segmentation fault (core dumped)
+
+## output issues
+
+	## empty db files
+
+		find dbs -type f -size 0 | xargs ls -l
+			# due to Segmentation fault
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/actresses.data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/actresses.names
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/actresses.titles
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/aka-names.data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/aka-names.index
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/writers.data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/writers.titles
+			# cause ?
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:01 dbs/keywords.data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:01 dbs/keywords.index
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/names.index
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:00 dbs/soundtracks.data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:00 dbs/soundtracks.index
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/special-effects-companies.data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:02 dbs/special-effects-companies.index
+			# is expected: no input data
+				-rw-r----- 1 jmullee jmullee 0 Oct 19 21:01 dbs/votes.data
+
+	## included data-header
+
+		for F in dbs/* ; do echo "== $F ==" ; hexdump -C $F | head -n 3 ; done
+		(selected:)
+			== dbs/biographies.data ==
+			00000000  42 49 4f 47 52 41 50 48  59 20 4c 49 53 54 0a 3d  |BIOGRAPHY LIST.=|
+			00000010  3d 3d 3d 3d 3d 3d 3d 3d  3d 3d 3d 3d 3d 0a 4e 4d  |=============.NM|
+			00000020  3a 20 22 47 68 6f 73 74  22 2c 20 4d 61 74 74 68  |: "Ghost", Matth|
+			== dbs/business.data ==
+			00000000  42 55 53 49 4e 45 53 53  20 4c 49 53 54 0a 3d 3d  |BUSINESS LIST.==|
+			00000010  3d 3d 3d 3d 3d 3d 3d 3d  3d 3d 3d 0a 0a 4d 56 3a  |===========..MV:|
+			00000020  20 43 61 72 6d 65 6e 63  69 74 61 20 28 31 38 39  | Carmencita (189|
+			== dbs/laserdisc.data ==
+			00000000  4c 41 53 45 52 44 49 53  43 20 4c 49 53 54 0a 3d  |LASERDISC LIST.=|
+			00000010  3d 3d 3d 3d 3d 3d 3d 3d  3d 3d 3d 3d 3d 0a 2d 2d  |=============.--|
+			00000020  0a 4f 54 3a 20 0a 0a 4c  4e 3a 20 33 0a 4c 42 3a  |.OT: ..LN: 3.LB:|
+			== dbs/literature.data ==
+			00000000  4c 49 54 45 52 41 54 55  52 45 20 4c 49 53 54 0a  |LITERATURE LIST.|
+			00000010  3d 3d 3d 3d 3d 3d 3d 3d  3d 3d 3d 3d 3d 3d 3d 0a  |===============.|
+			00000020  4d 4f 56 49 3a 20 22 23  56 61 6e 4c 69 66 65 41  |MOVI: "#VanLifeA|
+			== dbs/plot.data ==
+			00000000  50 4c 4f 54 20 53 55 4d  4d 41 52 49 45 53 20 4c  |PLOT SUMMARIES L|
+			00000010  49 53 54 0a 3d 3d 3d 3d  3d 3d 3d 3d 3d 3d 3d 3d  |IST.============|
+			00000020  3d 3d 3d 3d 3d 3d 3d 0a  4d 56 3a 20 22 23 37 44  |=======.MV: "#7D|

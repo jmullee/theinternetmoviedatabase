@@ -1,0 +1,409 @@
+Script started on 2024-10-19 21:11:32+01:00 [TERM="xterm-256color" TTY="/dev/pts/12" COLUMNS="177" LINES="61"]
+make CC="cc" CFLAGS="-O -DCOMPRESS" LD="cc" LDFLAGS="-O -DCOMPRESS" \
+RAWDIR="/home/jmullee/projects/imdb/moviedb/src/lists/" DBDIR="/home/jmullee/projects/imdb/moviedb/src/dbs/" ETCDIR="/home/jmullee/projects/imdb/moviedb/src/etc/" do-compile
+make[1]: Entering directory '/home/jmullee/projects/imdb/moviedb/src'
+cd /home/jmullee/projects/imdb/moviedb/src/src/; make CC="cc" \
+	CFLAGS="-O -DCOMPRESS -DHAVE_TEMPNAM=0 \
+                -DLOGFILE=0 " LOGFILENAME="/tmp/.imdb_log" \
+                LD="cc" LDFLAGS="-O -DCOMPRESS" \
+                ZLISTCAT="/usr/bin/gzip" ZDBSCAT="/usr/bin/gzip" \
+                ZLISTCATOPTS="-cd" ZDBSCATOPTS="-cd" \
+                ZLISTEXT=".gz" ZDBSEXT=".gz" \
+	RAWDIR="/home/jmullee/projects/imdb/moviedb/src/lists/" DBDIR="/home/jmullee/projects/imdb/moviedb/src/dbs/" ETCDIR="/home/jmullee/projects/imdb/moviedb/src/etc/" compile
+make[2]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/src'
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c list.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c dbutils.c
+dbutils.c: In function ‘mapNameKeyToText’:
+dbutils.c:1034:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1034 |   (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dbutils.c: In function ‘mapTitleKeyToText’:
+dbutils.c:1047:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1047 |   (void) fgets ( line, MXLINELEN, titleKeyFp ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dbutils.c: In function ‘mapAttrKeyToText’:
+dbutils.c:1062:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1062 |     (void) fgets ( line, MXLINELEN, attrKeyFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dbutils.c: In function ‘mapfastNameKeyToText’:
+dbutils.c:1079:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1079 |   (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dbutils.c: In function ‘mapfastAttrKeyToText’:
+dbutils.c:1098:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1098 |     (void) fgets ( line, MXLINELEN, attrKeyFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c filmography.c
+filmography.c: In function ‘swapAkaNames’:
+filmography.c:195:14: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  195 |       (void) fgets ( line, MXLINELEN, keyFp ) ;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+filmography.c: In function ‘approxFilmographySearchKeyLookup’:
+filmography.c:240:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  240 |         (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+filmography.c: In function ‘substringFilmographySearchKeyLookup’:
+filmography.c:305:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  305 |         (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+filmography.c: In function ‘straightFilmographySearchKeyLookup’:
+filmography.c:377:17: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  377 |          (void) fgets ( line, MXLINELEN, indexFp ) ;
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c years.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c biographies.c
+biographies.c: In function ‘readBiography’:
+biographies.c:92:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   92 |   (void) fgets ( line, MXLINELEN, stream ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c aka.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c ratings.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c lcs.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c titleinfo.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c log.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c display.c
+display.c: In function ‘displayTidyFilmographyListData’:
+display.c:813:42: warning: ‘%s’ directive writing up to 699 bytes into a region of size 697 [-Wformat-overflow=]
+  813 |          (void) sprintf ( fmtline, "  %s %s %s", comma + 2, tmp, bracket + 1 ) ;
+      |                                          ^~                 ~~~
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 5 or more bytes (assuming 704) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c:811:42: warning: ‘%s’ directive writing up to 699 bytes into a region of size 697 [-Wformat-overflow=]
+  811 |          (void) sprintf ( fmtline, "  %s %s %s %s", comma + 2, tmp, bracket + 1, lrec -> attr ) ;
+      |                                          ^~                    ~~~
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 6 or more bytes (assuming 705) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c:821:42: warning: ‘%s’ directive writing up to 699 bytes into a region of size 697 [-Wformat-overflow=]
+  821 |          (void) sprintf ( fmtline, "  %s %s", comma + 2, tmp ) ;
+      |                                          ^~              ~~~
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 4 or more bytes (assuming 703) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c:819:42: warning: ‘%s’ directive writing up to 699 bytes into a region of size 697 [-Wformat-overflow=]
+  819 |          (void) sprintf ( fmtline, "  %s %s %s", comma + 2, tmp, lrec -> attr ) ;
+      |                                          ^~                 ~~~
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 5 or more bytes (assuming 704) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c: In function ‘displayWritersTidyFilmographyListData’:
+display.c:865:42: warning: ‘ ’ directive writing 1 byte into a region of size between 0 and 699 [-Wformat-overflow=]
+  865 |          (void) sprintf ( fmtline, "%s %s %s", comma + 2, tmp, bracket + 1 ) ;
+      |                                          ^
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 3 or more bytes (assuming 702) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c:863:42: warning: ‘ ’ directive writing 1 byte into a region of size between 0 and 699 [-Wformat-overflow=]
+  863 |          (void) sprintf ( fmtline, "%s %s %s %s", comma + 2, tmp, bracket + 1, lrec -> attr ) ;
+      |                                          ^
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 4 or more bytes (assuming 703) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c:873:42: warning: ‘__builtin___sprintf_chk’ may write a terminating nul past the end of the destination [-Wformat-overflow=]
+  873 |          (void) sprintf ( fmtline, "%s %s", comma + 2, tmp ) ;
+      |                                          ^
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 2 or more bytes (assuming 701) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+display.c:871:42: warning: ‘ ’ directive writing 1 byte into a region of size between 0 and 699 [-Wformat-overflow=]
+  871 |          (void) sprintf ( fmtline, "%s %s %s", comma + 2, tmp, lrec -> attr ) ;
+      |                                          ^
+In file included from /usr/include/stdio.h:867,
+                 from display.c:21:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output 3 or more bytes (assuming 702) into a destination of size 700
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -o list list.o dbutils.o filmography.o years.o\
+           biographies.o aka.o ratings.o lcs.o titleinfo.o log.o display.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c title.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c titlesearch.c
+titlesearch.c: In function ‘swapAkaTitles’:
+titlesearch.c:205:14: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  205 |       (void) fgets ( line, MXLINELEN, keyFp ) ;
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+titlesearch.c: In function ‘yearMatchTitleSearchKeyLookup’:
+titlesearch.c:308:17: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  308 |          (void) fgets ( line, MXLINELEN, indexFp ) ;
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+titlesearch.c:325:15: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  325 |        (void) fgets ( line, MXLINELEN, indexFp ) ;
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+titlesearch.c:331:15: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  331 |        (void) fgets ( line, MXLINELEN, indexFp ) ;
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+titlesearch.c: In function ‘straightTitleSearchKeyLookup’:
+titlesearch.c:401:17: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  401 |          (void) fgets ( line, MXLINELEN, indexFp ) ;
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c trivia.c
+trivia.c: In function ‘readTrivia’:
+trivia.c:48:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   48 |   (void) fgets ( line, MXLINELEN, dbFp ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c plot.c
+plot.c: In function ‘readPlot’:
+plot.c:60:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   60 |   (void) fgets ( line, MXLINELEN, stream ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c literature.c
+literature.c: In function ‘readLiterature’:
+literature.c:52:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   52 |   (void) fgets ( line, MXLINELEN, stream ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c castcomp.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c movielinks.c
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c business.c
+business.c: In function ‘readBusiness’:
+business.c:52:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   52 |   (void) fgets ( line, MXLINELEN, stream ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c laserdisc.c
+laserdisc.c: In function ‘readLaserDisc’:
+laserdisc.c:76:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   76 |   (void) fgets ( line, MXLINELEN, stream ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+laserdisc.c:118:13: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  118 |      (void) fgets ( line, MXLINELEN, stream ) ;
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -o title title.o dbutils.o titlesearch.o years.o \
+          biographies.o aka.o ratings.o trivia.o plot.o titleinfo.o \
+          literature.o castcomp.o movielinks.o business.o laserdisc.o \
+          log.o display.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c ltrace.c
+cc -O -DCOMPRESS -o ltrace ltrace.o dbutils.o titlesearch.o years.o \
+          biographies.o aka.o ratings.o trivia.o plot.o \
+          filmography.o lcs.o titleinfo.o literature.o castcomp.o \
+          movielinks.o business.o laserdisc.o log.o display.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c lguide.c
+cc -O -DCOMPRESS -o lguide lguide.o dbutils.o titlesearch.o years.o \
+          biographies.o aka.o ratings.o trivia.o plot.o titleinfo.o \
+          literature.o castcomp.o movielinks.o business.o laserdisc.o \
+          log.o display.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c listall.c
+cc -O -DCOMPRESS -o listall listall.o dbutils.o titlesearch.o years.o \
+          biographies.o aka.o ratings.o trivia.o plot.o \
+          filmography.o lcs.o titleinfo.o literature.o castcomp.o \
+          movielinks.o business.o laserdisc.o log.o display.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c mkballot.c
+cc -O -DCOMPRESS -o mkballot mkballot.o dbutils.o filmography.o years.o\
+           biographies.o aka.o ratings.o lcs.o titleinfo.o log.o display.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c lindex.c
+lindex.c: In function ‘smrrLindexSort’:
+lindex.c:226:14: warning: implicit declaration of function ‘vmrrLindexSort’; did you mean ‘smrrLindexSort’? [-Wimplicit-function-declaration]
+  226 |     return ( vmrrLindexSort ( r1, r2 ) ) ;
+      |              ^~~~~~~~~~~~~~
+      |              smrrLindexSort
+lindex.c: In function ‘getNextLindexName’:
+lindex.c:99:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+   99 |     (void) fgets ( line, MXLINELEN, keyFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lindex.c: In function ‘getNextLindexTitle’:
+lindex.c:190:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  190 |     (void) fgets ( title, MXLINELEN, keyFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -o lindex lindex.o dbutils.o years.o ratings.o \
+           titleinfo.o log.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c lformat.c
+cc -O -DCOMPRESS -o lformat lformat.o dbutils.o years.o ratings.o log.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c lseen.c
+cc -O -DCOMPRESS -o lseen lseen.o dbutils.o years.o ratings.o log.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c alist.c
+cc -O -DCOMPRESS -o alist alist.o dbutils.o years.o log.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c template.c
+cc -O -DCOMPRESS -o template template.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c templist.c
+templist.l:131:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+templist.l: In function ‘give_example’:
+templist.l:511:9: warning: format not a string literal and no format arguments [-Wformat-security]
+cc -O -DCOMPRESS -o templist templist.o
+cc -O -DCOMPRESS -DHAVE_TEMPNAM=0                 -DLOGFILE=0  -DZLISTCAT=\"/usr/bin/gzip\" -DZLISTEXT=\".gz\" -DZDBSCAT=\"/usr/bin/gzip\" -DZDBSEXT=\".gz\" -DZDBSCATOPTS=\"-cd\" -DZLISTCATOPTS=\"-cd\" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR="\"/home/jmullee/projects/imdb/moviedb/src/etc/\"" -DLOGFILENAME="\"/tmp/.imdb_log\"" -c mkdb.c
+mkdb.c: In function ‘writeTitleAlphaKey’:
+mkdb.c:295:37: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+  295 |     (void) fprintf ( indexFp , "%s|%x\n", titles [ i ] . title, titles [ i ] . titleKey ) ;
+      |                                    ~^                           ~~~~~~~~~~~~~~~~~~~~~~~
+      |                                     |                                        |
+      |                                     unsigned int                             TitleID {aka long unsigned int}
+      |                                    %lx
+mkdb.c: In function ‘processLaserDiscList’:
+mkdb.c:2813:33: warning: too many arguments for format [-Wformat-extra-args]
+ 2813 |          (void) fprintf ( dbFp, "--\n", line ) ;
+      |                                 ^~~~~~
+mkdb.c: In function ‘main’:
+mkdb.c:3469:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3469 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3500:29: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3500 |       (void) printf ( " ...%d read\n", count ) ;
+      |                            ~^          ~~~~~
+      |                             |          |
+      |                             int        TitleID {aka long unsigned int}
+      |                            %ld
+mkdb.c:3508:29: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3508 |       (void) printf ( " ...%d read\n", count ) ;
+      |                            ~^          ~~~~~
+      |                             |          |
+      |                             int        TitleID {aka long unsigned int}
+      |                            %ld
+mkdb.c:3515:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3515 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3522:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3522 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3537:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3537 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3560:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3560 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3567:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3567 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3574:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3574 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3581:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3581 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3588:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3588 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3595:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3595 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3602:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3602 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c:3609:27: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘TitleID’ {aka ‘long unsigned int’} [-Wformat=]
+ 3609 |     (void) printf ( " ...%d read\n", count ) ;
+      |                          ~^          ~~~~~
+      |                           |          |
+      |                           int        TitleID {aka long unsigned int}
+      |                          %ld
+mkdb.c: In function ‘readMoviesList’:
+mkdb.c:124:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  124 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c:146:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  146 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processMoviesList’:
+mkdb.c:606:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  606 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processCastList’:
+mkdb.c:905:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+  905 |     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processFilmographyList’:
+mkdb.c:1210:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1210 |     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processWriterFilmographyList’:
+mkdb.c:1544:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1544 |     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processBiographiesList’:
+mkdb.c:1910:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 1910 |     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processAkaList’:
+mkdb.c:2347:9: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 2347 |  (void) fgets ( line, MXLINELEN, listFp ) ;
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processAkaNamesList’:
+mkdb.c:2435:12: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 2435 |     (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c:2530:9: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 2530 |  (void) fgets ( line, MXLINELEN, listFp ) ;
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c:2549:10: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 2549 |   (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processTitleInfoList’:
+mkdb.c:2692:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 2692 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processCompleteCastList’:
+mkdb.c:2952:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 2952 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processCompleteCrewList’:
+mkdb.c:3012:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 3012 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdb.c: In function ‘processMovieLinksList’:
+mkdb.c:3103:16: warning: ignoring return value of ‘fgets’, declared with attribute warn_unused_result [-Wunused-result]
+ 3103 |         (void) fgets ( line, MXLINELEN, listFp ) ;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -O -DCOMPRESS -o mkdb mkdb.o dbutils.o
+All is compiled.
+make[2]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/src'
+make[1]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src'
+
+Script done on 2024-10-19 21:11:33+01:00 [COMMAND_EXIT_CODE="0"]
