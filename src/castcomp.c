@@ -63,7 +63,7 @@ void addCastCompleteStatusToTitleSearch ( struct titleSearchRec *tchain )
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
     trec -> castStatus = findCompletionStatus ( dbFp, trec -> titleKey ) ;
 
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -77,5 +77,5 @@ void addCrewCompleteStatusToTitleSearch ( struct titleSearchRec *tchain )
   for ( trec = tchain ; trec != NULL ; trec = trec -> next )
     trec -> crewStatus = findCompletionStatus ( dbFp, trec -> titleKey ) ;
 
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }

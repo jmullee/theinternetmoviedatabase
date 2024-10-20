@@ -120,9 +120,8 @@ void addTriviaToTitleSearch (struct titleSearchRec *tchain)
     }
     if ( dbFp != NULL )
     {
-      (void) fclose ( dbFp ) ;
-      (void) fclose ( indexFp ) ;
-      dbFp = NULL ;
+      FCLOSENULL ( dbFp ) ;
+      FCLOSENULL ( indexFp ) ;
     }
   }
 }

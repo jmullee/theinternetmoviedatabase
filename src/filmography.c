@@ -199,10 +199,10 @@ void swapAkaNames (struct nameSearchRec *nchain)
   }
   if ( keyFp != NULL )
   {
-    (void) fclose ( keyFp ) ;
-    (void) fclose ( indexFp ) ;
+    FCLOSENULL ( keyFp ) ;
+    FCLOSENULL ( indexFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -270,7 +270,7 @@ void approxFilmographySearchKeyLookup (struct nameSearchRec *chain)
 			}
 			}
       }
-      (void) fclose ( indexFp ) ;
+      FCLOSENULL ( indexFp ) ;
     }
 }
 
@@ -341,7 +341,7 @@ void substringFilmographySearchKeyLookup (struct nameSearchRec *chain)
 			}
 			}
       }
-      (void) fclose ( indexFp ) ;
+      FCLOSENULL ( indexFp ) ;
     }
 }
 
@@ -406,7 +406,7 @@ void straightFilmographySearchKeyLookup (struct nameSearchRec *chain)
    }
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }
 
 
@@ -450,8 +450,8 @@ void filmographySearchKeyLookup (struct nameSearchRec *chain)
       }
       if ( dbFp != NULL )
       {
-	(void) fclose ( dbFp ) ;
-	(void) fclose ( indexFp ) ;
+	FCLOSENULL ( dbFp ) ;
+	FCLOSENULL ( indexFp ) ;
 	dbFp = NULL ;
       }
     }
@@ -637,8 +637,8 @@ void filmographyResultsTitleKeyLookup (struct nameSearchRec *chain)
             arec -> akaTitle = mapTitleKeyToText ( arec -> akaKey, keyFp, indexFp ) ;
         }
   }
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
 }
 
 
@@ -664,8 +664,8 @@ void filmographyResultsAttrKeyLookup (struct nameSearchRec *chain)
               arec -> akaAttr = mapAttrKeyToText ( arec -> akaAttrKey, keyFp, indexFp ) ;
         }
   }
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
 }
 
 
@@ -682,8 +682,8 @@ void nameResultsAkaKeyLookup (struct nameSearchRec *nchain)
     for ( arec = nrec -> aka ; arec != NULL ; arec = arec -> next )
       arec -> akaName = mapNameKeyToText ( arec -> akaKey, keyFp, indexFp ) ;
 
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
 }
 
 
@@ -726,8 +726,8 @@ void processFilmographySearch (struct nameSearchRec *chain)
     }
     if ( dbFp != NULL )
     {
-      (void) fclose ( dbFp ) ;
-      (void) fclose ( indexFp ) ;
+      FCLOSENULL ( dbFp ) ;
+      FCLOSENULL ( indexFp ) ;
       dbFp = NULL ;
     }
   }
@@ -958,8 +958,8 @@ void constrainFilmographySearch ( struct searchConstraints *constraints, struct 
   {
     if ( constraints -> titleInfoString [ i ] [ 0 ] )
     {
-      (void) fclose ( titleInfoDb [ i ] ) ;
-      (void) fclose ( titleInfoIdx [ i ] ) ;
+      FCLOSENULL ( titleInfoDb [ i ] ) ;
+      FCLOSENULL ( titleInfoIdx [ i ] ) ;
     }
   }
 }

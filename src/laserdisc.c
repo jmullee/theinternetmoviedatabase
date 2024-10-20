@@ -215,6 +215,6 @@ void addLaserDiscToTitleSearch ( struct titleSearchRec *tchain )
         }
       }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }

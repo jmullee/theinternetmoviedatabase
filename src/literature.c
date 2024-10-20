@@ -120,6 +120,6 @@ void addLiteratureToTitleSearch (struct titleSearchRec *tchain)
         trec -> literature = readLiterature ( dbFp, offset ) ;
       }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }

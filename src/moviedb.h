@@ -24,12 +24,12 @@
 #define	  AKABYTES		    9
 /* Size of a naka record: name+name = 3+3 */
 #define	  NAKABYTES		    6
-#define   MXLINELEN               700
+#define   MXLINELEN              8192 // check: 'wc -L ./lists/*.list'
 #define   FSEP                    '|'
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
 #define   MAXTITLES            750000
-#define   MAXFILMOGRAPHIES       2047
+#define   MAXFILMOGRAPHIES       8192
 #define   MAXWITHATTRS           4095
 #define   MAXTITLERESULTS       16383
 #define   MAXALISTRESULTS        5000
@@ -336,6 +336,8 @@
 #  define SEEK_CUR 1
 #  define SEEK_END 2
 #endif
+
+#define FCLOSENULL(fp) {fclose(fp); fp=NULL;}
 
 enum titleInfoDisplays { stdDisplay, techDisplay, mergeDisplay } ;
 

@@ -120,8 +120,7 @@ int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struc
   }
   else
   {
-    (void) fclose ( rec -> fp ) ;
-    rec -> fp = NULL ;
+    FCLOSENULL ( rec -> fp ) ;
     return ( FALSE ) ;
   }
 }
@@ -416,17 +415,17 @@ void lindexTitles ( int yropt, int mrropt, struct searchConstraints *constraints
     }
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
   if ( mrropt != NONE )
-    (void) fclose ( mrrFp ) ;
+    FCLOSENULL ( mrrFp ) ;
   for ( i = 0 ; i < NO_OF_TITLE_INFO_LISTS ; i++ )
   {
     if ( constraints -> titleInfoString [ i ] [ 0 ] )
     {
-      (void) fclose ( titleInfoDb [ i ] ) ;
-      (void) fclose ( titleInfoIdx [ i ] ) ;
+      FCLOSENULL ( titleInfoDb [ i ] ) ;
+      FCLOSENULL ( titleInfoIdx [ i ] ) ;
     }
   }
 }

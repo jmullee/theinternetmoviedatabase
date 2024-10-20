@@ -211,10 +211,10 @@ void swapAkaTitles (struct titleSearchRec *tchain)
   }
   if ( keyFp != NULL )
   {
-    (void) fclose ( keyFp ) ;
-    (void) fclose ( indexFp ) ;
+    FCLOSENULL ( keyFp ) ;
+    FCLOSENULL ( indexFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -263,7 +263,7 @@ void substringTitleSearchKeyLookup (struct titleSearchRec *tchain)
       }
     }
   }
-  (void) fclose ( titleKeyFp ) ;
+  FCLOSENULL ( titleKeyFp ) ;
   if ( count > 1 )
   {
     addTitleChainTrivOpts ( tchain -> next, tchain -> trivflags ) ;
@@ -364,7 +364,7 @@ void yearMatchTitleSearchKeyLookup (struct titleSearchRec *tchain)
        trec -> titleKey = NOTITLE ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   if ( count > 0 )
   {
     addTitleChainTrivOpts ( tchain -> next, tchain -> trivflags ) ;
@@ -432,7 +432,7 @@ void straightTitleSearchKeyLookup (struct titleSearchRec *tchain)
    }
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }
 
 
@@ -655,8 +655,8 @@ void titleResultsNameKeyLookup (struct titleSearchRec *tchain)
     for ( i = 0 ; i < trec -> nameCount ; i++ )
       trec -> entries [ i ] . name = mapNameKeyToText ( trec -> entries [ i ] . nameKey, keyFp, indexFp ) ;
 
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
 }
 
 
@@ -682,8 +682,8 @@ void titleResultsAttrKeyLookup (struct titleSearchRec *tchain)
     for ( arec = trec -> aka ; arec != NULL ; arec = arec -> next )
       arec -> akaAttr = mapAttrKeyToText ( arec -> akaAttrKey, keyFp, indexFp ) ;
   }
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
 }
 
 
@@ -705,8 +705,8 @@ void titleResultsTitleKeyLookup (struct titleSearchRec *tchain)
       trec -> links [ i ] . title = mapTitleKeyToText ( trec -> links [ i ] . titleKey, keyFp, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
-  (void) fclose ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
 }
 
 
@@ -778,8 +778,8 @@ void processTitleSearch ( struct titleSearchRec *tchain )
     }
     if ( dbFp != NULL )
     {
-      (void) fclose ( dbFp ) ;
-      (void) fclose ( indexFp ) ;
+      FCLOSENULL ( dbFp ) ;
+      FCLOSENULL ( indexFp ) ;
       dbFp = NULL ;
     }
   }
@@ -925,7 +925,7 @@ struct titleSearchRec *addTitleFile ( char *fname )
       rrec = addTitleSearchRec ( rrec, line ) ;
     }
 
-  (void) fclose ( fp ) ;
+  FCLOSENULL ( fp ) ;
   return ( rrec ) ;
 }
 

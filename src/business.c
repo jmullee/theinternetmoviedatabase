@@ -120,6 +120,6 @@ void addBusinessToTitleSearch (struct titleSearchRec *tchain)
         trec -> business = readBusiness ( dbFp, offset ) ;
       }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }

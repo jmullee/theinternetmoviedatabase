@@ -276,10 +276,10 @@ void displayLseenCounts ( struct lseenCount counts[], int ncount, int mrropt, in
   }
   if ( mrropt != NONE || yropt != NONE )
   {
-    (void) fclose ( titleKeyFp ) ;
-    (void) fclose ( titleIndexFp ) ;
-    (void) fclose ( attrKeyFp ) ;
-    (void) fclose ( attrIndexFp ) ;
+    FCLOSENULL ( titleKeyFp ) ;
+    FCLOSENULL ( titleIndexFp ) ;
+    FCLOSENULL ( attrKeyFp ) ;
+    FCLOSENULL ( attrIndexFp ) ;
   }
 }
 
@@ -383,15 +383,15 @@ void lseenList ( int listId, int mrropt, int yropt, int usopt, int threshold, st
   if ( ! usopt )
     displayLseenCounts ( counts, ncount, mrropt, yropt, votes, nvotes, years, nyears, ratings, nratings, dbFp, listId );
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( nameKeyFp ) ;
-  (void) fclose ( nameIndexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
+  FCLOSENULL ( nameIndexFp ) ;
   if ( usopt )
   {
-    (void) fclose ( titleKeyFp ) ;
-    (void) fclose ( titleIndexFp ) ;
-    (void) fclose ( attrKeyFp ) ;
-    (void) fclose ( attrIndexFp ) ;
+    FCLOSENULL ( titleKeyFp ) ;
+    FCLOSENULL ( titleIndexFp ) ;
+    FCLOSENULL ( attrKeyFp ) ;
+    FCLOSENULL ( attrIndexFp ) ;
   }
 }
 

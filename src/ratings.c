@@ -95,7 +95,7 @@ void addRatingsToNameSearch (struct nameSearchRec *chain)
             nrec -> lists [ listId ] -> entries [ i ] . mrr = readMrrEntry ( dbFp ) ;
         }
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -138,7 +138,7 @@ void addRatingsToTitleSearch (struct titleSearchRec *tchain)
     if ( found )
       trec -> mrr = readMrrEntry ( dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -216,7 +216,7 @@ TitleID ratingsDbSize ( void )
   dbFp = openFile ( MRRDB ) ;
   (void) fseek ( dbFp, 0, SEEK_END ) ;
   count = ftell ( dbFp ) / 16 ;
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
   return ( count ) ;
 }
 

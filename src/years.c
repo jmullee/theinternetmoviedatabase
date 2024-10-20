@@ -68,7 +68,7 @@ void addYearsToNameSearch (struct nameSearchRec *chain)
             nrec -> lists [ listId ] -> entries [ i ] . year = getInt ( dbFp ) ;
         }
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -115,7 +115,7 @@ void addYearsToTitleSearch (struct titleSearchRec *tchain)
       trec -> attrKey = getAttr ( dbFp ) ;
     }
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 

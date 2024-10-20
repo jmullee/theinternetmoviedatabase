@@ -161,5 +161,5 @@ void addMovieLinksToTitleSearch ( struct titleSearchRec *tchain )
     if ( trec -> searchparams . linkopt )
       trec -> links = findMovieLinks ( dbFp, trec -> titleKey, &(trec -> noOfLinks) ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }

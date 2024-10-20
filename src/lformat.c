@@ -326,13 +326,13 @@ void lformatList ( int listId, int mvsonly, int raw, int mrropt, int yropt, stru
       }
     }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( nameKeyFp ) ;
-  (void) fclose ( nameIndexFp ) ;
-  (void) fclose ( titleKeyFp ) ;
-  (void) fclose ( titleIndexFp ) ;
-  (void) fclose ( attrKeyFp ) ;
-  (void) fclose ( attrIndexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
+  FCLOSENULL ( nameIndexFp ) ;
+  FCLOSENULL ( titleKeyFp ) ;
+  FCLOSENULL ( titleIndexFp ) ;
+  FCLOSENULL ( attrKeyFp ) ;
+  FCLOSENULL ( attrIndexFp ) ;
 }
 
 

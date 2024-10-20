@@ -220,6 +220,6 @@ void addBiographiesToNameSearch (struct nameSearchRec *chain)
          nrec -> biography = readBiography ( dbFp, offset ) ;
       }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }

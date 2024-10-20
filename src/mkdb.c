@@ -148,7 +148,7 @@ TitleID readMoviesList (struct titleIndexRec *titles)
         if(NULL==result) moviedbError("mkdb: readMoviesList() error reading file");
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   /* the movies.list is sorted slightly differently concerning special characters */
   /* than the caseCompare-function that is used for binary search */
@@ -206,8 +206,8 @@ void writeTitleIndexKey ( TitleID titleCount )
   for ( i = 0 ; i < count ; i++ )
     putFullOffset ( titleIndex [ i ] . offset, indexFp ) ;
 
-  (void) fclose ( keyFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
 
   free ( (void*) titleIndex ) ;
 }
@@ -245,8 +245,8 @@ void writeAttrIndexKey ( AttributeID attrCount )
   for ( i = 0 ; i < count ; i++ )
     putFullOffset ( attrIndex [ i ] . offset, indexFp ) ;
 
-  (void) fclose ( keyFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }
 
 
@@ -280,8 +280,8 @@ void writeNameIndexKey ( NameID nameCount )
   for ( i = 0 ; i < count ; i++ )
     putFullOffset ( namesIndex [ i ] . offset, indexFp ) ;
 
-  (void) fclose ( keyFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( keyFp ) ;
+  FCLOSENULL ( indexFp ) ;
   free ( (void*) namesIndex ) ;
 }
 
@@ -296,7 +296,7 @@ void writeTitleAlphaKey ( TitleID titleCount, struct titleIndexRec *titles )
   for ( i = 0 ; i < titleCount ; i++ )
     (void) fprintf ( indexFp , "%s|%lx\n", titles [ i ] . title, titles [ i ] . titleKey ) ;
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }
 
 
@@ -310,7 +310,7 @@ void writeAttrAlphaKey ( AttributeID attrCount )
   for ( i = 0 ; i < attrCount ; i++ )
     (void) fprintf ( indexFp , "%s|%lx\n", attributeIndex [ i ] . attr, attributeIndex [ i ] . attrKey ) ;
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
 }
 
 
@@ -334,7 +334,7 @@ TitleID readTitleAlphaKey ( struct titleIndexRec *titles )
       if ( i >= MAXTITLES )
         moviedbError ( "mkdb: too many titles -- increase MAXTITLES" ) ;
     }
-   (void) fclose ( listFP ) ;
+   FCLOSENULL ( listFP ) ;
   }
   return ( i ) ;
 }
@@ -366,7 +366,7 @@ AttributeID readAttrAlphaKey ( void )
 	attributeIndex = attributes ;
       }
     }
-   (void) fclose ( listFP ) ;
+   FCLOSENULL ( listFP ) ;
   }
   return ( i ) ;
 }
@@ -609,7 +609,7 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, At
         if(NULL==result) moviedbError("mkdb: processMoviesList() error reading file");
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) years, (size_t) count, sizeof ( struct yearData ), (int (*) (const void*, const void*)) yearDataSort ) ;
 
@@ -622,7 +622,7 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, At
     putInt ( years [ i ] . yrto, dbFp ) ;
     putAttr ( years [ i ] . attrKey, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
   return ( count ) ;
 }
 
@@ -722,7 +722,8 @@ int splitPosition ( char *line )
 
 int readCastEntry (struct castFilmography *entry, FILE *stream)
 {
-  int i, len ;
+  int i ;
+  off_t len;
 
   entry -> nameKey = getName ( stream ) ;
   if ( feof ( stream ) )
@@ -783,8 +784,8 @@ void makeCastDatabaseNamesIndex ( int listId, NameID namesOnList )
      putFullOffset ( namesIndex [ i ] . offset, ndxFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( ndxFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( ndxFp ) ;
   free ( (void*) namesIndex ) ;
 }
 
@@ -833,8 +834,8 @@ void makeCastDatabaseTitlesIndex ( int listId, long nentries )
      putFullOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( tdxFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( tdxFp ) ;
   free ( (void*) titlesIndex ) ;
 }
 
@@ -962,8 +963,7 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
                 else
                 {
                   compare = 1 ;
-                  (void) fclose ( tmpFp ) ;
-                  tmpFp = NULL ;
+                  FCLOSENULL ( tmpFp ) ;
                 }
               }
               if ( compare == 0 )
@@ -977,8 +977,7 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
                 }
                 else
                 {
-                  (void) fclose ( tmpFp ) ;
-                  tmpFp = NULL ;
+                  FCLOSENULL ( tmpFp ) ;
                 }
               }
               else
@@ -1000,26 +999,36 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
 
           if ( ( !skipMode ) && ( ( !moviesOnly ) || ( moviesOnly && *title != '"' ) ) )
           {
-            if ( attr == NULL || currentEntry . noWithAttr >= MAXWITHATTRS )
+            if ( attr == NULL || currentEntry . noWithAttr >= MAXFILMOGRAPHIES )
             {
-              currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
-              if ( cname == NULL || nochar )
-                currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . cname = NULL ;
-              else
-                currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . cname = duplicateString ( cname ) ;
-              currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . position = position ;
-              currentEntry . noWithoutAttr++ ;
+              if ( currentEntry.noWithoutAttr < MAXFILMOGRAPHIES )
+              {
+                currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
+                if ( cname == NULL || nochar )
+                  currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . cname = NULL ;
+                else
+                  currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . cname = duplicateString ( cname ) ;
+                currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . position = position ;
+                currentEntry . noWithoutAttr++ ;
+              } else {
+				  moviedbError("processCastList(): currentEntry.noWithoutAttr >= MAXFILMOGRAPHIES ");
+              }
             }
             else
             {
-              currentEntry . withAttrs [ currentEntry . noWithAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
-              currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attrCount ) ;
-              if ( cname == NULL || nochar )
-                currentEntry . withAttrs [ currentEntry . noWithAttr ] . cname = NULL ;
-              else
-                currentEntry . withAttrs [ currentEntry . noWithAttr ] . cname = duplicateString ( cname ) ;
-              currentEntry . withAttrs [ currentEntry . noWithAttr ] . position = position ;
-              currentEntry . noWithAttr++ ;
+              if ( currentEntry.noWithAttr < MAXFILMOGRAPHIES )
+              {
+                currentEntry . withAttrs [ currentEntry . noWithAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
+                currentEntry . withAttrs [ currentEntry . noWithAttr ] . attrKey = attrKeyLookup ( attr, attrCount ) ;
+                if ( cname == NULL || nochar )
+                  currentEntry . withAttrs [ currentEntry . noWithAttr ] . cname = NULL ;
+                else
+                  currentEntry . withAttrs [ currentEntry . noWithAttr ] . cname = duplicateString ( cname ) ;
+                currentEntry . withAttrs [ currentEntry . noWithAttr ] . position = position ;
+                currentEntry . noWithAttr++ ;
+              } else {
+				  moviedbError("processCastList(): currentEntry.noWithAttr >= MAXFILMOGRAPHIES ");
+              }
             }
             nentries++ ;
           }
@@ -1037,16 +1046,16 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
     }
   }
   writeCastEntry ( &currentEntry, dbFp ) ;
-  (void) fclose ( listFp ) ;
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
   if ( tmpFp != NULL )
   {
     (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
     while ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
       (void) fprintf ( nameKeyFp, "%s", keyFileData ) ;
-    (void) fclose ( tmpFp ) ;
+    FCLOSENULL ( tmpFp ) ;
   }
-  (void) fclose ( nameKeyFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
 
   makeCastDatabaseNamesIndex ( listId, namesOnList ) ;
   makeCastDatabaseTitlesIndex ( listId, nentries ) ;
@@ -1110,8 +1119,8 @@ void makeDatabaseNamesIndex ( int listId, NameID namesOnList )
      putFullOffset ( namesIndex [ i ] . offset, ndxFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( ndxFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( ndxFp ) ;
   free ( (void*) namesIndex ) ;
 }
 
@@ -1160,8 +1169,8 @@ void makeDatabaseTitlesIndex ( int listId, long nentries )
      putFullOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( tdxFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( tdxFp ) ;
   free ( (void*) titlesIndex ) ;
 }
 
@@ -1268,8 +1277,7 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
                 else
                 {
                   compare = 1 ;
-                  (void) fclose ( tmpFp ) ;
-                  tmpFp = NULL ;
+                  FCLOSENULL ( tmpFp ) ;
                 }
               }
               if ( compare == 0 )
@@ -1283,8 +1291,7 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
                 }
                 else
                 {
-                  (void) fclose ( tmpFp ) ;
-                  tmpFp = NULL ;
+                  FCLOSENULL ( tmpFp ) ;
                 }
               }
               else
@@ -1331,16 +1338,16 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
     }
   }
   writeFilmographyEntry ( &currentEntry, dbFp ) ;
-  (void) fclose ( listFp ) ;
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
   if ( tmpFp != NULL )
   {
     (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
     while ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
       (void) fprintf ( nameKeyFp, "%s", keyFileData ) ;
-    (void) fclose ( tmpFp ) ;
+    FCLOSENULL ( tmpFp ) ;
   }
-  (void) fclose ( nameKeyFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
 
   makeDatabaseNamesIndex ( listId, namesOnList ) ;
   makeDatabaseTitlesIndex ( listId, nentries ) ;
@@ -1436,8 +1443,8 @@ void makeWriterDatabaseNamesIndex ( int listId, NameID namesOnList )
      putFullOffset ( namesIndex [ i ] . offset, ndxFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( ndxFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( ndxFp ) ;
   free ( (void*) namesIndex ) ;
 }
 
@@ -1486,8 +1493,8 @@ void makeWriterDatabaseTitlesIndex ( int listId, long nentries )
      putFullOffset ( titlesIndex [ i ] . offset, tdxFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( tdxFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( tdxFp ) ;
   free ( (void*) titlesIndex ) ;
 }
 
@@ -1603,8 +1610,7 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
                 else
                 {
                   compare = 1 ;
-                  (void) fclose ( tmpFp ) ;
-                  tmpFp = NULL ;
+                  FCLOSENULL ( tmpFp ) ;
                 }
               }
               if ( compare == 0 )
@@ -1618,8 +1624,7 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
                 }
                 else
                 {
-                  (void) fclose ( tmpFp ) ;
-                  tmpFp = NULL ;
+                  FCLOSENULL ( tmpFp ) ;
                 }
               }
               else
@@ -1673,16 +1678,16 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
     }
   }
   writeWriterFilmographyEntry ( &currentEntry, dbFp ) ;
-  (void) fclose ( listFp ) ;
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
   if ( tmpFp != NULL )
   {
     (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
     while ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
       (void) fprintf ( nameKeyFp, "%s", keyFileData ) ;
-    (void) fclose ( tmpFp ) ;
+    FCLOSENULL ( tmpFp ) ;
   }
-  (void) fclose ( nameKeyFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
 
   makeWriterDatabaseNamesIndex ( listId, namesOnList ) ;
   makeWriterDatabaseTitlesIndex ( listId, nentries ) ;
@@ -1745,8 +1750,8 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
         count = 1 ;
       }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
@@ -1758,7 +1763,7 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
      putFullOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   return ( count ) ;
 }
 
@@ -1808,8 +1813,8 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
         (void) fprintf ( dbFp, "%s", line ) ;
       }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
@@ -1821,7 +1826,7 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
      putFullOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   return ( count ) ;
 }
 
@@ -1871,8 +1876,8 @@ TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
         (void) fprintf ( dbFp, "%s", line ) ;
       }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
@@ -1884,7 +1889,7 @@ TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
      putFullOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   return ( count ) ;
 }
 #endif
@@ -1967,8 +1972,7 @@ NameID processBiographiesList ( NameID *nameCount )
                else
                {
                  compare = 1 ;
-                 (void) fclose ( tmpFp ) ;
-                 tmpFp = NULL ;
+                 FCLOSENULL ( tmpFp ) ;
                }
              }
              if ( compare == 0 )
@@ -1982,8 +1986,7 @@ NameID processBiographiesList ( NameID *nameCount )
                }
                else
                {
-                 (void) fclose ( tmpFp ) ;
-                 tmpFp = NULL ;
+                 FCLOSENULL ( tmpFp ) ;
                }
              }
              else
@@ -2006,16 +2009,16 @@ NameID processBiographiesList ( NameID *nameCount )
         (void) fprintf ( dbFp, "%s", line ) ;
       }
 
-  (void) fclose ( listFp ) ;
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
   if ( tmpFp != NULL )
   {
     (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
     while ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
       (void) fprintf ( nameKeyFp, "%s", keyFileData ) ;
-    (void) fclose ( tmpFp ) ;
+    FCLOSENULL ( tmpFp ) ;
   }
-  (void) fclose ( nameKeyFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
 
   (void) qsort ( (void*) namesIndex, (size_t) count, sizeof ( struct nameKeyOffset ), (int (*) (const void*, const void*)) nameKeyOffsetSort ) ;
 
@@ -2027,7 +2030,7 @@ NameID processBiographiesList ( NameID *nameCount )
      putFullOffset ( namesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   free ( (void*) namesIndex ) ;
   return ( count ) ;
 }
@@ -2125,8 +2128,8 @@ TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
      putByte ( ratingsReport [ i ] . rating, dbFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
   return ( count ) ;
 }
 
@@ -2201,8 +2204,8 @@ TitleID processVotesList (struct titleIndexRec *titles, TitleID *titleCount)
      putByte ( votes [ i ] . vote, dbFp ) ;
   }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
   free ( (void *) votes ) ;
   return ( count ) ;
 }
@@ -2261,7 +2264,7 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
     }
     count-- ;
     sortedTo = count ;
-    (void) fclose ( dbFp ) ;
+    FCLOSENULL ( dbFp ) ;
   }
 
   listFp = openFile ( akaFile ) ;
@@ -2354,7 +2357,7 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
           inaka = TRUE ;
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   /* now sort titles index */
   (void) qsort ( (void*) titles, (size_t) *titleCount, sizeof ( struct titleIndexRec ), (int (*) (const void*, const void*)) titleIndexRecSort ) ;
@@ -2377,7 +2380,7 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
      putTitle ( aka [ i ] . aka, dbFp ) ;
      putAttr ( aka [ i ] . attrKey, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 
   (void) qsort ( (void*) aka, (size_t) count, sizeof ( struct akaData ), (int (*) (const void*, const void*)) akaIndexDataSort ) ;
 
@@ -2388,7 +2391,7 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
      putTitle ( aka [ i ] . aka, dbFp ) ;
      putTitle ( aka [ i ] . primary, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 
   return ( processed ) ;
 }
@@ -2489,8 +2492,7 @@ NameID processAkaNamesList ( NameID *nameCount )
              else
              {
                compare = 1 ;
-               (void) fclose ( tmpFp ) ;
-               tmpFp = NULL ;
+               FCLOSENULL ( tmpFp ) ;
              }
            }
            if ( compare == 0 )
@@ -2504,8 +2506,7 @@ NameID processAkaNamesList ( NameID *nameCount )
              }
              else
              {
-               (void) fclose ( tmpFp ) ;
-               tmpFp = NULL ;
+               FCLOSENULL ( tmpFp ) ;
              }
            }
            else
@@ -2537,15 +2538,15 @@ NameID processAkaNamesList ( NameID *nameCount )
           inaka = TRUE ;
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
   if ( tmpFp != NULL )
   {
     (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
     while ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
       (void) fprintf ( nameKeyFp, "%s", keyFileData ) ;
-    (void) fclose ( tmpFp ) ;
+    FCLOSENULL ( tmpFp ) ;
   }
-  (void) fclose ( nameKeyFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
 
   (void) qsort ( (void*) naka, (size_t) count, sizeof ( struct akaNameData ), (int (*) (const void*, const void*)) akaNameDataAlphaSort ) ;
 
@@ -2562,7 +2563,7 @@ NameID processAkaNamesList ( NameID *nameCount )
   {
     (void) strcpy ( prevName, naka [ i ] . akaString ) ;
     compare = caseCompare ( keyFileData, naka [ i ] . akaString ) ;
-    while ( compare < 0 )
+    while ( (NULL != tmpFp) && (compare < 0) )
     {
       (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
       if ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
@@ -2574,11 +2575,10 @@ NameID processAkaNamesList ( NameID *nameCount )
       else
       {
         compare = 1 ;
-        (void) fclose ( tmpFp ) ;
-        tmpFp = NULL ;
+        FCLOSENULL ( tmpFp ) ;
       }
     }
-    if ( compare == 0 )
+    if ( (NULL != tmpFp) && (0==compare) )
     {
       naka [ i ] . aka = strtol ( keyPtr, (char **) NULL, 16) ;
       (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
@@ -2589,8 +2589,7 @@ NameID processAkaNamesList ( NameID *nameCount )
       }
       else
       {
-        (void) fclose ( tmpFp ) ;
-        tmpFp = NULL ;
+        FCLOSENULL ( tmpFp ) ;
       }
     }
     else
@@ -2604,9 +2603,9 @@ NameID processAkaNamesList ( NameID *nameCount )
     (void) fprintf ( nameKeyFp, "%s|%s", keyFileData, keyPtr ) ;
     while ( fgets ( keyFileData, MXLINELEN, tmpFp ) != NULL )
       (void) fprintf ( nameKeyFp, "%s", keyFileData ) ;
-    (void) fclose ( tmpFp ) ;
+    FCLOSENULL ( tmpFp ) ;
   }
-  (void) fclose ( nameKeyFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
 
   (void) qsort ( (void*) naka, (size_t) count, sizeof ( struct akaNameData ), (int (*) (const void*, const void*)) akaNameDataSort ) ;
 
@@ -2617,7 +2616,7 @@ NameID processAkaNamesList ( NameID *nameCount )
      putName ( naka [ i ] . primary, dbFp ) ;
      putName ( naka [ i ] . aka, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 
   (void) qsort ( (void*) naka, (size_t) count, sizeof ( struct akaNameData ), (int (*) (const void*, const void*)) akaNameIndexDataSort ) ;
 
@@ -2628,7 +2627,7 @@ NameID processAkaNamesList ( NameID *nameCount )
      putName ( naka [ i ] . aka, dbFp ) ;
      putName ( naka [ i ] . primary, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
   free ( (void *) naka ) ;
 
   return ( count ) ;
@@ -2699,8 +2698,8 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
         if(NULL==result) moviedbError("mkdb: processTitleInfoList() error reading file");
       }
 
-  (void) fclose ( listFp ) ;
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) idxCount, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
   indexFp = writeFile ( titleInfoDefs [ listId ] . index ) ;
@@ -2709,7 +2708,7 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
      putTitle ( titlesIndex [ i ] . titleKey, indexFp ) ;
      putOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
 
   return ( count ) ;
 }
@@ -2760,8 +2759,8 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
         (void) fprintf ( dbFp, "%s", line ) ;
       }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
@@ -2773,7 +2772,7 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
      putOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   return ( count ) ;
 }
 
@@ -2823,8 +2822,8 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
         (void) fprintf ( dbFp, "%s", line ) ;
       }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
@@ -2836,7 +2835,7 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
      putOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   return ( count ) ;
 }
 
@@ -2887,8 +2886,8 @@ TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCoun
         (void) fprintf ( dbFp, "%s", line ) ;
       }
 
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) titlesIndex, (size_t) count, sizeof ( struct titleKeyOffset ), (int (*) (const void*, const void*)) titleKeyOffsetSort ) ;
 
@@ -2900,7 +2899,7 @@ TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCoun
      putOffset ( titlesIndex [ i ] . offset, indexFp ) ;
   }
 
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( indexFp ) ;
   return ( count ) ;
 }
 
@@ -2956,7 +2955,7 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
         if(NULL==result) moviedbError("mkdb: processCompleteCastList() error reading file");
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) list, (size_t) count, sizeof ( struct compCastRec ), (int (*) (const void*, const void*)) compCastSort ) ;
   dbFp = writeFile ( CASTCOMDB ) ;
@@ -2965,7 +2964,7 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
      putTitle ( list [ i ] . titleKey, dbFp ) ;
      putByte ( list [ i ] . status, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
   free ( (void*) list ) ;
 
   return ( count ) ;
@@ -3017,7 +3016,7 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
         if(NULL==result) moviedbError("mkdb: processCompleteCrewList() error reading file");
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   (void) qsort ( (void*) list, (size_t) count, sizeof ( struct compCastRec ), (int (*) (const void*, const void*)) compCastSort ) ;
   dbFp = writeFile ( CREWCOMDB ) ;
@@ -3026,7 +3025,7 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
      putTitle ( list [ i ] . titleKey, dbFp ) ;
      putByte ( list [ i ] . status, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
   free ( (void*) list ) ;
 
   return ( count ) ;
@@ -3109,7 +3108,7 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
         if(NULL==result) moviedbError("mkdb: processMovieLinksList() error reading file");
       }
 
-  (void) fclose ( listFp ) ;
+  FCLOSENULL ( listFp ) ;
 
   dbFp = writeFile ( LINKDB ) ;
   (void) qsort ( (void*) list, (size_t) count, sizeof ( struct movieLinkDbRec ), (int (*) (const void*, const void*)) movieLinkRecSort ) ;
@@ -3119,7 +3118,7 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
      putByte ( list [ i ] . link, dbFp ) ;
      putTitle ( list [ i ] . toTitleKey, dbFp ) ;
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
   free ( (void*) list ) ;
 
   return ( count ) ;
@@ -3133,7 +3132,7 @@ void touchFile ( char *filename )
   if ( ! isReadable ( filename ) )
   {
     fp = writeFile ( filename ) ;
-    (void) fclose ( fp ) ;
+    FCLOSENULL ( fp ) ;
   }
 }
 
@@ -3212,7 +3211,7 @@ void readKeyCounts ( NameID *nameCount, TitleID *titleCount, AttributeID *attrCo
      *nameCount = getName ( fp ) ;
      *titleCount = getTitle ( fp ) ;
      *attrCount = getAttr ( fp ) ;
-     (void) fclose ( fp ) ;
+     FCLOSENULL ( fp ) ;
   }
 }
 
@@ -3229,7 +3228,7 @@ void writeKeyCounts ( NameID nameCount, TitleID titleCount, AttributeID attrCoun
   }
   else
     moviedbError ( "mkdb: error writing key counts file" ) ;
-  (void) fclose ( fp ) ;
+  FCLOSENULL ( fp ) ;
 }
 
 

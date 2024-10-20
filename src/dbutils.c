@@ -674,7 +674,7 @@ FILE *copyFile ( const char *fromName )
 
   while ( ( c = fgetc ( fromFp ) ) != EOF )
     fputc ( c, toFp ) ;
-  (void) fclose ( fromFp ) ;
+  FCLOSENULL ( fromFp ) ;
 
   rewind ( toFp ) ;
   return ( toFp ) ;

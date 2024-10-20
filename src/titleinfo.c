@@ -124,8 +124,8 @@ void addTitleInfoToTitleSearch (struct titleSearchRec *tchain)
     }
     if ( dbFp != NULL )
     {
-      (void) fclose ( dbFp ) ;
-      (void) fclose ( indexFp ) ;
+      FCLOSENULL ( dbFp ) ;
+      FCLOSENULL ( indexFp ) ;
       dbFp = NULL ;
     }
   }

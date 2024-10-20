@@ -148,8 +148,8 @@ void addPlotToTitleSearch (struct titleSearchRec *tchain)
         trec -> plot = readPlot ( dbFp, offset ) ;
       }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
 
 #ifdef INTERNAL
   dbFp = openFile ( OUTLDB ) ;
@@ -191,7 +191,7 @@ void addPlotToTitleSearch (struct titleSearchRec *tchain)
 	  trec -> plot = olrec ;
       }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( indexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( indexFp ) ;
 #endif
 }

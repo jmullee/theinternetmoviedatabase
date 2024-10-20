@@ -144,7 +144,7 @@ void addAkaToNameSearch (struct nameSearchRec *chain)
           }
         }
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -211,7 +211,7 @@ void addAkaToTitleSearch (struct titleSearchRec *tchain)
       trec -> aka = readAkaSearchResults ( dbFp, titleKey ) ;
     }
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }
 
 
@@ -302,5 +302,5 @@ void addNameAkaToNameSearch (struct nameSearchRec *nchain)
       nrec -> aka = readAkaNameSearchResults ( dbFp, nameKey ) ;
     }
   }
-  (void) fclose ( dbFp ) ;
+  FCLOSENULL ( dbFp ) ;
 }

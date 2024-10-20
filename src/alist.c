@@ -294,13 +294,13 @@ void alistNames ( int listId, char *attr, int substring, int casesen, struct att
       free ( (void*) results [ i ] . attr ) ;
     }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( nameKeyFp ) ;
-  (void) fclose ( nameIndexFp ) ;
-  (void) fclose ( titleKeyFp ) ;
-  (void) fclose ( titleIndexFp ) ;
-  (void) fclose ( attrKeyFp ) ;
-  (void) fclose ( attrIndexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( nameKeyFp ) ;
+  FCLOSENULL ( nameIndexFp ) ;
+  FCLOSENULL ( titleKeyFp ) ;
+  FCLOSENULL ( titleIndexFp ) ;
+  FCLOSENULL ( attrKeyFp ) ;
+  FCLOSENULL ( attrIndexFp ) ;
 }
 
 
@@ -393,11 +393,11 @@ void alistTitles ( char *attr, int substring, int casesen, struct attrSearchOptR
       free ( (void*) results [ i ] . attr ) ;
     }
   }
-  (void) fclose ( dbFp ) ;
-  (void) fclose ( titleKeyFp ) ;
-  (void) fclose ( titleIndexFp ) ;
-  (void) fclose ( attrKeyFp ) ;
-  (void) fclose ( attrIndexFp ) ;
+  FCLOSENULL ( dbFp ) ;
+  FCLOSENULL ( titleKeyFp ) ;
+  FCLOSENULL ( titleIndexFp ) ;
+  FCLOSENULL ( attrKeyFp ) ;
+  FCLOSENULL ( attrIndexFp ) ;
 }
 
 
