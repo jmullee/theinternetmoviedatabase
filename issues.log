@@ -120,8 +120,9 @@
 
 ###############################################################
 
-	make cleanobj cleanbin ; script -c 'make compile installbin' make-compile.log
-	grep -iE 'warning|error' make-compile.log | cut -d: -f 4- | sort | uniq -c
+make cleanobj cleanbin ; script -c 'make compile installbin' make-compile.log
+dos2unix make-compile.log
+grep -iE 'warning|error' make-compile.log | cut -d: -f 4- | sort | uniq -c
 
 		-Wunused-value				1
 		-Wunused-function			4
@@ -142,33 +143,107 @@
 		-Wpointer-sign				122
 
 
-	make cleandbs ; script -c 'make databases' make-databases.log
-	grep -aniEC4 'fault|dumped|terminated|smashing|fail|error|corrupt' make-databases.log | grep -vE 'WARNING|ing directory' | uniq
-		23-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -acs
+make cleandbs ; script -c 'make databases' make-databases.log
+dos2unix make-databases.log
+grep -aniEC4 'fault|dumped|terminated|smashing|fail|error|corrupt' make-databases.log | grep -vE 'WARNING|ing directory' | uniq
+		23-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -acs
 		24-Adding Actresses...
 		25:make[3]: *** [/tmp/make.64208:2: actresses.data] Segmentation fault (core dumped)
 		26-make[3]: *** Deleting file 'actresses.data'
-		29-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -cine
+		29-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -cine
 		--
-		44-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -write
+		44-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -write
 		45-Adding Writers...
 		46:*** stack smashing detected ***: terminated
 		47:make[3]: *** [/tmp/make.64263:2: writers.data] Aborted (core dumped)
 		48-make[3]: *** Deleting file 'writers.data'
-		51-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -edit
+		51-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -edit
 		--
-		12932-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -naka
+		12932-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -naka
 		12933-Adding Aka Names...
 		12934:make[3]: *** [/tmp/make.64314:2: aka-names.data] Segmentation fault (core dumped)
-		12937-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -plot
+		12937-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -plot
 		12938-Adding Plot Summaries...
 		--
 		13088-Adding Distributor List...
 		13089- ...49986 read
-		13091-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -create
+		13091-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb -create
 		13092:mkdb: key file corrupt
 		13093:make[2]: *** [Makefile:117: touch-dbs] Error 255
 		13095:make[1]: *** [Makefile:317: do-databases] Error 2
 		13097:make: *** [Makefile:311: databases] Error 2
 		13098-
 		13099-Script done on 2024-10-20 21:22:26+01:00 [COMMAND_EXIT_CODE="2"]
+
+./etc/mkdb -movie
+./etc/mkdb -acr
+gdb -ex=r -ex=bt -ex=k -ex=q --args ./etc/mkdb -acs
+
+	Starting program: /home/jmullee/projects/imdb/moviedb/src/etc/mkdb -acs
+	Adding Actresses...
+
+	Program received signal SIGSEGV, Segmentation fault.
+
+	0x000055555555a99c in processCastList (nameCount=0x7fffffffcd28, titles=0x55555556fe40 <titles>, titleCount=0x7fffffffcd18, 
+		attrCount=0x7fffffffcd20, listId=1, moviesOnly=0, nochar=0) at mkdb.c:1006
+	1006	              currentEntry . withoutAttrs [ currentEntry . noWithoutAttr ] . titleKey = titleKeyLookup ( title, titles, titleCount ) ;
+
+
+./etc/mkdb -movie
+./etc/mkdb -acr
+gdb -ex=r -ex=bt -ex=k -ex=q --args ./etc/mkdb -acs
+
+	Starting program: /home/jmullee/projects/imdb/moviedb/src/etc/mkdb -acs
+	Adding Actresses...
+
+	Program received signal SIGSEGV, Segmentation fault.
+	__strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+	120	../sysdeps/x86_64/multiarch/../strlen.S: No such file or directory.
+	#0  __strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+	#1  0x000055555555a2b0 in writeCastEntry (currentEntry=0x7ffffffd9c80, stream=0x5555560e6c50) at mkdb.c:874
+	#2  0x000055555555a69e in processCastList (nameCount=0x7fffffffcd28, titles=0x55555556fe40 <titles>, titleCount=0x7fffffffcd18, attrCount=0x7fffffffcd20, listId=1, 
+		moviesOnly=0, nochar=0) at mkdb.c:943
+	#3  0x000055555556395f in main (argc=2, argv=0x7fffffffded8) at mkdb.c:3484
+
+	moviedb.h:
+		struct castFilmography
+			struct titleAttrChar withAttrs [ MAXFILMOGRAPHIES ] ;
+			struct titleCharPair withoutAttrs [ MAXFILMOGRAPHIES ] ;
+
+	changed MAXWITHATTRS to MAXFILMOGRAPHIES
+		if ( attr == NULL || currentEntry . noWithAttr >= MAXFILMOGRAPHIES )
+	add guard logic:
+		if ( currentEntry.noWithoutAttr < MAXFILMOGRAPHIES )
+		if ( currentEntry.noWithAttr < MAXFILMOGRAPHIES )
+	increase limit
+		#define   MAXFILMOGRAPHIES       8192
+	add error reports
+		 } else { moviedbError("processCastList(): currentEntry.noWithoutAttr >= MAXFILMOGRAPHIES ");
+		 } else { moviedbError("processCastList(): currentEntry.noWithAttr >= MAXFILMOGRAPHIES ");
+
+
+	gdb -ex=r -ex=bt -ex=k -ex=q --args ./etc/mkdb -naka
+
+		Starting program: /home/jmullee/projects/imdb/moviedb/src/etc/mkdb -naka
+		Adding Aka Names...
+
+		Program received signal SIGSEGV, Segmentation fault.
+		_IO_fgets (buf=0x7fffffff8c70 "Block, Julie Bennett", n=8192, fp=0x0) at iofgets.c:47
+		47	iofgets.c: No such file or directory.
+		#0  _IO_fgets (buf=0x7fffffff8c70 "Block, Julie Bennett", n=8192, fp=0x0) at iofgets.c:47
+		#1  0x0000555555560518 in processAkaNamesList (nameCount=0x7fffffffcd28) at mkdb.c:2579
+		#2  0x0000555555563dec in main (argc=2, argv=0x7fffffffded8) at mkdb.c:3546
+		A debugging session is active.
+
+		if(fgets(keyFileData, MXLINELEN, tmpFp)!= NULL)
+			tmpFp (fp=0x0) was NULL
+
+	added macro to set fp NULL on close
+		#define FCLOSENULL(fp) {fclose(fp); fp=NULL;}
+	added guards
+		while ( (NULL != tmpFp) && (compare < 0) )
+		if ( (NULL != tmpFp) && (0==compare) )
+
+./do_dbs.sh
+	(with lists trimmed to 50k lines: ./lists/get_smol_lists.sh)
+	runs to completion, no errs.

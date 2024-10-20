@@ -1,4 +1,4 @@
-Script started on 2024-10-20 23:48:36+01:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="166" LINES="44"]
+Script started on 2024-10-21 00:05:42+01:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="166" LINES="44"]
 cc -g3 -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror -DZLISTCAT="\"zcat\"" -DZLISTEXT="\".gz\"" -DZDBSCAT="\"zcat\"" -DZDBSEXT="\".gz\"" -DZDBSCATOPTS="\"\"" -DZLISTCATOPTS="\"\"" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR=/home/jmullee/projects/imdb/moviedb/src/etc/ -DLOGFILENAME="\"/tmp/moviedb.log\"" -c list.c
 cc -g3 -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror -DZLISTCAT="\"zcat\"" -DZLISTEXT="\".gz\"" -DZDBSCAT="\"zcat\"" -DZDBSEXT="\".gz\"" -DZDBSCATOPTS="\"\"" -DZLISTCATOPTS="\"\"" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR=/home/jmullee/projects/imdb/moviedb/src/etc/ -DLOGFILENAME="\"/tmp/moviedb.log\"" -c dbutils.c
 cc -g3 -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror -DZLISTCAT="\"zcat\"" -DZLISTEXT="\".gz\"" -DZDBSCAT="\"zcat\"" -DZDBSEXT="\".gz\"" -DZDBSCATOPTS="\"\"" -DZLISTCATOPTS="\"\"" -DRAWDIR="\"/home/jmullee/projects/imdb/moviedb/src/lists/\"" -DDBDIR="\"/home/jmullee/projects/imdb/moviedb/src/dbs/\"" -DETCDIR=/home/jmullee/projects/imdb/moviedb/src/etc/ -DLOGFILENAME="\"/tmp/moviedb.log\"" -c filmography.c
@@ -62,4 +62,4 @@ All is compiled.
 cp list title ltrace lguide listall mkballot lindex lformat lseen alist template templist /home/jmullee/projects/imdb/moviedb/src/bin/
 cp mkdb /home/jmullee/projects/imdb/moviedb/src/etc/
 
-Script done on 2024-10-20 23:48:38+01:00 [COMMAND_EXIT_CODE="0"]
+Script done on 2024-10-21 00:05:43+01:00 [COMMAND_EXIT_CODE="0"]
