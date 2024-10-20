@@ -99,7 +99,7 @@ TitleID readMoviesList (struct titleIndexRec *titles)
 {
   FILE *listFp ;
   char *tptr ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inMovie = FALSE ;
   TitleID  indexKey = 0 ;
 
@@ -121,7 +121,8 @@ TitleID readMoviesList (struct titleIndexRec *titles)
       if ( strncmp ( line, "MOVIES LIST", 11 ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: readMoviesList() error reading file");
       }
 
   (void) fseek ( listFp, 0L, SEEK_SET ) ;
@@ -143,7 +144,8 @@ TitleID readMoviesList (struct titleIndexRec *titles)
       if ( strncmp ( line, "MOVIES LIST", 11 ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: readMoviesList() error reading file");
       }
 
   (void) fclose ( listFp ) ;
@@ -180,7 +182,7 @@ void writeTitleIndexKey ( TitleID titleCount )
   FILE *indexFp, *keyFp ;
   struct titleKeyOffset *titleIndex ;
   long lastOffset = 0 ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char *p ;
 
   titleIndex = (struct titleKeyOffset *) calloc ( titleCount + 5, sizeof ( struct titleKeyOffset ) ) ;
@@ -217,7 +219,7 @@ void writeAttrIndexKey ( AttributeID attrCount )
   FILE *indexFp, *keyFp ;
   struct attrKeyOffset *attrIndex  ;
   long lastOffset = 0 ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char *p ;
 
   attrIndex = (struct attrKeyOffset *) calloc ( attrCount + 5, sizeof ( struct attrKeyOffset ) ) ;
@@ -254,7 +256,7 @@ void writeNameIndexKey ( NameID nameCount )
   FILE *indexFp, *keyFp ;
   struct nameKeyOffset *namesIndex ;
   long lastOffset = 0 ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char *p ;
 
   namesIndex = (struct nameKeyOffset *) calloc ( nameCount + 5, sizeof ( struct nameKeyOffset ) ) ;
@@ -292,7 +294,7 @@ void writeTitleAlphaKey ( TitleID titleCount, struct titleIndexRec *titles )
   indexFp = writeFile ( TITLEKEY ) ;
 
   for ( i = 0 ; i < titleCount ; i++ )
-    (void) fprintf ( indexFp , "%s|%x\n", titles [ i ] . title, titles [ i ] . titleKey ) ;
+    (void) fprintf ( indexFp , "%s|%lx\n", titles [ i ] . title, titles [ i ] . titleKey ) ;
 
   (void) fclose ( indexFp ) ;
 }
@@ -315,7 +317,7 @@ void writeAttrAlphaKey ( AttributeID attrCount )
 TitleID readTitleAlphaKey ( struct titleIndexRec *titles )
 {
   FILE *listFP ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char *p ;
   TitleID i = 0 ;
 
@@ -342,7 +344,7 @@ AttributeID readAttrAlphaKey ( void )
 {
   struct attrIndexRec *attributes = attributeIndex ;
   FILE *listFP ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char *p ;
   AttributeID i = 0 ;
 
@@ -543,7 +545,7 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, At
   char  *yrptr, *attrptr, *p ;
   FILE  *listFp, *dbFp ;
   struct yearData *years ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   int   inMovie = FALSE ;
   TitleID count = 0, i ;
 
@@ -603,7 +605,8 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, At
       if ( strncmp ( line, "MOVIES LIST", 11 ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: processMoviesList() error reading file");
       }
 
   (void) fclose ( listFp ) ;
@@ -881,7 +884,7 @@ void writeCastEntry (struct castFilmography *currentEntry, FILE *stream)
 long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId, int moviesOnly, int nochar )
 {
   FILE   *listFp, *dbFp, *nameKeyFp, *tmpFp ;
-  char   line [ MXLINELEN ] ;
+  char   line [ MXLINELEN ], *result = NULL;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   fn [ MAXPATHLEN ] ;
@@ -902,7 +905,8 @@ long processCastList ( NameID *nameCount, struct titleIndexRec *titles, TitleID 
   if ( isReadable ( NAMEKEY ) )
   {
     tmpFp = copyFile ( NAMEKEY ) ;
-    (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    result = fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    if(NULL==result) moviedbError("mkdb: processCastList() error reading file");
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
   }
@@ -1187,7 +1191,7 @@ void writeFilmographyEntry (struct filmography *currentEntry, FILE *stream)
 long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId, int moviesOnly )
 {
   FILE   *listFp, *dbFp, *nameKeyFp, *tmpFp ;
-  char   line [ MXLINELEN ] ;
+  char   line [ MXLINELEN ], *result = NULL;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   fn [ MAXPATHLEN ] ;
@@ -1207,7 +1211,8 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
   if ( isReadable ( NAMEKEY ) )
   {
     tmpFp = copyFile ( NAMEKEY ) ;
-    (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    result = fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    if(NULL==result) moviedbError("mkdb: processFilmographyList() error reading file");
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
   }
@@ -1520,7 +1525,7 @@ void writeWriterFilmographyEntry (struct writerFilmography *currentEntry, FILE *
 long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, TitleID *titleCount, AttributeID *attrCount, int listId, int moviesOnly )
 {
   FILE   *listFp, *dbFp, *nameKeyFp, *tmpFp ;
-  char   line [ MXLINELEN ] ;
+  char   line [ MXLINELEN ], *result = NULL;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   fn [ MAXPATHLEN ] ;
@@ -1541,7 +1546,8 @@ long processWriterFilmographyList ( NameID *nameCount, struct titleIndexRec *tit
   if ( isReadable ( NAMEKEY ) )
   {
     tmpFp = copyFile ( NAMEKEY ) ;
-    (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    result = fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    if(NULL==result) moviedbError("mkdb: processWriterFilmographyList() error reading file");
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
   }
@@ -1691,7 +1697,7 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  indata = FALSE ;
   int  inheader = FALSE ;
   int  notdone = TRUE ;
@@ -1762,7 +1768,7 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inplot = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -1825,7 +1831,7 @@ TitleID processOutlineList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inplot = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -1889,7 +1895,7 @@ NameID processBiographiesList ( NameID *nameCount )
 {
   FILE *dbFp, *listFp, *indexFp, *nameKeyFp, *tmpFp ;
   struct nameKeyOffset *namesIndex;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   *keyPtr = NULL ;
@@ -1907,7 +1913,8 @@ NameID processBiographiesList ( NameID *nameCount )
   if ( isReadable ( NAMEKEY ) )
   {
     tmpFp = copyFile ( NAMEKEY ) ;
-    (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    result = fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    if(NULL==result) moviedbError("mkdb: processBiographiesList() error reading file");
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
   }
@@ -2065,7 +2072,7 @@ TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
   struct mrrData *ratingsReport ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inmrr = FALSE ;
   TitleID count = 0, i, insert, nratings ;
   int  votes ;
@@ -2077,7 +2084,7 @@ TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
   nratings = ftell ( listFp ) / MRRSIZE ;
   (void) fseek ( listFp, 0, SEEK_SET ) ;
   if ( ( ratingsReport = calloc ( nratings, sizeof ( struct mrrData ) ) ) == NULL )
-     moviedbError ( "out of memory" ) ;
+     moviedbError ( "mkdb: out of memory" ) ;
 
   while ( fgets ( line, MXLINELEN, listFp ) != NULL )
   {
@@ -2137,7 +2144,7 @@ TitleID processVotesList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
   struct voteData *votes;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   struct titleIndexRec *matched ;
   int compare ;
   TitleID count = 0, i = 1, insert ;
@@ -2224,7 +2231,7 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
   FILE *dbFp, *listFp ;
   struct akaData *aka ;
   size_t akaIndexSize = AKASTART ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int inaka = FALSE, enddata = FALSE ;
   TitleID count = 0, processed = 0, sortedTo = 0, i ;
   TitleID primaryKey = NOTITLE ;
@@ -2344,7 +2351,8 @@ TitleID processAkaList (struct titleIndexRec *titles, TitleID *titleCount, Attri
     else
       if ( strncmp ( line, "AKA", 3 ) == 0 )
       {
-	(void) fgets ( line, MXLINELEN, listFp ) ;
+	result = fgets ( line, MXLINELEN, listFp ) ;
+	if(NULL==result) moviedbError("mkdb: processAkaList() error reading file");
         if ( strncmp ( line, "===", 3 ) == 0 )
           inaka = TRUE ;
       }
@@ -2414,7 +2422,7 @@ NameID processAkaNamesList ( NameID *nameCount )
 {
   FILE *dbFp, *listFp, *nameKeyFp, *tmpFp ;
   struct akaNameData *naka ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   *keyPtr = NULL ;
@@ -2432,7 +2440,8 @@ NameID processAkaNamesList ( NameID *nameCount )
   if ( isReadable ( NAMEKEY ) )
   {
     tmpFp = copyFile ( NAMEKEY ) ;
-    (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    result = fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+    if(NULL==result) moviedbError("mkdb: processAkaNamesList() error reading file");
     if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
       *keyPtr++ = '\0' ;
   }
@@ -2527,7 +2536,8 @@ NameID processAkaNamesList ( NameID *nameCount )
     else
       if ( strncmp ( line, "AKA", 3 ) == 0 )
       {
-	(void) fgets ( line, MXLINELEN, listFp ) ;
+	result = fgets ( line, MXLINELEN, listFp ) ;
+	if(NULL==result) moviedbError("mkdb: processAkaNamesList() error reading file");
         if ( strncmp ( line, "===", 3 ) == 0 )
           inaka = TRUE ;
       }
@@ -2546,7 +2556,8 @@ NameID processAkaNamesList ( NameID *nameCount )
 
   prevName [ 0 ] = '\0' ;
   tmpFp = copyFile ( NAMEKEY ) ;
-  (void) fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+  result = fgets ( keyFileData, MXLINELEN, tmpFp ) ;
+  if(NULL==result) moviedbError("mkdb: processAkaNamesList() error reading file");
   if ( ( keyPtr = strchr ( keyFileData, FSEP ) ) != NULL )
     *keyPtr++ = '\0' ;
 
@@ -2634,7 +2645,7 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
   char  *tmptr, *attrptr ;
   FILE  *listFp, *dbFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   int   inMovie = FALSE ;
   TitleID   count = 0, i, titleKey, prevTitleKey = NOTITLE, idxCount = 0 ;
   AttributeID attrKey ;
@@ -2689,7 +2700,8 @@ TitleID processTitleInfoList ( struct titleIndexRec *titles, TitleID *titleCount
       if ( strcmp ( line, titleInfoDefs [ listId ] . start ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: processTitleInfoList() error reading file");
       }
 
   (void) fclose ( listFp ) ;
@@ -2712,7 +2724,7 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inLit = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -2775,7 +2787,7 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inLD = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset = 0 ;
@@ -2788,6 +2800,7 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
     {
        if ( line [ 0 ] != '-' )
        {
+         currentOffset = ftell ( dbFp ) ;
          (void) fprintf ( dbFp, "%s", line ) ;
          if ( strncmp ( line, "OT: ", 4 ) == 0 )
          {
@@ -2806,11 +2819,6 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
 	      sharedTitleIndex = titlesIndex ;
            }
          }
-       }
-       else
-       {
-         currentOffset = ftell ( dbFp ) ;
-         (void) fprintf ( dbFp, "--\n", line ) ;
        }
     }
     else
@@ -2843,7 +2851,7 @@ TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCoun
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int  inLit = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -2913,7 +2921,7 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
   char  *tmptr ;
   FILE  *listFp, *dbFp ;
   struct compCastRec *list ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   int   inMovie = FALSE ;
   TitleID   count = 0, i ;
 
@@ -2949,7 +2957,8 @@ TitleID processCompleteCastList ( struct titleIndexRec *titles, TitleID *titleCo
       if ( strcmp ( line, "CAST COVERAGE TRACKING LIST\n" ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: processCompleteCastList() error reading file");
       }
 
   (void) fclose ( listFp ) ;
@@ -2973,7 +2982,7 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
   char  *tmptr ;
   FILE  *listFp, *dbFp ;
   struct compCastRec *list ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   int   inMovie = FALSE ;
   TitleID   count = 0, i ;
 
@@ -3009,7 +3018,8 @@ TitleID processCompleteCrewList ( struct titleIndexRec *titles, TitleID *titleCo
       if ( strcmp ( line, "CREW COVERAGE TRACKING LIST\n" ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: processCompleteCrewList() error reading file");
       }
 
   (void) fclose ( listFp ) ;
@@ -3043,7 +3053,7 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
   FILE  *listFp, *dbFp ;
   struct movieLinkDbRec *list ;
   size_t linkSize = LINKSTART ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   char *ptr ;
   int   inMovie = FALSE, i, position = 0 ;
   TitleID   count = 0, currentTitleKey = NOTITLE ;
@@ -3100,7 +3110,8 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
       if ( strcmp ( line, "MOVIE LINKS LIST\n" ) == 0 )
       {
         inMovie = TRUE ;
-        (void) fgets ( line, MXLINELEN, listFp ) ;
+        result = fgets ( line, MXLINELEN, listFp ) ;
+        if(NULL==result) moviedbError("mkdb: processMovieLinksList() error reading file");
       }
 
   (void) fclose ( listFp ) ;
@@ -3466,7 +3477,7 @@ int main (int argc, char **argv)
   {
     (void) printf ( "Adding Movies List...\n" ) ;
     count = processMoviesList ( titles, &titleCount, &attrCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   for ( i = 0 ; i < NO_OF_CAST_LISTS ; i++ )
@@ -3497,7 +3508,7 @@ int main (int argc, char **argv)
     {
       (void) printf ( "Adding %s...\n", triviaDefs [ i ] . desc ) ;
       count = processTriviaList ( titles, &titleCount, i ) ;
-      (void) printf ( " ...%d read\n", count ) ;
+      (void) printf ( " ...%lu read\n", count ) ;
     }
 
   for ( i = 0 ; i < NO_OF_TITLE_INFO_LISTS ; i++ )
@@ -3505,21 +3516,21 @@ int main (int argc, char **argv)
     {
       (void) printf ( "Adding %s List...\n", titleInfoDefs [ i ] . desc ) ;
       count = processTitleInfoList ( titles, &titleCount, &attrCount, i ) ;
-      (void) printf ( " ...%d read\n", count ) ;
+      (void) printf ( " ...%lu read\n", count ) ;
     }
 
   if ( addaka && isReadable ( AKALIST ) )
   {
     (void) printf ( "Adding Aka Titles...\n" ) ;
     count = processAkaList ( titles, &titleCount, &attrCount, AKALIST ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addakaf && isReadable ( akaFile ) )
   {
     (void) printf ( "Adding Local Aka Titles...\n" ) ;
     count = processAkaList ( titles, &titleCount, &attrCount, akaFile ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
     createFlag = TRUE ;
   }
 
@@ -3534,7 +3545,7 @@ int main (int argc, char **argv)
   {
     (void) printf ( "Adding Plot Summaries...\n" ) ;
     count = processPlotList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
 #ifdef INTERNAL
@@ -3542,7 +3553,7 @@ int main (int argc, char **argv)
   {
     (void) printf ( "Adding Plot Outlines...\n" ) ;
     count = processOutlineList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 #endif
 
@@ -3557,56 +3568,56 @@ int main (int argc, char **argv)
   {
     (void) printf ( "Adding Movie Ratings...\n" ) ;
     count = processMovieRatings ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addvotes && isReadable ( VOTELIST ) )
   {
     (void) printf ( "Adding Votes...\n" ) ;
     count = processVotesList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addlit && isReadable ( LITLIST ) )
   {
     (void) printf ( "Adding Literature List...\n" ) ;
     count = processLiteratureList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addbus && isReadable ( BUSLIST ) )
   {
     (void) printf ( "Adding Business List...\n" ) ;
     count = processBusinessList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addld && isReadable ( LDLIST ) )
   {
     (void) printf ( "Adding LaserDisc List...\n" ) ;
     count = processLaserDiscList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addcastcom && isReadable ( CASTCOMLIST ) )
   {
     (void) printf ( "Adding Cast Completion List...\n" ) ;
     count = processCompleteCastList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addcrewcom && isReadable ( CREWCOMLIST ) )
   {
     (void) printf ( "Adding Crew Completion List...\n" ) ;
     count = processCompleteCrewList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( addlinks && isReadable ( LINKLIST ) )
   {
     (void) printf ( "Adding Movie Links List...\n" ) ;
     count = processMovieLinksList ( titles, &titleCount ) ;
-    (void) printf ( " ...%d read\n", count ) ;
+    (void) printf ( " ...%lu read\n", count ) ;
   }
 
   if ( loadTitles )

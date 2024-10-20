@@ -153,7 +153,7 @@ void swapAkaNames (struct nameSearchRec *nchain)
 {
   FILE  *dbFp, *indexFp = NULL, *keyFp = NULL ;
   struct nameSearchRec *nrec ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   long mid, lower, upper, saveUpper, offset ;
   int found = FALSE ;
   NameID nameKey, dbKey ;
@@ -192,9 +192,9 @@ void swapAkaNames (struct nameSearchRec *nchain)
       (void) fseek ( indexFp, 4 * nrec -> nameKey, SEEK_SET ) ;
       offset = getFullOffset ( indexFp ) ;
       (void) fseek ( keyFp, offset, SEEK_SET ) ;
-      (void) fgets ( line, MXLINELEN, keyFp ) ;
+      result = fgets ( line, MXLINELEN, keyFp ) ;
       (void) free ( (void*) nrec -> name ) ;
-      nrec -> name = duplicateField ( line ) ;
+      nrec -> name = (NULL==result) ? result : duplicateField ( line ) ;
     }
   }
   if ( keyFp != NULL )
@@ -210,7 +210,7 @@ void approxFilmographySearchKeyLookup (struct nameSearchRec *chain)
 {
   FILE  *indexFp, *nameIndexFp, *nameKeyFp ;
   struct nameSearchRec *nrec, *tail = chain ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   char  *substring ;
   char fn [ MAXPATHLEN ] ;
   NameID nameKey ;
@@ -237,35 +237,38 @@ void approxFilmographySearchKeyLookup (struct nameSearchRec *chain)
         (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
         offset = getFullOffset ( nameIndexFp ) ;
         (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
-        (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
-        stripSep ( line ) ;
-        if ( minimal_distance ( line, substring, casesen ) <= approx )
-          matched = TRUE ;
-        for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
-           if ( nrec -> nameKey == nameKey )
-             matched = FALSE ;
+        result = fgets ( line, MXLINELEN, nameKeyFp ) ;
+        if(NULL!=result)
+			{
+			stripSep ( line ) ;
+			if ( minimal_distance ( line, substring, casesen ) <= approx )
+			  matched = TRUE ;
+			for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
+			   if ( nrec -> nameKey == nameKey )
+				 matched = FALSE ;
 
-        if ( matched )
-        {
-          if ( count == 0 )
-          {
-            chain -> name = duplicateString ( line ) ;
-            chain -> nameKey = nameKey ;
-            count++ ;
-          }
-          else
-          {
-            tail -> next = newNameSearchRec ( ) ;
-            tail = tail -> next ;
-            tail -> name = duplicateString ( line ) ;
-            tail -> nameKey = nameKey ;
-            tail -> searchparams = chain -> searchparams ;
-            tail -> next = NULL ;
-            for ( i = 0 ; i < NO_OF_FILMOGRAPHY_LISTS ; i++ )
-              tail -> searchFlags [ i ] = chain -> searchFlags [ i ] ;
-            count++ ;
-          }
-        }
+			if ( matched )
+			{
+			  if ( count == 0 )
+			  {
+				chain -> name = duplicateString ( line ) ;
+				chain -> nameKey = nameKey ;
+				count++ ;
+			  }
+			  else
+			  {
+				tail -> next = newNameSearchRec ( ) ;
+				tail = tail -> next ;
+				tail -> name = duplicateString ( line ) ;
+				tail -> nameKey = nameKey ;
+				tail -> searchparams = chain -> searchparams ;
+				tail -> next = NULL ;
+				for ( i = 0 ; i < NO_OF_FILMOGRAPHY_LISTS ; i++ )
+				  tail -> searchFlags [ i ] = chain -> searchFlags [ i ] ;
+				count++ ;
+			  }
+			}
+			}
       }
       (void) fclose ( indexFp ) ;
     }
@@ -276,7 +279,7 @@ void substringFilmographySearchKeyLookup (struct nameSearchRec *chain)
 {
   FILE  *indexFp, *nameIndexFp, *nameKeyFp ;
   struct nameSearchRec *nrec, *tail = chain ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   char  *substring ;
   char fn [ MAXPATHLEN ] ;
   NameID nameKey ;
@@ -302,38 +305,41 @@ void substringFilmographySearchKeyLookup (struct nameSearchRec *chain)
         (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
         offset = getFullOffset ( nameIndexFp ) ;
         (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
-        (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
-        if ( casesen )
-        {
-          if ( strstr ( line, substring ) != NULL )
-            matched = TRUE ;
-        }
-        else if ( caseStrStr ( line, substring ) != NULL )
-          matched = TRUE ;
-        for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
-           if ( nrec -> nameKey == nameKey )
-             matched = FALSE ;
+        result = fgets ( line, MXLINELEN, nameKeyFp ) ;
+		if(NULL!=result)
+			{
+			if ( casesen )
+			{
+			  if ( strstr ( line, substring ) != NULL )
+				matched = TRUE ;
+			}
+			else if ( caseStrStr ( line, substring ) != NULL )
+			  matched = TRUE ;
+			for ( nrec = chain ; nrec != NULL ; nrec = nrec -> next )
+			   if ( nrec -> nameKey == nameKey )
+				 matched = FALSE ;
 
-        if ( matched )
-        {
-          if ( count == 0 )
-          {
-            chain -> name = duplicateField ( line ) ;
-            chain -> nameKey = nameKey ;
-            count++ ;
-          }
-          else
-          {
-            tail -> next = newNameSearchRec ( ) ;
-            tail = tail -> next ;
-            tail -> name = duplicateField ( line ) ;
-            tail -> nameKey = nameKey ;
-            tail -> searchparams = chain -> searchparams ;
-            for ( i = 0 ; i < NO_OF_FILMOGRAPHY_LISTS ; i++ )
-              tail -> searchFlags [ i ] = chain -> searchFlags [ i ] ;
-            count++ ;
-          }
-        }
+			if ( matched )
+			{
+			  if ( count == 0 )
+			  {
+				chain -> name = duplicateField ( line ) ;
+				chain -> nameKey = nameKey ;
+				count++ ;
+			  }
+			  else
+			  {
+				tail -> next = newNameSearchRec ( ) ;
+				tail = tail -> next ;
+				tail -> name = duplicateField ( line ) ;
+				tail -> nameKey = nameKey ;
+				tail -> searchparams = chain -> searchparams ;
+				for ( i = 0 ; i < NO_OF_FILMOGRAPHY_LISTS ; i++ )
+				  tail -> searchFlags [ i ] = chain -> searchFlags [ i ] ;
+				count++ ;
+			  }
+			}
+			}
       }
       (void) fclose ( indexFp ) ;
     }
@@ -344,7 +350,7 @@ void straightFilmographySearchKeyLookup (struct nameSearchRec *chain)
 {
   FILE  *indexFp ;
   struct nameSearchRec *nrec ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   long mid = -1, lower = 0, upper ;
   int compare ;
   int found = FALSE ;
@@ -366,7 +372,7 @@ void straightFilmographySearchKeyLookup (struct nameSearchRec *chain)
        (void) fseek ( indexFp, mid, SEEK_SET ) ;
        if ( mid > 0 )
          if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
-           moviedbError ( "names index file corrupt" ) ;
+           moviedbError ( "filmography: straightFilmographySearchKeyLookup() names index file corrupt" ) ;
          else
            skipped = strlen ( line ) ;
        else
@@ -374,7 +380,9 @@ void straightFilmographySearchKeyLookup (struct nameSearchRec *chain)
        if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
        {
          (void) findSOL ( indexFp, mid ) ;
-         (void) fgets ( line, MXLINELEN, indexFp ) ;
+         result = fgets ( line, MXLINELEN, indexFp ) ;
+         if(NULL==result)
+			moviedbError("filmography: straightFilmographySearchKeyLookup() error reading NAMEKEY");
        }
        compare = fieldCaseCompare ( line, nrec -> name );
        if ( compare == 0 )

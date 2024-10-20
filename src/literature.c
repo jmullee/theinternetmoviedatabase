@@ -45,11 +45,12 @@ void freeLiterature ( struct lineRec *data )
 
 struct lineRec *readLiterature ( FILE *stream, long offset )
 {
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ];
   struct lineRec *rec = NULL, *tail = NULL ;
 
   (void) fseek ( stream, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, stream ) ;
+  if(NULL == fgets ( line, MXLINELEN, stream ))
+    return ( rec ) ;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
     if ( strncmp ( line, "MOVI:", 5 ) == 0 )

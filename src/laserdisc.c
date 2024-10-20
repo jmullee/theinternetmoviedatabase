@@ -73,7 +73,8 @@ struct laserRec *readLaserDisc ( FILE *stream, long offset )
   rec -> LT = NULL ;
 
   (void) fseek ( stream, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, stream ) ;
+  if( NULL == fgets ( line, MXLINELEN, stream ))
+    return ( rec ) ;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
     if ( line [ 0 ] != '\n' )
@@ -115,7 +116,8 @@ struct laserRec *readLaserDisc ( FILE *stream, long offset )
 	  {
             saveLen = strlen ( tail -> text ) ;
             saveChar = tail -> text [ saveLen - 1 ] ;
-	    (void) fgets ( line, MXLINELEN, stream ) ;
+	    if(NULL == fgets ( line, MXLINELEN, stream ))
+		break;
 	    newStr = appendString ( tail -> text, line ) ;
             newStr [ saveLen - 1 ] = saveChar ;
 	    tail -> text = newStr ;

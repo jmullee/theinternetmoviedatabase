@@ -419,7 +419,7 @@ int main ( int argc, char **argv )
 
   years = (struct titleDbRec *) calloc ( MAXTITLES, sizeof ( struct titleDbRec ) ) ;
   if ( years == NULL )
-    moviedbError ( "mkdb: not enough memory to generate titleDbRec" ) ;
+    moviedbError ( "alist: not enough memory to generate titleDbRec" ) ;
 
   logProgram ( argv [ 0 ] ) ;
 

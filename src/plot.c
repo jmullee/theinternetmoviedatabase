@@ -57,7 +57,8 @@ struct plotRec *readPlot ( FILE *stream, long offset )
   rec -> RV = NULL ;
 
   (void) fseek ( stream, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, stream ) ;
+  if( NULL == fgets ( line, MXLINELEN, stream ))
+     return ( rec ) ;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
     if ( line [ 0 ] != '\n' && line [ 0 ] != '-' )

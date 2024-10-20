@@ -82,7 +82,7 @@
 
 int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struct searchConstraints *constraints )
 {
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   int stopFlag = FALSE ;
   NameID nameKey ;
   long offset ;
@@ -96,7 +96,7 @@ int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struc
     (void) fseek ( indexFp, 4 * nameKey, SEEK_SET ) ;
     offset = getFullOffset ( indexFp ) ;
     (void) fseek ( keyFp, offset, SEEK_SET ) ;
-    (void) fgets ( line, MXLINELEN, keyFp ) ;
+    result = fgets ( line, MXLINELEN, keyFp ) ;
     stripSep ( line ) ;
     stopFlag = TRUE ;
     if ( constraints -> subString [ 0 ] )
@@ -187,7 +187,8 @@ int getNextLindexTitle ( FILE *dbFp, FILE *indexFp, FILE *keyFp, struct searchCo
     (void) fseek ( indexFp, *titleKey * 4, SEEK_SET ) ;
     offset = getFullOffset ( indexFp ) ;
     (void) fseek ( keyFp, offset, SEEK_SET ) ;
-    (void) fgets ( title, MXLINELEN, keyFp ) ;
+    if(NULL == fgets ( title, MXLINELEN, keyFp ))
+		return ( stopFlag ) ;
     stripSep ( title ) ;
     stopFlag = TRUE ;
     if ( *yearVal < constraints -> yearFrom || *yearVal > constraints -> yearTo )
@@ -216,6 +217,8 @@ int yearLindexSort ( struct lindexTitleRec *r1, struct lindexTitleRec *r2 )
     return ( caseCompare ( r1 -> title, r2 -> title ) ) ;
 }
 
+// forward declaration
+int vmrrLindexSort ( struct lindexTitleRec *r1, struct lindexTitleRec *r2 );
 
 int smrrLindexSort ( struct lindexTitleRec *r1, struct lindexTitleRec *r2 )
 {

@@ -49,7 +49,8 @@ struct lineRec *readBusiness ( FILE *stream, long offset )
   struct lineRec *rec = NULL, *tail = NULL ;
 
   (void) fseek ( stream, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, stream ) ;
+  if(NULL == fgets ( line, MXLINELEN, stream ))
+    return ( rec ) ;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
     if ( strncmp ( line, "MV:", 3 ) == 0 )

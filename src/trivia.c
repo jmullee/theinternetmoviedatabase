@@ -45,7 +45,8 @@ struct lineRec *readTrivia ( FILE *dbFp, long offset )
   struct lineRec *head = NULL, *tail = NULL, *lrec = NULL ;
 
   (void) fseek ( dbFp, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, dbFp ) ;
+  if( NULL == fgets ( line, MXLINELEN, dbFp ))
+	return ( head ) ;
 
   while ( fgets ( line, MXLINELEN, dbFp ) != NULL )
     if ( strncmp ( line, TRIVTITLE, 2 ) == 0 )

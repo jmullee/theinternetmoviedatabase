@@ -398,7 +398,7 @@ int main ( int argc, char **argv )
   if ( yropt != NONE )
   {
     if ( ( years = calloc ( MAXTITLES, sizeof ( struct titleDbRec ) ) ) == NULL )
-      moviedbError ( "out of memory" ) ;
+      moviedbError ( "lformat: out of memory" ) ;
     nyears = readTitleDb ( years ) ;
   }
 
@@ -406,7 +406,7 @@ int main ( int argc, char **argv )
   {
     nratings = ratingsDbSize ( ) ;
     if ( ( ratings = calloc ( nratings, sizeof ( struct mrrDbRec ) ) ) == NULL )
-      moviedbError ( "out of memory" ) ;
+      moviedbError ( "lformat: out of memory" ) ;
     nratings = readRatingsDb ( ratings ) ;
   }
 

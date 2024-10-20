@@ -795,7 +795,7 @@ void displayCompactTitleInfo ( struct titleInfoRec *titleInfo, int listId )
 void displayTidyFilmographyListData ( struct titleListEntry *lrec )
 {
   char  tmp [ MXLINELEN ] ;
-  char  fmtline [ MXLINELEN ] ;
+  char  fmtline [ MXLINELEN + 32 ] ;
   char  *comma, *bracket ;
   int   nmlen, k ;
 
@@ -847,7 +847,7 @@ void displayTidyFilmographyListData ( struct titleListEntry *lrec )
 void displayWritersTidyFilmographyListData ( struct titleListEntry *lrec )
 {
   char  tmp [ MXLINELEN ] ;
-  char  fmtline [ MXLINELEN ] ;
+  char  fmtline [ MXLINELEN + 32 ] ;
   char  *comma, *bracket ;
   int   nmlen, k ;
 

@@ -190,7 +190,7 @@ char* duplicateString ( const char *str )
      return ( p ) ;
   }
 
-  moviedbError ( "error: out of memory" ) ;
+  moviedbError ( "dbutils: error: out of memory" ) ;
   return ( NULL ) ;
 }
 
@@ -254,7 +254,7 @@ char* duplicateField ( const char *str )
        return ( p ) ;
     }
   }
-  moviedbError ( "error: out of memory" ) ;
+  moviedbError ( "dbutils: error: out of memory" ) ;
   return ( NULL ) ;
 }
 
@@ -756,7 +756,7 @@ struct titleSearchRec *newTitleSearchRec ( void )
   int i ;
 
   if ( ( rrec = (struct titleSearchRec *) malloc ( sizeof ( struct titleSearchRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   rrec -> title = NULL ;
   rrec -> titleKey = NOTITLE ;
@@ -816,7 +816,7 @@ struct nameSearchRec *newNameSearchRec ( void )
   int i ;
 
   if ( ( rrec = (struct nameSearchRec *) malloc ( sizeof ( struct nameSearchRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   rrec -> name = NULL ;
   rrec -> nameKey = NONAME ;
@@ -838,7 +838,7 @@ struct plotRec *newPlotRec ( void )
   struct plotRec *retval ;
 
   if ( ( retval = (struct plotRec *) malloc ( sizeof ( struct plotRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -849,7 +849,7 @@ struct outlineRec *newOutlineRec ( void )
   struct outlineRec *retval ;
 
   if ( ( retval = (struct outlineRec *) malloc ( sizeof ( struct outlineRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -860,7 +860,7 @@ struct mrrRec *newMrrRec ( void )
   struct mrrRec *retval ;
 
   if ( ( retval = (struct mrrRec *) malloc ( sizeof ( struct mrrRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -871,7 +871,7 @@ struct listRec *newListRec ( void )
   struct listRec *retval ;
 
   if ( ( retval = (struct listRec *) malloc ( sizeof ( struct listRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -882,7 +882,7 @@ struct akaRec *newAkaRec ( void )
   struct akaRec *retval ;
 
   if ( ( retval = (struct akaRec *) malloc ( sizeof ( struct akaRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -893,7 +893,7 @@ struct akaNameRec *newAkaNameRec ( void )
   struct akaNameRec *retval ;
 
   if ( ( retval = (struct akaNameRec *) malloc ( sizeof ( struct akaNameRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -904,7 +904,7 @@ struct personRec *newPersonRec ( void )
   struct personRec *retval ;
 
   if ( ( retval = (struct personRec *) malloc ( sizeof ( struct personRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -915,7 +915,7 @@ struct lineRec *newLineRec ( void )
   struct lineRec *retval ;
 
   if ( ( retval = (struct lineRec *) malloc ( sizeof ( struct lineRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -926,7 +926,7 @@ struct bioRec *newBioRec ( void )
   struct bioRec *retval ;
 
   if ( ( retval = (struct bioRec *) malloc ( sizeof ( struct bioRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -937,7 +937,7 @@ struct bioMiscRec *newBioMiscRec ( void )
   struct bioMiscRec *retval ;
 
   if ( ( retval = (struct bioMiscRec *) malloc ( sizeof ( struct bioMiscRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -948,7 +948,7 @@ struct laserRec *newLaserRec ( void )
   struct laserRec *retval ;
 
   if ( ( retval = (struct laserRec *) malloc ( sizeof ( struct laserRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   return ( retval ) ;
 }
@@ -960,7 +960,7 @@ struct titleInfoRec *newTitleInfoRec ( void )
   struct titleInfoRec *retval ;
 
   if ( ( retval = (struct titleInfoRec *) malloc ( sizeof ( struct titleInfoRec ) ) ) == NULL )
-    moviedbError ( "error: out of memory" ) ;
+    moviedbError ( "dbutils: error: out of memory" ) ;
 
   retval -> text = NULL ;
   retval -> attr = NULL ;
@@ -1025,33 +1025,33 @@ char *caseStrStr ( unsigned char *line, unsigned char *str )
 
 char *mapNameKeyToText ( NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp )
 {
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   long offset ;
 
   (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
   offset = getFullOffset ( nameIndexFp ) ;
   (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
-  return ( duplicateField ( line ) ) ;
+  result = fgets ( line, MXLINELEN, nameKeyFp ) ;
+  return (NULL==result) ? result : ( duplicateField ( line ) ) ;
 }
 
 
 char *mapTitleKeyToText ( TitleID titleKey, FILE *titleKeyFp, FILE *titleIndexFp )
 {
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   long offset ;
 
   (void) fseek ( titleIndexFp, 4 * titleKey, SEEK_SET ) ;
   offset = getFullOffset ( titleIndexFp ) ;
   (void) fseek ( titleKeyFp, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, titleKeyFp ) ;
-  return ( duplicateField ( line ) ) ;
+  result = fgets ( line, MXLINELEN, titleKeyFp ) ;
+  return (NULL==result) ? result : ( duplicateField ( line ) ) ;
 }
 
 
 char *mapAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp )
 {
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   long offset ;
 
   if ( attrKey != NOATTR )
@@ -1059,8 +1059,8 @@ char *mapAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp
     (void) fseek ( attrIndexFp, 4 * attrKey, SEEK_SET ) ;
     offset = getFullOffset ( attrIndexFp ) ;
     (void) fseek ( attrKeyFp, offset, SEEK_SET ) ;
-    (void) fgets ( line, MXLINELEN, attrKeyFp ) ;
-    return ( duplicateField ( line ) ) ;
+    result = fgets ( line, MXLINELEN, attrKeyFp ) ;
+    return (NULL==result) ? result : ( duplicateField ( line ) ) ;
   }
   else
     return ( NULL ) ;
@@ -1069,15 +1069,15 @@ char *mapAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp
 
 char *mapfastNameKeyToText ( NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp )
 {
-  static char line [ MXLINELEN ] ;
+  static char line [ MXLINELEN ], *result = NULL;
   long offset ;
   char *p;
 
   (void) fseek ( nameIndexFp, 4 * nameKey, SEEK_SET ) ;
   offset = getFullOffset ( nameIndexFp ) ;
   (void) fseek ( nameKeyFp, offset, SEEK_SET ) ;
-  (void) fgets ( line, MXLINELEN, nameKeyFp ) ;
-  if ( (p = strchr ( line, FSEP ) ) == NULL )
+  result = fgets ( line, MXLINELEN, nameKeyFp ) ;
+  if ((NULL==result) || ( (p = strchr ( line, FSEP ) ) == NULL ))
     return ( NULL ) ;
   *p = '\0' ;
   return ( line ) ;
@@ -1086,7 +1086,7 @@ char *mapfastNameKeyToText ( NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp 
 
 char *mapfastAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp )
 {
-  static char line [ MXLINELEN ] ;
+  static char line [ MXLINELEN ], *result = NULL;
   long offset ;
   char *p ;
 
@@ -1095,8 +1095,8 @@ char *mapfastAttrKeyToText ( AttributeID attrKey, FILE *attrKeyFp, FILE *attrInd
     (void) fseek ( attrIndexFp, 4 * attrKey, SEEK_SET ) ;
     offset = getFullOffset ( attrIndexFp ) ;
     (void) fseek ( attrKeyFp, offset, SEEK_SET ) ;
-    (void) fgets ( line, MXLINELEN, attrKeyFp ) ;
-    if ( (p = strchr ( line, FSEP ) ) == NULL )
+    result = fgets ( line, MXLINELEN, attrKeyFp ) ;
+    if ((NULL==result) || ( (p = strchr ( line, FSEP ) ) == NULL ))
       return ( NULL ) ;
     *p = '\0' ;
     return ( line ) ;

@@ -2828,7 +2828,7 @@ int main()
 #line 129 "templist.l"
 
 
-main( void )
+int main( void )
 {
 	setup();
 
@@ -3208,6 +3208,6 @@ static void give_example( int heading )
 
 	header[heading] = DATA_EXISTS;
 
-        printf( examples[heading] );
+        printf("%s\n", examples[heading] );
 
 }

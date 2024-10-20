@@ -164,7 +164,7 @@ void swapAkaTitles (struct titleSearchRec *tchain)
 {
   FILE  *dbFp, *indexFp = NULL, *keyFp = NULL ;
   struct titleSearchRec *trec ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ];
   long mid, lower, upper, saveUpper, offset ;
   int found = FALSE ;
   TitleID titleKey, dbKey ;
@@ -202,7 +202,9 @@ void swapAkaTitles (struct titleSearchRec *tchain)
       (void) fseek ( indexFp, 4 * trec -> titleKey, SEEK_SET ) ;
       offset = getFullOffset ( indexFp ) ;
       (void) fseek ( keyFp, offset, SEEK_SET ) ;
-      (void) fgets ( line, MXLINELEN, keyFp ) ;
+      if (NULL == fgets ( line, MXLINELEN, keyFp ))
+		break;
+      
       (void) free ( (void*) trec -> title ) ;
       trec -> title = duplicateField ( line ) ;
     }
@@ -220,7 +222,7 @@ void substringTitleSearchKeyLookup (struct titleSearchRec *tchain)
 {
   FILE  *titleKeyFp ;
   struct titleSearchRec *tail = tchain ;
-  char  line [ MXLINELEN ] ;
+  char  line [ MXLINELEN ], *result = NULL;
   char  *substring, *ptr ;
   int  casesen, matched ;
   int  count = 0 ;
@@ -275,7 +277,7 @@ void yearMatchTitleSearchKeyLookup (struct titleSearchRec *tchain)
   FILE  *indexFp ;
   struct titleSearchRec *trec ;
   struct titleSearchRec *tail = tchain ;
-  char line [ MXLINELEN ] ;
+  char line [ MXLINELEN ], *result = NULL;
   long mid = -1, lower = 0, upper ;
   int compare, count = 0 ;
   int found = FALSE ;
@@ -297,7 +299,7 @@ void yearMatchTitleSearchKeyLookup (struct titleSearchRec *tchain)
        (void) fseek ( indexFp, mid, SEEK_SET ) ;
        if ( mid > 0 )
          if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
-           moviedbError ( "titles index file corrupt" ) ;
+           moviedbError ( "titlesearch: titles index file corrupt" ) ;
          else
            skipped = strlen ( line ) ;
        else
@@ -305,7 +307,8 @@ void yearMatchTitleSearchKeyLookup (struct titleSearchRec *tchain)
        if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
        {
          (void) findSOL ( indexFp, mid ) ;
-         (void) fgets ( line, MXLINELEN, indexFp ) ;
+         if(NULL == fgets ( line, MXLINELEN, indexFp ))
+			break;
        }
        compare = yearFieldCaseCompare ( line, trec -> title );
        if ( compare == 0 )
@@ -322,13 +325,19 @@ void yearMatchTitleSearchKeyLookup (struct titleSearchRec *tchain)
      {
        (void) findSOL ( indexFp, mid ) ;
        mid = ftell ( indexFp ) - 1 ;
-       (void) fgets ( line, MXLINELEN, indexFp ) ;
-       found = ( yearFieldCaseCompare ( line, trec -> title ) == 0 ) ;
+       result = fgets ( line, MXLINELEN, indexFp ) ;
+       if(NULL!=result)
+         found = ( yearFieldCaseCompare ( line, trec -> title ) == 0 ) ;
      }
      if ( !found )
      {
        found = TRUE ;
-       (void) fgets ( line, MXLINELEN, indexFp ) ;
+       result = fgets ( line, MXLINELEN, indexFp ) ;
+       if(NULL==result)
+		{
+		trec = NULL; // to break out of out for-loop
+		break; // break out of while loop
+		}
      }
      if ( ( keyptr = strchr ( line, FSEP ) ) != NULL )
      {
@@ -390,7 +399,7 @@ void straightTitleSearchKeyLookup (struct titleSearchRec *tchain)
        (void) fseek ( indexFp, mid, SEEK_SET ) ;
        if ( mid > 0 )
          if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
-           moviedbError ( "titles index file corrupt" ) ;
+           moviedbError ( "titlesearch: titles index file corrupt" ) ;
          else
            skipped = strlen ( line ) ;
        else
@@ -398,7 +407,8 @@ void straightTitleSearchKeyLookup (struct titleSearchRec *tchain)
        if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
        {
          (void) findSOL ( indexFp, mid ) ;
-         (void) fgets ( line, MXLINELEN, indexFp ) ;
+         if ( fgets ( line, MXLINELEN, indexFp ) == NULL )
+           moviedbError ( "titlesearch: titles index file corrupt" ) ;
        }
        compare = fieldCaseCompare ( line, trec -> title );
        if ( compare == 0 )
@@ -617,7 +627,7 @@ void lookupTitles ( FILE *dbFp, FILE *indexFp, struct titleSearchRec *trec, int 
         trec -> results [ listId ] . count++ ;
         trec -> nameCount++ ;
 	if ( trec -> nameCount > MAXTITLERESULTS )
-	  moviedbError ( "Too many names -- increase MAXTITLERESULTS" ) ;
+	  moviedbError ( "titlesearch: Too many names -- increase MAXTITLERESULTS" ) ;
         titleKey = getTitle ( indexFp ) ;
         prevOffset = offset ;
         offset = getFullOffset ( indexFp ) ;

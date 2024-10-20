@@ -305,7 +305,7 @@ void lseenList ( int listId, int mrropt, int yropt, int usopt, int threshold, st
   }
   else
     if ( ( counts = calloc ( MAXLSEEN, sizeof ( struct lseenCount ) ) ) == NULL )
-      moviedbError ( "out of memory" ) ;
+      moviedbError ( "lseen: out of memory" ) ;
 
   (void) constructFilename ( fn, filmographyDefs [ listId ] . stem, DBSEXT ) ;
   dbFp = openFile ( fn ) ;
@@ -367,7 +367,7 @@ void lseenList ( int listId, int mrropt, int yropt, int usopt, int threshold, st
         counts [ ncount ] . nameKey = nameKey ;
         counts [ ncount ] . name = mapNameKeyToText ( nameKey, nameKeyFp, nameIndexFp ) ;
         if ( ++ncount > MAXLSEEN )
-          moviedbError ( "out of space to store totals, use -min option" ) ;
+          moviedbError ( "lseen: out of space to store totals, use -min option" ) ;
       }
       else
       {
@@ -459,21 +459,21 @@ int main ( int argc, char **argv )
     moviedbUsage ( LSEEN_USAGE1, LSEEN_USAGE2, NULL, NULL, NULL, NULL ) ;
 
   if ( ( votes = calloc ( MAXTITLES, sizeof ( struct voteDbRec ) ) ) == NULL )
-    moviedbError ( "out of memory" ) ;
+    moviedbError ( "lseen: out of memory" ) ;
   nvotes = readVotesDb ( votes ) ;
 
   if ( mrropt != NONE )
   {
     nratings = ratingsDbSize ( ) ;
     if ( ( ratings = calloc ( nratings, sizeof ( struct mrrDbRec ) ) ) == NULL )
-      moviedbError ( "out of memory" ) ;
+      moviedbError ( "lseen: out of memory" ) ;
     nratings = readRatingsDb ( ratings ) ;
   }
 
   if ( yropt != NONE )
   {
     if ( ( years = calloc ( MAXTITLES, sizeof ( struct titleDbRec ) ) ) == NULL )
-      moviedbError ( "out of memory" ) ;
+      moviedbError ( "lseen: out of memory" ) ;
     nyears = readTitleDb ( years ) ;
   }
 
