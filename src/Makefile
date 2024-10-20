@@ -1,4 +1,20 @@
 
+BASEDIR=/home/jmullee/projects/imdb/moviedb/src
+
+ZLISTCAT="\"zcat\""
+ZLISTEXT="\".gz\""
+ZDBSCAT="\"zcat\""
+ZDBSEXT="\".gz\""
+ZDBSCATOPTS="\"\""
+ZLISTCATOPTS="\"\""
+RAWDIR="\"$(BASEDIR)/lists/\""
+DBDIR="\"$(BASEDIR)/dbs/\""
+LOGFILENAME="\"/tmp/moviedb.log\""
+
+ETCDIR=$(BASEDIR)/etc/
+BINDIR=$(BASEDIR)/bin/
+
+
 EXEBIN = list title ltrace lguide listall mkballot lindex lformat lseen \
          alist template templist
 
@@ -21,15 +37,17 @@ all :
 # ----------------------------------------------------------------
 #
 
-CAUXFLAGS = -DZLISTCAT=\"$(ZLISTCAT)\" -DZLISTEXT=\"$(ZLISTEXT)\" \
-            -DZDBSCAT=\"$(ZDBSCAT)\" -DZDBSEXT=\"$(ZDBSEXT)\" \
-	    -DZDBSCATOPTS=\"$(ZDBSCATOPTS)\" \
-	    -DZLISTCATOPTS=\"$(ZLISTCATOPTS)\" \
-	    -DRAWDIR="\"$(RAWDIR)\"" -DDBDIR="\"$(DBDIR)\"" \
-	    -DETCDIR="\"$(ETCDIR)\"" -DLOGFILENAME="\"$(LOGFILENAME)\""
+CAUXFLAGS = -DZLISTCAT=$(ZLISTCAT) -DZLISTEXT=$(ZLISTEXT) \
+	-DZDBSCAT=$(ZDBSCAT) -DZDBSEXT=$(ZDBSEXT) \
+	-DZDBSCATOPTS=$(ZDBSCATOPTS) \
+	-DZLISTCATOPTS=$(ZLISTCATOPTS) \
+	-DRAWDIR=$(RAWDIR) -DDBDIR=$(DBDIR) \
+	-DETCDIR=$(ETCDIR) -DLOGFILENAME=$(LOGFILENAME)
 
-CFLAGS = -g -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror -Wl,-z relro
-YYFLAGS = -Wno-error=unused-function
+CFLAGS = -g3 -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror
+YYFLAGS = -Wno-unused-function -Wno-unused-value
+LD = $(CC)
+
 
 #
 # ----------------------------------------------------------------
@@ -101,13 +119,16 @@ alist : alist.o dbutils.o years.o  log.o
 	$(LD) $(LDFLAGS) -o alist alist.o dbutils.o years.o log.o
 
 template : template.o
-	$(LD) $(LDFLAGS) -o template template.o
+	$(LD) $(LDFLAGS) $(YYFLAGS) -o template template.o
 
 templist : templist.o
-	$(LD) $(LDFLAGS) -o templist templist.o
+	$(LD) $(LDFLAGS) $(YYFLAGS) -o templist templist.o
 
-temp*.o:
-	$(CC) $(CFLAGS) $(YYFLAGS) $(CAUXFLAGS) -c $<
+template.o:
+	$(CC) $(CFLAGS) $(YYFLAGS) $(CAUXFLAGS) -c template.c
+
+templist.o:
+	$(CC) $(CFLAGS) $(YYFLAGS) $(CAUXFLAGS) -c templist.c
 
 .c.o:
 	$(CC) $(CFLAGS) $(CAUXFLAGS) -c $<

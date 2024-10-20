@@ -66,6 +66,13 @@
 
 BASEDIR=/home/jmullee/projects/imdb/moviedb/src
 
+ZLISTCAT="\"zcat\""
+ZLISTEXT="\".gz\""
+ZDBSCAT="\"zcat\""
+ZDBSEXT="\".gz\""
+ZDBSCATOPTS="\"\""
+ZLISTCATOPTS="\"\""
+
 # Options for lfetch
 # YOU MUST SET THE -user option to your e-mail address
 # for example: LFETCHOPT = -auto -user userid@machine.domain
@@ -78,7 +85,9 @@ LFETCHOPT = -auto
 CC = cc
 
 # C flags
-CFLAGS = -O -DCOMPRESS
+#CFLAGS = -O -DCOMPRESS
+CFLAGS = -g3 -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror
+YYFLAGS = -Wno-unused-function -Wno-unused-value
 
 # Linker
 LD = $(CC)
@@ -182,7 +191,7 @@ DOCDIR = $(BASEDIR)/docs/
 # The following variables control the use of log files for tracking usage
 # of the movie database programs. Probably only useful on a multi-user system.
 
-LOGFILENAME = /tmp/.imdb_log
+LOGFILENAME="\"/tmp/moviedb.log\""
 LOGFILE = 1 # 1 for logging
 
 # --------------------------------------------------------------------------
