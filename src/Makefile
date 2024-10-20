@@ -28,6 +28,9 @@ CAUXFLAGS = -DZLISTCAT=\"$(ZLISTCAT)\" -DZLISTEXT=\"$(ZLISTEXT)\" \
 	    -DRAWDIR="\"$(RAWDIR)\"" -DDBDIR="\"$(DBDIR)\"" \
 	    -DETCDIR="\"$(ETCDIR)\"" -DLOGFILENAME="\"$(LOGFILENAME)\""
 
+CFLAGS = -g -DCOMPRESS -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all -Wall -Wextra -Wformat-security -Werror -Wl,-z relro
+YYFLAGS = -Wno-error=unused-function
+
 #
 # ----------------------------------------------------------------
 #
@@ -102,6 +105,9 @@ template : template.o
 
 templist : templist.o
 	$(LD) $(LDFLAGS) -o templist templist.o
+
+temp*.o:
+	$(CC) $(CFLAGS) $(YYFLAGS) $(CAUXFLAGS) -c $<
 
 .c.o:
 	$(CC) $(CFLAGS) $(CAUXFLAGS) -c $<

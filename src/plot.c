@@ -61,7 +61,9 @@ struct plotRec *readPlot ( FILE *stream, long offset )
      return ( rec ) ;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
+  {
     if ( line [ 0 ] != '\n' && line [ 0 ] != '-' )
+    {
       if ( line [ 2 ] != ':' )
         return ( NULL ) ;
       else
@@ -96,7 +98,9 @@ struct plotRec *readPlot ( FILE *stream, long offset )
         else if ( strncmp ( line, REVIEW_KEY, 2 ) == 0 )
 	  rec -> RV = duplicateString ( line + 4 ) ;
      }
-     return ( rec ) ;
+    }
+  }
+  return ( rec ) ;
 }
 
 

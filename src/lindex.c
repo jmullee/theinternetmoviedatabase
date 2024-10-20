@@ -82,7 +82,7 @@
 
 int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struct searchConstraints *constraints )
 {
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int stopFlag = FALSE ;
   NameID nameKey ;
   long offset ;
@@ -96,10 +96,12 @@ int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struc
     (void) fseek ( indexFp, 4 * nameKey, SEEK_SET ) ;
     offset = getFullOffset ( indexFp ) ;
     (void) fseek ( keyFp, offset, SEEK_SET ) ;
-    result = fgets ( line, MXLINELEN, keyFp ) ;
+    if(NULL==fgets ( line, MXLINELEN, keyFp ))
+		return FALSE;
     stripSep ( line ) ;
     stopFlag = TRUE ;
     if ( constraints -> subString [ 0 ] )
+    {
       if ( ! constraints -> caseSen )
       {
         if ( caseStrStr ( line, constraints -> subString ) == NULL )
@@ -108,6 +110,7 @@ int getNextLindexName ( FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struc
       else
         if ( strstr ( line, constraints -> subString ) == NULL )
   	  stopFlag = FALSE ;
+    }
   }
 
   if ( stopFlag )
@@ -195,15 +198,20 @@ int getNextLindexTitle ( FILE *dbFp, FILE *indexFp, FILE *keyFp, struct searchCo
       stopFlag = FALSE ;
     if ( constraints -> moviesOnly && *title == '"' )
       stopFlag = FALSE ;
-    else if ( constraints -> subString [ 0 ] )
-      if ( ! constraints -> caseSen )
+    else
+    {
+      if ( constraints -> subString [ 0 ] )
       {
-        if ( caseStrStr ( title, constraints -> subString ) == NULL )
-  	  stopFlag = FALSE ;
+        if ( ! constraints -> caseSen )
+        {
+          if ( caseStrStr ( title, constraints -> subString ) == NULL )
+    	  stopFlag = FALSE ;
+        }
+        else
+          if ( strstr ( title, constraints -> subString ) == NULL )
+    	  stopFlag = FALSE ;
       }
-      else
-        if ( strstr ( title, constraints -> subString ) == NULL )
-  	  stopFlag = FALSE ;
+    }
   }
   return ( stopFlag ) ;
 }

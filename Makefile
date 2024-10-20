@@ -183,7 +183,7 @@ DOCDIR = $(BASEDIR)/docs/
 # of the movie database programs. Probably only useful on a multi-user system.
 
 LOGFILENAME = /tmp/.imdb_log
-LOGFILE = 0 # 1 for logging
+LOGFILE = 1 # 1 for logging
 
 # --------------------------------------------------------------------------
 #

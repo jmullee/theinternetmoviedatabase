@@ -13,7 +13,7 @@ char *appendTag ( char *original, char *extension ) ;
 char* duplicateField ( const char *str ) ;
 char *constructFilename ( char *filename, const char *base, const char *extension ) ;
 int isReadable ( const char *fname ) ;
-int caseCompare ( unsigned char *s1, unsigned char *s2 ) ;
+int caseCompare ( char *s1, char *s2 ) ;
 
 void putByte ( int i, FILE *stream ) ;
 void putPosition ( int i, FILE *stream ) ;
@@ -52,8 +52,8 @@ FILE *writeFile ( const char *path ) ;
 FILE *copyFile ( const char *fromName ) ;
 
 long findSOL ( FILE *stream, long pos ) ;
-int fieldCaseCompare ( unsigned char *s1, unsigned char *s2 ) ;
-int yearFieldCaseCompare ( unsigned char *s1, unsigned char *s2 ) ;
+int fieldCaseCompare ( char *s1, char *s2 ) ;
+int yearFieldCaseCompare ( char *s1, char *s2 ) ;
 
 struct titleSearchRec *newTitleSearchRec ( void ) ;
 struct nameSearchRec *newNameSearchRec ( void ) ;
@@ -72,7 +72,7 @@ struct titleInfoRec *newTitleInfoRec ( void ) ;
 
 void displayTitleYear ( char *title, int year ) ;
 
-char *caseStrStr ( unsigned char *line, unsigned char *str ) ;
+char *caseStrStr ( char *line, char *str ) ;
 
 char *mapNameKeyToText ( NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp ) ;
 char *mapTitleKeyToText ( TitleID titleKey, FILE *titleKeyFp, FILE *titleIndexFp ) ;

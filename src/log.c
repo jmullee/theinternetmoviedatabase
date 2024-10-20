@@ -9,10 +9,12 @@
 
 void logProgram ( char *progName )
 {
-#if LOGFILE
   {
-    int logfile;
+    ssize_t retval = 0;
+    int logfile = -1;
+#if LOGFILE
     logfile = open(LOGFILENAME, O_RDWR | O_CREAT | O_APPEND, 0666);
+#endif
     if (logfile != -1)
     {
       char StrBuf[80];
@@ -21,10 +23,11 @@ void logProgram ( char *progName )
       sprintf(StrBuf, "%s\t%s\t%s\n",
         ctime(&temp), progName, getpwuid(getuid())->pw_name);
       StrBuf[strlen(ctime(&temp))-1] = ' ';
-      write(logfile, StrBuf, strlen(StrBuf));
+      retval = write(logfile, StrBuf, strlen(StrBuf));
+      if(0 > retval)
+         printf("log: error writing to file %s\n", LOGFILENAME);
       close(logfile);
     }
   }
-#endif
   return ;
 }

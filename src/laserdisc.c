@@ -77,7 +77,9 @@ struct laserRec *readLaserDisc ( FILE *stream, long offset )
     return ( rec ) ;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
+  {
     if ( line [ 0 ] != '\n' )
+    {
       if ( line [ 2 ] != ':' && line [ 0 ] != '-' )
         return ( NULL ) ;
       else
@@ -124,6 +126,9 @@ struct laserRec *readLaserDisc ( FILE *stream, long offset )
 	  }
         }
       }
+    }
+  }
+
   return ( rec ) ;
 }
 

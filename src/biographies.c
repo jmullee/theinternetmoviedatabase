@@ -93,7 +93,9 @@ struct personRec *readBiography ( FILE *stream, long offset )
 	return (struct personRec *)NULL;
 
   while ( fgets ( line, MXLINELEN, stream ) != NULL )
+    {
     if ( line [ 0 ] != '\n' && line [ 0 ] != '-' )
+      {
       if ( line [ 2 ] != ':' )
         return ( NULL ) ;
       else
@@ -166,7 +168,9 @@ struct personRec *readBiography ( FILE *stream, long offset )
           }
 
         }
+      }
      }
+    }
   return ( rec ) ;
 }
 

@@ -212,6 +212,7 @@ void sortLformatData ( struct formatRec listData [ ], int count, int raw, int mr
   }
 
   if ( mrropt == NONE )
+  {
     if ( yropt == YRU )
     {
       if ( !raw )
@@ -219,6 +220,7 @@ void sortLformatData ( struct formatRec listData [ ], int count, int raw, int mr
     }
     else
       qsort ( (void*) listData, (size_t) count, sizeof ( struct formatRec ), (int (*) (const void*, const void*)) yearLformatSort ) ;
+  }
 
   if ( mrropt == SMRR )
     qsort ( (void*) listData, (size_t) count, sizeof ( struct formatRec ), (int (*) (const void*, const void*)) smrrLformatSort ) ;

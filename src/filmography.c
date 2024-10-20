@@ -394,6 +394,7 @@ void straightFilmographySearchKeyLookup (struct nameSearchRec *chain)
     }
 
    if ( found )
+   {
      if ( ( keyptr = strchr ( line, FSEP ) ) != NULL )
      {
        *keyptr++ = '\0' ;
@@ -402,6 +403,7 @@ void straightFilmographySearchKeyLookup (struct nameSearchRec *chain)
      }
    else
        nrec -> nameKey = NONAME ;
+   }
   }
 
   (void) fclose ( indexFp ) ;
@@ -493,14 +495,17 @@ int listRecTitleKeySort ( struct listEntry *e1, struct listEntry *e2 )
 {
   if ( e1 -> titleKey == e2 -> titleKey )
     return ( 0 ) ;
-  else if ( e1 -> titleKey > e2 -> titleKey )
+  else
+  {
+  if ( e1 -> titleKey > e2 -> titleKey )
     return ( 1 ) ;
   else
     return ( -1 ) ;
+  }
 }
 
 
-int readFilmographyToListRec ( FILE *dbFp, long offset, long nameKey, struct listRec *lrec, int listId )
+int readFilmographyToListRec ( FILE *dbFp, long offset/*, long nameKey*/, struct listRec *lrec, int listId )
 {
   int i, len, noWithAttr, noWithoutAttr, count = 0 ;
 
@@ -603,7 +608,7 @@ struct listRec *lookupFilmography ( FILE *dbFp, FILE *indexFp, struct nameSearch
     if ( ( offset = lookupNamesIndex ( indexFp, nrec -> nameKey ) ) >= 0 )
     {
       retval = newListRec ( ) ;
-      if ( readFilmographyToListRec ( dbFp, offset, nrec -> nameKey, retval, listId ) )
+      if ( readFilmographyToListRec ( dbFp, offset/*, nrec -> nameKey*/, retval, listId ) )
         return ( retval ) ;
     }
   return ( NULL ) ;

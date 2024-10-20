@@ -288,7 +288,7 @@ int isReadable ( const char *fname )
 }
 
 
-int caseCompare ( unsigned char *s1, unsigned char *s2 )
+int caseCompare ( char *s1, char *s2 )
 {
   for ( ; upperCase (*s1) == upperCase (*s2) ; s1++, s2++ )
     if ( *s1 == '\0' )
@@ -706,7 +706,7 @@ long findSOL ( FILE *stream, long pos )
 }
 
 
-int fieldCaseCompare ( unsigned char *s1, unsigned char *s2 )
+int fieldCaseCompare ( char *s1, char *s2 )
 {
   if ( s2 == NULL )
     return ( 1 ) ;
@@ -727,7 +727,7 @@ int fieldCaseCompare ( unsigned char *s1, unsigned char *s2 )
 }
 
 
-int yearFieldCaseCompare ( unsigned char *s1, unsigned char *s2 )
+int yearFieldCaseCompare ( char *s1, char *s2 )
 {
   if ( s2 == NULL )
     return ( 1 ) ;
@@ -999,11 +999,11 @@ void displayTitleYear ( char *title, int year )
 }
 
 
-char *caseStrStr ( unsigned char *line, unsigned char *str )
+char *caseStrStr ( char *line, char *str )
 {
-  unsigned char upperLine [ MXLINELEN ] ;
-  unsigned char upperStr [ MXLINELEN ] ;
-  unsigned char *from, *to ;
+  char upperLine [ MXLINELEN ] ;
+  char upperStr [ MXLINELEN ] ;
+  char *from, *to ;
 
   for ( from = line, to = upperLine ; *from ; from++, to++ )
     if ( islower ( *from ) )
@@ -1019,7 +1019,7 @@ char *caseStrStr ( unsigned char *line, unsigned char *str )
       *to = *from ;
   *to = '\0' ;
 
-  return ( strstr ( upperLine, upperStr ) ) ;
+  return ( strstr ( (char *) upperLine, (char *) upperStr ) ) ;
 }
 
 

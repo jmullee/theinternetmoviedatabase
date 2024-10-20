@@ -384,7 +384,7 @@ struct movieLinkRec
 {
   TitleID             titleKey ;
   enum movieLinkTypes link ;
-  unsigned char       *title ;
+  char       *title ;
 } ;
 
 struct compCastRec
@@ -588,7 +588,7 @@ struct titleSearchOptRec
 
 struct titleSearchRec
 {
-  unsigned char            *title ;
+  char            *title ;
   TitleID                  titleKey ;
   struct titleSearchOptRec searchparams ;
   int                      trivflags [ NO_OF_TRIV_LISTS ] ;
@@ -656,7 +656,7 @@ struct nameSearchOptRec
 
 struct nameSearchRec
 {
-  unsigned char           *name ;
+  char           *name ;
   NameID                  nameKey ;
   struct nameSearchOptRec searchparams ;
   int                     searchFlags [ NO_OF_FILMOGRAPHY_LISTS ] ;
@@ -726,7 +726,7 @@ struct lindexRec
 
 struct lindexTitleRec
 {
-  unsigned char  *title ;
+  char  *title ;
   struct mrrRec  mrr ;
   int            year ;
 } ;
@@ -757,21 +757,21 @@ struct lseenCount
 
 struct titleIndexRec
 {
-  unsigned char   *title ;
+  char   *title ;
   TitleID         titleKey ;
 } ;
 
 
 struct attrIndexRec
 {
-  unsigned char    *attr ;
+  char    *attr ;
   AttributeID      attrKey ;
 } ;
 
 
 struct nameIndexRec
 {
-  unsigned char *name ;
+  char *name ;
   NameID  nameKey ;
 } ;
 

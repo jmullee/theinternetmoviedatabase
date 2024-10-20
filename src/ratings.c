@@ -56,8 +56,8 @@ void addRatingsToNameSearch (struct nameSearchRec *chain)
   struct nameSearchRec *nrec ;
   long mid, lower, upper, saveUpper ;
   int found = FALSE ;
-  int i, listId, key ;
-  TitleID dbKey ;
+  int i, listId ;
+  TitleID dbKey, key ;
 
   for ( nrec = chain ; !found && nrec != NULL ; nrec = nrec -> next )
     found = nrec -> searchparams. mrropt ;

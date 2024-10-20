@@ -105,6 +105,7 @@ int alistAttrTest ( struct attrSearchOptRec attrFlags, char *attr, int substring
     return ( FALSE ) ;
 
   if ( attrFlags . string )
+    {
     if ( substring )
     {
       if ( casesen )
@@ -126,6 +127,7 @@ int alistAttrTest ( struct attrSearchOptRec attrFlags, char *attr, int substring
       else
         if ( caseCompare ( listAttr, attr ) == 0 )
           return ( TRUE ) ;
+    }
     }
 
   if ( attrFlags . aa )

@@ -222,7 +222,7 @@ void substringTitleSearchKeyLookup (struct titleSearchRec *tchain)
 {
   FILE  *titleKeyFp ;
   struct titleSearchRec *tail = tchain ;
-  char  line [ MXLINELEN ], *result = NULL;
+  char  line [ MXLINELEN ] ;
   char  *substring, *ptr ;
   int  casesen, matched ;
   int  count = 0 ;
@@ -420,6 +420,7 @@ void straightTitleSearchKeyLookup (struct titleSearchRec *tchain)
     }
 
    if ( found )
+   {
      if ( ( keyptr = strchr ( line, FSEP ) ) != NULL )
      {
        *keyptr++ = '\0' ;
@@ -428,6 +429,7 @@ void straightTitleSearchKeyLookup (struct titleSearchRec *tchain)
      }
    else
        trec -> titleKey = NOTITLE ;
+   }
   }
 
   (void) fclose ( indexFp ) ;
@@ -867,6 +869,7 @@ struct titleSearchRec *makeTitleChain ( struct nameSearchRec *nrec, struct title
             if ( strcmp ( r -> title, nrec -> lists [ i ] -> entries [ j ] . title ) == 0 )
               found = TRUE ;
           if ( found == FALSE )
+	   {
             if ( noptions . searchall )
             {
               prev = NULL ;
@@ -899,6 +902,7 @@ struct titleSearchRec *makeTitleChain ( struct nameSearchRec *nrec, struct title
             }
             else
               rrec = addTitleSearchRec ( rrec, nrec -> lists [ i ] -> entries [ j ] . title ) ;
+	  }
         }
   addTitleChainOpts ( rrec, options ) ;
   addTitleChainTrivOpts ( rrec, trivopts ) ;

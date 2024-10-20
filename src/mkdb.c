@@ -182,7 +182,7 @@ void writeTitleIndexKey ( TitleID titleCount )
   FILE *indexFp, *keyFp ;
   struct titleKeyOffset *titleIndex ;
   long lastOffset = 0 ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   char *p ;
 
   titleIndex = (struct titleKeyOffset *) calloc ( titleCount + 5, sizeof ( struct titleKeyOffset ) ) ;
@@ -219,7 +219,7 @@ void writeAttrIndexKey ( AttributeID attrCount )
   FILE *indexFp, *keyFp ;
   struct attrKeyOffset *attrIndex  ;
   long lastOffset = 0 ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   char *p ;
 
   attrIndex = (struct attrKeyOffset *) calloc ( attrCount + 5, sizeof ( struct attrKeyOffset ) ) ;
@@ -256,7 +256,7 @@ void writeNameIndexKey ( NameID nameCount )
   FILE *indexFp, *keyFp ;
   struct nameKeyOffset *namesIndex ;
   long lastOffset = 0 ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   char *p ;
 
   namesIndex = (struct nameKeyOffset *) calloc ( nameCount + 5, sizeof ( struct nameKeyOffset ) ) ;
@@ -317,7 +317,7 @@ void writeAttrAlphaKey ( AttributeID attrCount )
 TitleID readTitleAlphaKey ( struct titleIndexRec *titles )
 {
   FILE *listFP ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   char *p ;
   TitleID i = 0 ;
 
@@ -344,7 +344,7 @@ AttributeID readAttrAlphaKey ( void )
 {
   struct attrIndexRec *attributes = attributeIndex ;
   FILE *listFP ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   char *p ;
   AttributeID i = 0 ;
 
@@ -443,7 +443,7 @@ TitleID titleKeyLookup (char *str, struct titleIndexRec *titles, TitleID *titleC
 TitleID titleKeyLookupReadOnly (char *str, struct titleIndexRec *titles, TitleID titleCount)
 {
   struct titleIndexRec *matched ;
-  TitleID dummy, i ;
+  TitleID dummy ;
   char *ptr ;
 
   if ( ( ptr = strchr ( str, FSEP ) ) != NULL )
@@ -630,7 +630,6 @@ TitleID processMoviesList (struct titleIndexRec *titles, TitleID *titleCount, At
 char *splitAttribute (char *title)
 {
   char   *attr = NULL ;
-  char   *bracketptr ;
   char   *akaptr ;
   int    nest ;
 
@@ -1697,7 +1696,7 @@ TitleID processTriviaList (struct titleIndexRec *titles, TitleID *titleCount, in
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int  indata = FALSE ;
   int  inheader = FALSE ;
   int  notdone = TRUE ;
@@ -1768,7 +1767,7 @@ TitleID processPlotList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int  inplot = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -1899,7 +1898,7 @@ NameID processBiographiesList ( NameID *nameCount )
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   *keyPtr = NULL ;
-  int  inbio = FALSE, skipMode = FALSE, compare ;
+  int  inbio = FALSE, compare ;
   NameID count = 0, i ;
   long currentOffset ;
 
@@ -1941,14 +1940,12 @@ NameID processBiographiesList ( NameID *nameCount )
              (void) printf ( "%s\n", line + 4 ) ;
            if ( caseCompare ( prevName, line + 4 ) >= 0 )
            {
-             skipMode = TRUE ;
              if ( debugFlag )
                printf ( "skipped: %s\n", line + 4 ) ;
              continue ;
            }
            else
              (void) strcpy ( prevName, line + 4 ) ;
-           skipMode = FALSE ;
 
            if ( tmpFp == NULL )
            {
@@ -2072,7 +2069,7 @@ TitleID processMovieRatings (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
   struct mrrData *ratingsReport ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int  inmrr = FALSE ;
   TitleID count = 0, i, insert, nratings ;
   int  votes ;
@@ -2144,7 +2141,7 @@ TitleID processVotesList (struct titleIndexRec *titles, TitleID *titleCount)
 {
   FILE *dbFp, *listFp ;
   struct voteData *votes;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   struct titleIndexRec *matched ;
   int compare ;
   TitleID count = 0, i = 1, insert ;
@@ -2426,7 +2423,7 @@ NameID processAkaNamesList ( NameID *nameCount )
   char   keyFileData [ MXLINELEN ] ;
   char   prevName [ MXLINELEN ] ;
   char   *keyPtr = NULL ;
-  int inaka = FALSE, enddata = FALSE, skipMode, compare ;
+  int inaka = FALSE, enddata = FALSE, compare ;
   NameID count = 0, i ;
   NameID primaryKey = NONAME ;
   char *ptr ;
@@ -2465,14 +2462,12 @@ NameID processAkaNamesList ( NameID *nameCount )
           (void) printf ( "%s\n", line ) ;
         if ( caseCompare ( prevName, line ) >= 0 )
         {
-          skipMode = TRUE ;
           if ( debugFlag )
             printf ( "skipped: %s\n", line ) ;
           continue ;
         }
         else
           (void) strcpy ( prevName, line ) ;
-        skipMode = FALSE ;
 
         if ( tmpFp == NULL )
         {
@@ -2724,7 +2719,7 @@ TitleID processBusinessList ( struct titleIndexRec *titles, TitleID *titleCount 
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int  inLit = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -2787,7 +2782,7 @@ TitleID processLaserDiscList ( struct titleIndexRec *titles, TitleID *titleCount
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int  inLD = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset = 0 ;
@@ -2851,7 +2846,7 @@ TitleID processLiteratureList ( struct titleIndexRec *titles, TitleID *titleCoun
 {
   FILE *dbFp, *listFp, *indexFp ;
   struct titleKeyOffset *titlesIndex = sharedTitleIndex ;
-  char line [ MXLINELEN ], *result = NULL;
+  char line [ MXLINELEN ] ;
   int  inLit = FALSE ;
   TitleID  count = 0, i ;
   long currentOffset ;
@@ -3055,8 +3050,8 @@ TitleID processMovieLinksList ( struct titleIndexRec *titles, TitleID *titleCoun
   size_t linkSize = LINKSTART ;
   char  line [ MXLINELEN ], *result = NULL;
   char *ptr ;
-  int   inMovie = FALSE, i, position = 0 ;
-  TitleID   count = 0, currentTitleKey = NOTITLE ;
+  int   inMovie = FALSE, position = 0 ;
+  TitleID   count = 0, i, currentTitleKey = NOTITLE ;
 
   list = (struct movieLinkDbRec*) calloc ( LINKSTART, sizeof ( struct movieLinkDbRec ) ) ;
   if ( list == NULL )
