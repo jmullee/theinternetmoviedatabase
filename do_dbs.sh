@@ -1,8 +1,8 @@
 #!/bin/bash
 
-make cleandbs
+make -s cleandbs
 
-script -c 'make databases' make-databases.log
+script -c 'make -s databases' make-databases.log
 dos2unix make-databases.log
 grep -aniEC4 'fault|dumped|terminated|smashing|fail|error|corrupt' make-databases.log | \
    grep -vE 'WARNING|ing directory' | uniq

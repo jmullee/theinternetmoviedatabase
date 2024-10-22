@@ -3,7 +3,7 @@
 ## ./lists/get_smol_lists.sh
 
 SRCDIR=/home/jmullee/projects/imdb/ftp-data-2017-12-22
-GETLINES=50000
+GETLINES=200000
 
 cd lists
 set -e
@@ -19,5 +19,3 @@ find ${SRCDIR} -maxdepth 1 -type f -name \*\.list.gz -not -size 0 -printf '%f\n'
 		echo "${SRCDIR}/${L} > ${M}"
 		zcat ${SRCDIR}/${L} | head -n ${GETLINES} > ${M}
 	done
-
-# ln -s $PWD/src/mkdb $PWD/etc/mkdb
