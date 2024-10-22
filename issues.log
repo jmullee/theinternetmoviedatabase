@@ -247,3 +247,37 @@ gdb -ex=r -ex=bt -ex=k -ex=q --args ./etc/mkdb -acs
 ./do_dbs.sh
 	(with lists trimmed to 50k lines: ./lists/get_smol_lists.sh)
 	runs to completion, no errs.
+
+increased to 200,000 in lists/get_smol_lists.sh
+
+	mkdb: too many titles -- increase MAXTITLES
+	JM: set MAXTITLES to 5,000,000
+
+	Reading symbols from ./etc/mkdb...
+	Starting program: /home/jmullee/projects/imdb/moviedb/src/etc/mkdb -comp
+	Adding Composers...
+	 ...164629 read
+
+	Program received signal SIGSEGV, Segmentation fault.
+	__strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+	120	../sysdeps/x86_64/multiarch/../strlen.S: No such file or directory.
+	#0  __strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+	#1  0x00007ffff7e1fd15 in __vfprintf_internal (s=0x55555a1c1890, format=0x5555555692ef "%s|%lx\n", ap=ap@entry=0x7fffffffcb80, mode_flags=mode_flags@entry=0)
+		at vfprintf-internal.c:1688
+	#2  0x00007ffff7e08c6a in __fprintf (stream=<optimised out>, format=<optimised out>) at fprintf.c:32
+	#3  0x000055555555847d in writeAttrAlphaKey (attrCount=2480) at mkdb.c:311
+
+	JM: bug caused by
+	     processFilmographyList() / makeDatabaseTitlesIndex()
+	  src/mkdb.c:1159
+	     // wrong size, nentries -> MAXTITLES
+	     calloc ( MAXTITLES /* was nentries+5 */, sizeof ( struct titleKeyOffset ) )
+	     // and count++ without guard
+	  src/mkdb.c:1180
+		 if(count >= MAXTITLES)
+		   moviedbError("mkdb: too many titles -- increase MAXTITLES");
+
+	'make -s databases' runs to completion without error.
+	initial test of other tools seems to work. ("./bin/title -t 'Jaws' -all" etc)
+	the 200K lines took ~ 70 minutes. the unlimited has largest file actors.list 22,667,478 lines
+

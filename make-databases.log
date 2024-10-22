@@ -1,244 +1,93 @@
-Script started on 2024-10-21 00:05:48+01:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="166" LINES="44"]
-make KEEPLIST="@true" \
-        ZLISTEXT=".gz" ZDBSEXT=".gz" \
-        ZDBSCOMPRESS="gzip" ETCDIR="/home/jmullee/projects/imdb/moviedb/src/etc/" \
-RAWDIR="/home/jmullee/projects/imdb/moviedb/src/lists/" MKDBOPT="" do-databases
-make[1]: Entering directory '/home/jmullee/projects/imdb/moviedb/src'
-cd /home/jmullee/projects/imdb/moviedb/src/dbs/; make KEEPLIST="@true" \
-        ZLISTEXT=".gz" ZDBSEXT=".gz" \
-        ZDBSCOMPRESS="gzip" ETCDIR="/home/jmullee/projects/imdb/moviedb/src/etc/" \
-RAWDIR="/home/jmullee/projects/imdb/moviedb/src/lists/" MKDBOPT="" databases
-make[2]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -movie
+Script started on 2024-10-22 00:21:53+01:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="166" LINES="44"]
 Adding Movies List...
- ...49985 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -acr
+ ...199985 read
 Adding Actors...
- ...41275 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -acs
+ ...165910 read
 Adding Actresses...
- ...42798 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -cine
+ ...163578 read
 Adding Cinematographers...
- ...38894 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -comp
+ ...160332 read
 Adding Composers...
- ...40435 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -dir
+ ...164629 read
 Adding Directors...
- ...40193 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -write
+ ...161012 read
 Adding Writers...
- ...42923 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -edit
+ ...168293 read
 Adding Editors...
- ...41138 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -prodes
+ ...169242 read
 Adding Production Designers...
- ...42746 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -costdes
+ ...167702 read
 Adding Costume Designers...
- ...43162 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -prdcr
+ ...167635 read
 Adding Producers...
- ...43986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -misc
+ ...171271 read
 Adding Miscellaneous...
- ...40318 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -aka
+ ...168202 read
 Adding Aka Titles...
-WARNING: "A Perfect Spy" (1987) not in movies.list
-	(12000 warnings removed)
-WARNING: titles.key contains 2 identical movies ("A great way to care" (2011))
- ...2438 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -naka
+ ...35817 read
 Adding Aka Names...
  ...77 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -plot
 Adding Plot Summaries...
- ...3933 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -bio
+ ...14784 read
 Adding Biographies...
- ...3121 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -crazy
+ ...11864 read
 Adding Crazy Credits...
- ...11884 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -goof
+ ...19537 read
 Adding Goofs...
- ...4419 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -quote
+ ...15709 read
 Adding Quotes...
- ...1707 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -strack
+ ...5116 read
 Adding Soundtrack...
  ...0 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -triv
 Adding Trivia...
- ...4235 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -mrr
+ ...15252 read
 Adding Movie Ratings...
- ...18205 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -votes
+ ...111712 read
 Adding Votes...
  ...0 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -time
 Adding Running Times List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -cert
+ ...199986 read
 Adding Certificates List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -genre
+ ...199986 read
 Adding Genres List...
- ...49616 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -keyword
+ ...199616 read
 Adding Keywords List...
- ...0 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -prodco
+ ...98063 read
 Adding Production Company List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -color
+ ...199986 read
 Adding Color Information List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -mix
+ ...199986 read
 Adding Sound Mix List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -cntry
+ ...199986 read
 Adding Country List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -rel
+ ...199986 read
 Adding Release Dates List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -loc
+ ...199986 read
 Adding Locations List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -lit
+ ...199986 read
 Adding Literature List...
- ...8204 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -tech
+ ...31501 read
 Adding Technical List...
- ...49505 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -link
+ ...199505 read
 Adding Movie Links List...
- ...35065 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -tag
+ ...139860 read
 Adding Tag Lines...
- ...15105 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -castcom
+ ...59665 read
 Adding Cast Completion List...
- ...49865 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -crewcom
+ ...85948 read
 Adding Crew Completion List...
  ...49147 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -vers
 Adding Alternate Versions...
- ...5381 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -lang
+ ...13855 read
 Adding Language List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -sfxco
+ ...199986 read
 Adding Special Effects Company List...
  ...0 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -bus
 Adding Business List...
- ...8091 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -ld
+ ...26798 read
 Adding LaserDisc List...
- ...1282 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[3]: Entering directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -dist
+ ...5179 read
 Adding Distributor List...
- ...49986 read
-make[3]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-/home/jmullee/projects/imdb/moviedb/src/etc/mkdb  -create
-make[2]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src/dbs'
-make[1]: Leaving directory '/home/jmullee/projects/imdb/moviedb/src'
+ ...199986 read
 
-Script done on 2024-10-21 00:14:58+01:00 [COMMAND_EXIT_CODE="0"]
+Script done on 2024-10-22 01:31:34+01:00 [COMMAND_EXIT_CODE="0"]

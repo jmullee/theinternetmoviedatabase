@@ -28,7 +28,7 @@
 #define   FSEP                    '|'
 #define   MAXZCATARGS              10
 #define   MAXLSEEN              65534
-#define   MAXTITLES            750000
+#define   MAXTITLES           5000000
 #define   MAXFILMOGRAPHIES       8192
 #define   MAXWITHATTRS           4095
 #define   MAXTITLERESULTS       16383

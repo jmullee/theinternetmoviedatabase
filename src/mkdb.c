@@ -87,8 +87,11 @@ static int debugFlag = FALSE ;
 
 static struct titleKeyOffset *sharedTitleIndex ;
 static size_t sharedTitleIndexSize ;
-static struct attrIndexRec *attributeIndex ;
-static size_t attributeIndexSize ;
+// attribute index
+static struct attrIndexRec *attributeIndex = NULL;
+static size_t attributeIndexSize = ATTRSTART;
+static size_t attributeIndexCount = 0;
+static const size_t sizeofAttributeIndexStruct = sizeof(struct attrIndexRec);
 
 int titleIndexRecSort (struct titleIndexRec *t1, struct titleIndexRec *t2)
 {
@@ -299,6 +302,44 @@ void writeTitleAlphaKey ( TitleID titleCount, struct titleIndexRec *titles )
   FCLOSENULL ( indexFp ) ;
 }
 
+void resizeAttrIndexArr()
+  {
+  if((NULL == attributeIndex) && (ATTRSTART == attributeIndexSize))
+    {
+    attributeIndex = calloc (sizeofAttributeIndexStruct, attributeIndexSize );
+    }
+  if((attributeIndexCount + 10) > attributeIndexSize)
+    {
+    // grow array if count within 10 of allocated size
+    size_t newsize = attributeIndexSize + ATTRGROW;
+    attributeIndex = reallocarray(attributeIndex, sizeofAttributeIndexStruct, newsize);
+    if(NULL != attributeIndex)
+      {
+      memset(&attributeIndex[newsize], 0, sizeofAttributeIndexStruct * ATTRGROW );
+      attributeIndexSize = newsize;
+      }
+    printf("attributeIndex[%lu] = %p\n", attributeIndexSize, attributeIndex);
+    }
+  if(NULL == attributeIndex)
+    moviedbError ( "mkdb: not enough memory to generate attribute index" ) ;
+  }
+
+void setAttrIndexEntryAt(AttributeID insert, char *a, AttributeID k)
+  {
+  attributeIndex[insert].attr = strdup(a);
+  attributeIndex[insert].attrKey = k;
+  }
+
+AttributeID setAttrIndexEntry(char *a, AttributeID k)
+  {
+  attributeIndex[attributeIndexCount].attr = strdup(a);
+  attributeIndex[attributeIndexCount].attrKey = k;
+  if(debugFlag && (attributeIndexCount > 17000))
+    printf("{%p} attributeIndex[%lu] = k[%lu] = {%p} %s\n", attributeIndex, attributeIndexCount, k, &attributeIndex[attributeIndexCount].attr, attributeIndex[attributeIndexCount].attr);
+  ++attributeIndexCount;
+  resizeAttrIndexArr();
+  return attributeIndexCount-1;
+  }
 
 void writeAttrAlphaKey ( AttributeID attrCount )
 {
@@ -342,7 +383,6 @@ TitleID readTitleAlphaKey ( struct titleIndexRec *titles )
 
 AttributeID readAttrAlphaKey ( void )
 {
-  struct attrIndexRec *attributes = attributeIndex ;
   FILE *listFP ;
   char line [ MXLINELEN ] ;
   char *p ;
@@ -356,15 +396,7 @@ AttributeID readAttrAlphaKey ( void )
       if ( ( p = strchr ( line, FSEP ) ) == NULL )
         moviedbError ( "mkdb: attributes key file corrupt" ) ;
       *p = '\0' ;
-      attributes [ i ] . attr = duplicateString ( line ) ;
-      attributes [ i++ ] . attrKey = strtol ( p + 1, (char **) NULL, 16) ;
-      if ( i >= attributeIndexSize ) {
-	attributeIndexSize += ATTRGROW ;
-	attributes = realloc ( attributeIndex, sizeof ( struct attrIndexRec ) * attributeIndexSize ) ;
-	if ( attributes == NULL )
-	  moviedbError ( "mkdb: not enough memory to generate attributes index" ) ;
-	attributeIndex = attributes ;
-      }
+      i = setAttrIndexEntry(line, strtol ( p + 1, (char **) NULL, 16));
     }
    FCLOSENULL ( listFP ) ;
   }
@@ -496,7 +528,6 @@ struct attrIndexRec *findAttrKeyPos (char *attr, struct attrIndexRec *attributes
 
 AttributeID attrKeyLookup (char *attr, AttributeID *attrCount)
 {
-   struct attrIndexRec *attributes = attributeIndex ;
    struct attrIndexRec *matched ;
    AttributeID attrKey = *attrCount, insert, i ;
    char *ptr ;
@@ -506,29 +537,20 @@ AttributeID attrKeyLookup (char *attr, AttributeID *attrCount)
 
    if ( attrKey == 0 )
    {
-     attributes [ 0 ] . attr = duplicateString ( attr ) ;
-     attributes [ 0 ] . attrKey = 0 ;
+     setAttrIndexEntry(attr, 0);
      *attrCount = 1 ;
      return ( 0 ) ;
    }
 
-   matched = findAttrKeyPos ( attr, attributes, attrKey, &insert ) ;
+   matched = findAttrKeyPos ( attr, attributeIndex, attrKey, &insert ) ;
    if ( matched != NULL )
      return ( matched -> attrKey ) ;
    else
    {
      for ( i = attrKey ; i > insert ; i-- )
-       attributes [ i ] = attributes [ i - 1 ] ;
-     attributes [ insert ] . attr = duplicateString ( attr ) ;
-     attributes [ insert ] . attrKey = attrKey ;
+       attributeIndex [ i ] = attributeIndex [ i - 1 ] ;
+     setAttrIndexEntryAt(insert, attr, attrKey);
      *attrCount = *attrCount + 1 ;
-     if ( *attrCount >= attributeIndexSize )  {
-	attributeIndexSize += ATTRGROW ;
-	attributes = realloc ( attributeIndex, sizeof ( struct attrIndexRec ) * attributeIndexSize ) ;
-	if ( attributes == NULL )
-	  moviedbError ( "mkdb: not enough memory to generate attributes index" ) ;
-	attributeIndex = attributes ;
-     }
      return ( attrKey ) ;
    }
 }
@@ -1125,7 +1147,7 @@ void makeDatabaseNamesIndex ( int listId, NameID namesOnList )
 }
 
 
-void makeDatabaseTitlesIndex ( int listId, long nentries )
+void makeDatabaseTitlesIndex ( int listId )
 {
   FILE *dbFp, *tdxFp ;
   struct filmography entry ;
@@ -1134,7 +1156,7 @@ void makeDatabaseTitlesIndex ( int listId, long nentries )
   int j ;
   char fn [ MAXPATHLEN ] ;
 
-  titlesIndex = (struct titleKeyOffset *) calloc ( nentries + 5, sizeof ( struct titleKeyOffset ) ) ;
+  titlesIndex = (struct titleKeyOffset *) calloc ( MAXTITLES, sizeof ( struct titleKeyOffset ) ) ;
   if ( titlesIndex == NULL )
     moviedbError ( "mkdb: not enough memory to generate titles index" ) ;
 
@@ -1155,6 +1177,8 @@ void makeDatabaseTitlesIndex ( int listId, long nentries )
       titlesIndex [ count ] . offset = offset ;
       count++ ;
     }
+    if(count >= MAXTITLES)
+      moviedbError("mkdb: too many titles -- increase MAXTITLES");
     offset = ftell ( dbFp ) ;
   }
 
@@ -1350,7 +1374,7 @@ long processFilmographyList ( NameID *nameCount, struct titleIndexRec *titles, T
   FCLOSENULL ( nameKeyFp ) ;
 
   makeDatabaseNamesIndex ( listId, namesOnList ) ;
-  makeDatabaseTitlesIndex ( listId, nentries ) ;
+  makeDatabaseTitlesIndex ( listId ) ;
 
   return ( nentries ) ;
 }
