@@ -146,7 +146,7 @@ void displayBioRec(struct bioRec *rec)
         }
     }
 
-void displayBiography(struct personRec *rec, char *name, int biopt, struct akaNameRec *aka)
+void displayBiography(struct personRec *rec, char *name, struct akaNameRec *aka)
     {
     struct bioRec *brec;
     struct bioMiscRec *miscptr;
@@ -499,9 +499,10 @@ void displayNameSearchResults(struct nameSearchRec *chain, int tidy)
     for (nrec = chain; nrec != NULL; nrec = nrec->next)
         {
         if (nrec->firstMatch >= 0)
+            {
             if (tidy)
                 {
-                displayBiography(nrec->biography, nrec->name, nrec->searchparams.biopt, nrec->aka);
+                displayBiography(nrec->biography, nrec->name, nrec->aka);
                 for (i = 0; i < NO_OF_FILMOGRAPHY_LISTS; i++)
                     if (nrec->lists[i] != NULL && nrec->lists[i]->count > 0)
                         {
@@ -518,6 +519,7 @@ void displayNameSearchResults(struct nameSearchRec *chain, int tidy)
                 displayTitleAttrPairs(nrec->lists[nrec->firstMatch]->entries, nrec->lists[nrec->firstMatch]->count,
                                       tidy, nrec->searchparams.mrropt, nrec->searchparams.mvsonly,
                                       nrec->searchparams.chopt);
+            }
         }
     }
 
@@ -528,7 +530,9 @@ void displayNameSearchResultsAsBallot(struct nameSearchRec *nrec)
     char *ptr;
 
     if (nrec != NULL && nrec->firstMatch >= 0)
+        {
         for (i = 0; i < nrec->lists[nrec->firstMatch]->count; i++)
+            {
             if (nrec->lists[nrec->firstMatch]->entries[i].title[0] != '"')
                 {
                 (void)printf("vote     ");
@@ -544,6 +548,8 @@ void displayNameSearchResultsAsBallot(struct nameSearchRec *nrec)
 
                 (void)printf("\n");
                 }
+            }
+        }
     }
 
 void displayRawTitleAttrPairs(struct listEntry lrec[], int count, char *name)
@@ -773,9 +779,9 @@ void displayCompactTitleInfo(struct titleInfoRec *titleInfo, int listId)
 void displayTidyFilmographyListData(struct titleListEntry *lrec)
     {
     char tmp[MXLINELEN];
-    char fmtline[MXLINELEN];
+    char fmtline[MXLINELEN + 16];
     char *comma, *bracket;
-    int nmlen, k;
+    int k;
 
     (void)strcpy(tmp, lrec->name);
     if ((comma = strchr(tmp, ',')) != NULL)
@@ -808,8 +814,7 @@ void displayTidyFilmographyListData(struct titleListEntry *lrec)
     else
         {
         (void)printf("%s .", fmtline);
-        nmlen = strlen(fmtline);
-        k = nmlen;
+        k = strlen(fmtline);
         do
             {
             (void)printf(".");
@@ -822,9 +827,8 @@ void displayTidyFilmographyListData(struct titleListEntry *lrec)
 void displayWritersTidyFilmographyListData(struct titleListEntry *lrec)
     {
     char tmp[MXLINELEN];
-    char fmtline[MXLINELEN];
+    char fmtline[MXLINELEN + 16];
     char *comma, *bracket;
-    int nmlen, k;
 
     (void)strcpy(tmp, lrec->name);
     if ((comma = strchr(tmp, ',')) != NULL)
@@ -865,10 +869,12 @@ int titleResultSort(struct titleListEntry *e1, struct titleListEntry *e2)
         return (e1->subgroupOrder - e2->subgroupOrder);
 
     if (e1->cname != NULL)
+        {
         if (e2->cname != NULL)
             return (strcmp(e1->name, e2->name));
         else
             return (-1);
+        }
     if (e2->cname != NULL)
         return (1);
     else
@@ -886,7 +892,7 @@ int castTitleResultSort(struct titleListEntry *e1, struct titleListEntry *e2)
 void displayFilmographyListData(struct titleSearchRec *trec)
     {
     int i, j, base, count, listId, castOrdered, writersOrdered;
-    int linePrev, groupPrev, subgroupPrev;
+    int linePrev, groupPrev;
 
     for (i = 0; i < NO_OF_FILMOGRAPHY_LISTS - 3; i++)
         {
@@ -944,7 +950,6 @@ void displayFilmographyListData(struct titleSearchRec *trec)
                         }
                     linePrev = trec->entries[base + j].lineOrder;
                     groupPrev = trec->entries[base + j].groupOrder;
-                    subgroupPrev = trec->entries[base + j].subgroupOrder;
                     }
                 (void)printf("\n");
                 }
@@ -1020,7 +1025,7 @@ void displayFilmographyListData(struct titleSearchRec *trec)
         (void)printf("Crew verified as complete.\n\n");
     }
 
-void displayListEntry(struct titleListEntry *lrec, char *tag)
+void displayListEntry(struct titleListEntry *lrec, const char *tag)
     {
     if (lrec->attr == NULL)
         if (tag != NULL)

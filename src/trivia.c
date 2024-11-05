@@ -43,22 +43,26 @@ struct lineRec *readTrivia(FILE *dbFp, long offset)
     struct lineRec *head = NULL, *tail = NULL, *lrec = NULL;
 
     (void)fseek(dbFp, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, dbFp);
+    if (NULL != fgets(line, MXLINELEN, dbFp))
+        {
 
-    while (fgets(line, MXLINELEN, dbFp) != NULL)
-        if (strncmp(line, TRIVTITLE, 2) == 0)
-            break;
-        else
+        while (fgets(line, MXLINELEN, dbFp) != NULL)
             {
-            lrec = newLineRec();
-            lrec->text = duplicateString(line);
-            lrec->next = NULL;
-            if (head == NULL)
-                head = lrec;
+            if (strncmp(line, TRIVTITLE, 2) == 0)
+                break;
             else
-                tail->next = lrec;
-            tail = lrec;
+                {
+                lrec = newLineRec();
+                lrec->text = duplicateString(line);
+                lrec->next = NULL;
+                if (head == NULL)
+                    head = lrec;
+                else
+                    tail->next = lrec;
+                tail = lrec;
+                }
             }
+        }
     return (head);
     }
 

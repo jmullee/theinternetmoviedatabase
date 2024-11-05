@@ -47,28 +47,32 @@ struct lineRec *readLiterature(FILE *stream, long offset)
     struct lineRec *rec = NULL, *tail = NULL;
 
     (void)fseek(stream, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, stream);
+    if (NULL != fgets(line, MXLINELEN, stream))
+        {
 
-    while (fgets(line, MXLINELEN, stream) != NULL)
-        if (strncmp(line, "MOVI:", 5) == 0)
-            break;
-        else
+        while (fgets(line, MXLINELEN, stream) != NULL)
             {
-            if (rec == NULL)
-                {
-                rec = newLineRec();
-                rec->text = duplicateString(line);
-                rec->next = NULL;
-                tail = rec;
-                }
+            if (strncmp(line, "MOVI:", 5) == 0)
+                break;
             else
                 {
-                tail->next = newLineRec();
-                tail->next->text = duplicateString(line);
-                tail->next->next = NULL;
-                tail = tail->next;
+                if (rec == NULL)
+                    {
+                    rec = newLineRec();
+                    rec->text = duplicateString(line);
+                    rec->next = NULL;
+                    tail = rec;
+                    }
+                else
+                    {
+                    tail->next = newLineRec();
+                    tail->next->text = duplicateString(line);
+                    tail->next->next = NULL;
+                    tail = tail->next;
+                    }
                 }
             }
+        }
     return (rec);
     }
 

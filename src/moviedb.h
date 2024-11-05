@@ -60,6 +60,8 @@
 #define MAXTITLEINFO 500000
 #define MAXBIOENTRIES 350000
 
+#define UC(STRLITERAL) ((unsigned char *)STRLITERAL)
+
 #ifndef DBDIR
 #define DBDIR
 #define RAWDIR
@@ -376,9 +378,9 @@ enum movieLinkTypes
     };
 
 #ifndef __alpha
-typedef unsigned long AttributeID;
-typedef unsigned long TitleID;
-typedef unsigned long NameID;
+typedef unsigned int AttributeID;
+typedef unsigned int TitleID;
+typedef unsigned int NameID;
 #else
 typedef unsigned int AttributeID;
 typedef unsigned int TitleID;
@@ -809,8 +811,8 @@ struct castFilmography
     NameID nameKey;
     int noWithAttr;
     int noWithoutAttr;
-    struct titleAttrChar withAttrs[MAXFILMOGRAPHIES];
-    struct titleCharPair withoutAttrs[MAXFILMOGRAPHIES];
+    struct titleAttrChar withAttrs[MAXWITHATTRS];
+    struct titleCharPair withoutAttrs[MAXWITHATTRS];
     };
 
 struct titleWritePair
@@ -835,8 +837,8 @@ struct writerFilmography
     NameID nameKey;
     int noWithAttr;
     int noWithoutAttr;
-    struct titleAttrWrite withAttrs[MAXFILMOGRAPHIES];
-    struct titleWritePair withoutAttrs[MAXFILMOGRAPHIES];
+    struct titleAttrWrite withAttrs[MAXWITHATTRS];
+    struct titleWritePair withoutAttrs[MAXWITHATTRS];
     };
 
 struct corrections

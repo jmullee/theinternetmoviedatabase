@@ -63,6 +63,7 @@ struct laserRec *readLaserDisc(FILE *stream, long offset)
 
     line[MXLINELEN] = '\0';
 
+    tail = newLineRec();
     rec = newLaserRec();
     rec->misc = NULL;
     rec->next = NULL;
@@ -72,55 +73,62 @@ struct laserRec *readLaserDisc(FILE *stream, long offset)
     rec->LT = NULL;
 
     (void)fseek(stream, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, stream);
+    if (NULL != fgets(line, MXLINELEN, stream))
+        {
 
-    while (fgets(line, MXLINELEN, stream) != NULL)
-        if (line[0] != '\n')
-            if (line[2] != ':' && line[0] != '-')
-                return (NULL);
-            else
+        while (fgets(line, MXLINELEN, stream) != NULL)
+            {
+            if (line[0] != '\n')
                 {
-                if (line[3] == '\n')
-                    {
-                    line[3] = ' ';
-                    line[4] = '\n';
-                    line[5] = '\0';
-                    }
-                if (strncmp(line, "--", 2) == 0)
-                    break;
-                else if (strncmp(line, "LN", 2) == 0)
-                    rec->LN = duplicateString(line + 4);
-                else if (strncmp(line, "LB", 2) == 0)
-                    rec->LB = duplicateString(line + 4);
-                else if (strncmp(line, "CN", 2) == 0)
-                    rec->CN = duplicateString(line + 4);
-                else if (strncmp(line, "LT", 2) == 0)
-                    rec->LT = duplicateString(line + 4);
+                if (line[2] != ':' && line[0] != '-')
+                    return (NULL);
                 else
                     {
-                    if (rec->misc == NULL)
+                    if (line[3] == '\n')
                         {
-                        rec->misc = newLineRec();
-                        tail = rec->misc;
+                        line[3] = ' ';
+                        line[4] = '\n';
+                        line[5] = '\0';
                         }
+                    if (strncmp(line, "--", 2) == 0)
+                        break;
+                    else if (strncmp(line, "LN", 2) == 0)
+                        rec->LN = duplicateString(line + 4);
+                    else if (strncmp(line, "LB", 2) == 0)
+                        rec->LB = duplicateString(line + 4);
+                    else if (strncmp(line, "CN", 2) == 0)
+                        rec->CN = duplicateString(line + 4);
+                    else if (strncmp(line, "LT", 2) == 0)
+                        rec->LT = duplicateString(line + 4);
                     else
                         {
-                        tail->next = newLineRec();
-                        tail = tail->next;
-                        }
-                    tail->text = duplicateString(line);
-                    tail->next = NULL;
-                    while (strlen(line) > MXLINELEN - 2)
-                        {
-                        saveLen = strlen(tail->text);
-                        saveChar = tail->text[saveLen - 1];
-                        (void)fgets(line, MXLINELEN, stream);
-                        newStr = appendString(tail->text, line);
-                        newStr[saveLen - 1] = saveChar;
-                        tail->text = newStr;
+                        if (rec->misc == NULL)
+                            {
+                            rec->misc = newLineRec();
+                            tail = rec->misc;
+                            }
+                        else
+                            {
+                            tail->next = newLineRec();
+                            tail = tail->next;
+                            }
+                        tail->text = duplicateString(line);
+                        tail->next = NULL;
+                        while (strlen(line) > MXLINELEN - 2)
+                            {
+                            saveLen = strlen(tail->text);
+                            saveChar = tail->text[saveLen - 1];
+                            if (NULL == fgets(line, MXLINELEN, stream))
+                                break;
+                            newStr = appendString(tail->text, line);
+                            newStr[saveLen - 1] = saveChar;
+                            tail->text = newStr;
+                            }
                         }
                     }
                 }
+            }
+        }
     return (rec);
     }
 
@@ -139,6 +147,7 @@ void addLaserDiscToTitleSearch(struct titleSearchRec *tchain)
     if (!found)
         return;
 
+    tail = newLaserRec();
     dbFp = openFile(LDDB);
     indexFp = openFile(LDIDX);
     (void)fseek(indexFp, 0, SEEK_END);

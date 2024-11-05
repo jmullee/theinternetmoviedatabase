@@ -80,6 +80,7 @@
 #define LINDEX_USAGE5 "              [-cntry <s>] [-color <s>] [-lang <s>]"
 #define LINDEX_USAGE6 "              [-veq <votes>|-vmin <votes>|-vmax <votes>]"
 
+int vmrrLindexSort(struct lindexTitleRec *r1, struct lindexTitleRec *r2);
 int getNextLindexName(FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struct searchConstraints *constraints)
     {
     char line[MXLINELEN];
@@ -96,10 +97,12 @@ int getNextLindexName(FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struct 
         (void)fseek(indexFp, 4 * nameKey, SEEK_SET);
         offset = getFullOffset(indexFp);
         (void)fseek(keyFp, offset, SEEK_SET);
-        (void)fgets(line, MXLINELEN, keyFp);
+        if (NULL == fgets(line, MXLINELEN, keyFp))
+            break;
         stripSep(line);
         stopFlag = TRUE;
         if (constraints->subString[0])
+            {
             if (!constraints->caseSen)
                 {
                 if (caseStrStr(line, constraints->subString) == NULL)
@@ -107,6 +110,7 @@ int getNextLindexName(FILE *indexFp, FILE *keyFp, struct lindexRec *rec, struct 
                 }
             else if (strstr(line, constraints->subString) == NULL)
                 stopFlag = FALSE;
+            }
         }
 
     if (stopFlag)
@@ -186,7 +190,8 @@ int getNextLindexTitle(FILE *dbFp, FILE *indexFp, FILE *keyFp, struct searchCons
         (void)fseek(indexFp, *titleKey * 4, SEEK_SET);
         offset = getFullOffset(indexFp);
         (void)fseek(keyFp, offset, SEEK_SET);
-        (void)fgets(title, MXLINELEN, keyFp);
+        if (NULL == fgets(title, MXLINELEN, keyFp))
+            break;
         stripSep(title);
         stopFlag = TRUE;
         if (*yearVal < constraints->yearFrom || *yearVal > constraints->yearTo)
@@ -194,6 +199,7 @@ int getNextLindexTitle(FILE *dbFp, FILE *indexFp, FILE *keyFp, struct searchCons
         if (constraints->moviesOnly && *title == '"')
             stopFlag = FALSE;
         else if (constraints->subString[0])
+            {
             if (!constraints->caseSen)
                 {
                 if (caseStrStr(title, constraints->subString) == NULL)
@@ -201,6 +207,7 @@ int getNextLindexTitle(FILE *dbFp, FILE *indexFp, FILE *keyFp, struct searchCons
                 }
             else if (strstr(title, constraints->subString) == NULL)
                 stopFlag = FALSE;
+            }
         }
     return (stopFlag);
     }

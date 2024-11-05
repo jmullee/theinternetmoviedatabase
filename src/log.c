@@ -7,9 +7,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#if LOGFILE
 void logProgram(char *progName)
     {
-#if LOGFILE
         {
         int logfile;
         logfile = open(LOGFILENAME, O_RDWR | O_CREAT | O_APPEND, 0666);
@@ -24,6 +24,9 @@ void logProgram(char *progName)
             close(logfile);
             }
         }
+#else
+void logProgram(void)
+    {
 #endif
     return;
     }

@@ -358,6 +358,7 @@ void lseenList(int listId, int mrropt, int yropt, int usopt, int threshold, stru
             }
 
         if (count > 0 && count >= threshold)
+            {
             if (!usopt)
                 {
                 counts[ncount].count = count;
@@ -375,6 +376,7 @@ void lseenList(int listId, int mrropt, int yropt, int usopt, int threshold, stru
                 displayLseenData(listData, count, mrropt, yropt);
                 freeFormatData(listData, count);
                 }
+            }
         }
     if (!usopt)
         displayLseenCounts(counts, ncount, mrropt, yropt, votes, nvotes, years, nyears, ratings, nratings, dbFp,

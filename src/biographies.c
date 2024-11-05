@@ -88,82 +88,88 @@ struct personRec *readBiography(FILE *stream, long offset)
     rec->misc = NULL;
 
     (void)fseek(stream, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, stream);
+    if (NULL != fgets(line, MXLINELEN, stream))
+        {
 
-    while (fgets(line, MXLINELEN, stream) != NULL)
-        if (line[0] != '\n' && line[0] != '-')
-            if (line[2] != ':')
-                return (NULL);
-            else
+        while (fgets(line, MXLINELEN, stream) != NULL)
+            {
+            if (line[0] != '\n' && line[0] != '-')
                 {
-                if (line[3] == '\n')
-                    {
-                    line[3] = ' ';
-                    line[4] = '\n';
-                    line[5] = '\0';
-                    }
-                if (strncmp(line, NAME_KEY, 2) == 0)
-                    break;
-                else if (strncmp(line, REALNAME_KEY, 2) == 0)
-                    rec->RN = duplicateString(line + 4);
-                else if (strncmp(line, BIRTHDATE_KEY, 2) == 0)
-                    rec->DB = duplicateString(line + 4);
-                else if (strncmp(line, DEATHDATE_KEY, 2) == 0)
-                    rec->DD = duplicateString(line + 4);
-                else if (strncmp(line, BIO_KEY, 2) == 0)
-                    {
-                    if (state != BIO_STATE)
-                        {
-                        brec = newBioRec();
-                        if (bptr == NULL)
-                            rec->biography = brec;
-                        else
-                            bptr->next = brec;
-                        bptr = brec;
-                        bptr->biog = duplicateString(line + 4);
-                        bptr->BY = NULL;
-                        bptr->next = NULL;
-                        state = BIO_STATE;
-                        }
-                    else
-                        bptr->biog = appendString(bptr->biog, line + 4);
-                    }
-                else if (strncmp(line, AUTHOR_KEY, 2) == 0)
-                    {
-                    if (state != BIO_STATE)
-                        return (NULL);
-                    bptr->BY = duplicateString(line + 4);
-                    state = PERSON_STATE;
-                    }
+                if (line[2] != ':')
+                    return (NULL);
                 else
                     {
-                    if (strncmp(line, lastmisc, 2) != 0)
+                    if (line[3] == '\n')
                         {
-                        (void)strncpy(lastmisc, line, 2);
-                        mrec = newBioMiscRec();
-                        if (mptr == NULL)
-                            rec->misc = mrec;
+                        line[3] = ' ';
+                        line[4] = '\n';
+                        line[5] = '\0';
+                        }
+                    if (strncmp(line, NAME_KEY, 2) == 0)
+                        break;
+                    else if (strncmp(line, REALNAME_KEY, 2) == 0)
+                        rec->RN = duplicateString(line + 4);
+                    else if (strncmp(line, BIRTHDATE_KEY, 2) == 0)
+                        rec->DB = duplicateString(line + 4);
+                    else if (strncmp(line, DEATHDATE_KEY, 2) == 0)
+                        rec->DD = duplicateString(line + 4);
+                    else if (strncmp(line, BIO_KEY, 2) == 0)
+                        {
+                        if (state != BIO_STATE)
+                            {
+                            brec = newBioRec();
+                            if (bptr == NULL)
+                                rec->biography = brec;
+                            else
+                                bptr->next = brec;
+                            bptr = brec;
+                            bptr->biog = duplicateString(line + 4);
+                            bptr->BY = NULL;
+                            bptr->next = NULL;
+                            state = BIO_STATE;
+                            }
                         else
-                            mptr->next = mrec;
-                        mptr = mrec;
-                        ln = newLineRec();
-                        ln->text = duplicateString(line + 4);
-                        ln->next = NULL;
-                        mptr->list = ln;
-                        mptr->next = NULL;
-                        lptr = ln;
-                        (void)strncpy(mptr->label, line, 2);
+                            bptr->biog = appendString(bptr->biog, line + 4);
+                        }
+                    else if (strncmp(line, AUTHOR_KEY, 2) == 0)
+                        {
+                        if (state != BIO_STATE)
+                            return (NULL);
+                        bptr->BY = duplicateString(line + 4);
+                        state = PERSON_STATE;
                         }
                     else
                         {
-                        ln = newLineRec();
-                        ln->text = duplicateString(line + 4);
-                        ln->next = NULL;
-                        lptr->next = ln;
-                        lptr = ln;
+                        if (strncmp(line, lastmisc, 2) != 0)
+                            {
+                            (void)strncpy(lastmisc, line, 2);
+                            mrec = newBioMiscRec();
+                            if (mptr == NULL)
+                                rec->misc = mrec;
+                            else
+                                mptr->next = mrec;
+                            mptr = mrec;
+                            ln = newLineRec();
+                            ln->text = duplicateString(line + 4);
+                            ln->next = NULL;
+                            mptr->list = ln;
+                            mptr->next = NULL;
+                            lptr = ln;
+                            (void)strncpy(mptr->label, line, 2);
+                            }
+                        else
+                            {
+                            ln = newLineRec();
+                            ln->text = duplicateString(line + 4);
+                            ln->next = NULL;
+                            lptr->next = ln;
+                            lptr = ln;
+                            }
                         }
                     }
                 }
+            }
+        }
     return (rec);
     }
 

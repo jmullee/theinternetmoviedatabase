@@ -55,44 +55,49 @@ struct plotRec *readPlot(FILE *stream, long offset)
     rec->RV = NULL;
 
     (void)fseek(stream, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, stream);
-
-    while (fgets(line, MXLINELEN, stream) != NULL)
-        if (line[0] != '\n' && line[0] != '-')
-            if (line[2] != ':')
-                return (NULL);
-            else
+    if (NULL != fgets(line, MXLINELEN, stream))
+        {
+        while (fgets(line, MXLINELEN, stream) != NULL)
+            {
+            if (line[0] != '\n' && line[0] != '-')
                 {
-                if (strncmp(line, TITLE_KEY, 2) == 0)
-                    break;
-                else if (strncmp(line, PLOT_KEY, 2) == 0)
+                if (line[2] != ':')
+                    return (NULL);
+                else
                     {
-                    if (state != PL_STATE)
+                    if (strncmp(line, TITLE_KEY, 2) == 0)
+                        break;
+                    else if (strncmp(line, PLOT_KEY, 2) == 0)
                         {
-                        oline = newOutlineRec();
-                        if (optr == NULL)
-                            rec->outline = oline;
+                        if (state != PL_STATE)
+                            {
+                            oline = newOutlineRec();
+                            if (optr == NULL)
+                                rec->outline = oline;
+                            else
+                                optr->next = oline;
+                            optr = oline;
+                            optr->PL = duplicateString(line + 4);
+                            optr->BY = NULL;
+                            optr->next = NULL;
+                            state = PL_STATE;
+                            }
                         else
-                            optr->next = oline;
-                        optr = oline;
-                        optr->PL = duplicateString(line + 4);
-                        optr->BY = NULL;
-                        optr->next = NULL;
-                        state = PL_STATE;
+                            optr->PL = appendString(optr->PL, line + 4);
                         }
-                    else
-                        optr->PL = appendString(optr->PL, line + 4);
+                    else if (strncmp(line, BY_KEY, 2) == 0)
+                        {
+                        if (state != PL_STATE)
+                            return (NULL);
+                        optr->BY = duplicateString(line + 4);
+                        state = MV_STATE;
+                        }
+                    else if (strncmp(line, REVIEW_KEY, 2) == 0)
+                        rec->RV = duplicateString(line + 4);
                     }
-                else if (strncmp(line, BY_KEY, 2) == 0)
-                    {
-                    if (state != PL_STATE)
-                        return (NULL);
-                    optr->BY = duplicateString(line + 4);
-                    state = MV_STATE;
-                    }
-                else if (strncmp(line, REVIEW_KEY, 2) == 0)
-                    rec->RV = duplicateString(line + 4);
                 }
+            }
+        }
     return (rec);
     }
 

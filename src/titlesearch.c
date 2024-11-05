@@ -196,9 +196,11 @@ void swapAkaTitles(struct titleSearchRec *tchain)
             (void)fseek(indexFp, 4 * trec->titleKey, SEEK_SET);
             offset = getFullOffset(indexFp);
             (void)fseek(keyFp, offset, SEEK_SET);
-            (void)fgets(line, MXLINELEN, keyFp);
-            (void)free((void *)trec->title);
-            trec->title = duplicateField(line);
+            if (NULL != fgets(line, MXLINELEN, keyFp))
+                {
+                (void)free((void *)trec->title);
+                trec->title = duplicateField(line);
+                }
             }
         }
     if (keyFp != NULL)
@@ -297,7 +299,8 @@ void yearMatchTitleSearchKeyLookup(struct titleSearchRec *tchain)
             if (fgets(line, MXLINELEN, indexFp) == NULL)
                 {
                 (void)findSOL(indexFp, mid);
-                (void)fgets(line, MXLINELEN, indexFp);
+                if (NULL == fgets(line, MXLINELEN, indexFp))
+                    line[0] = 0;
                 }
             compare = yearFieldCaseCompare(line, trec->title);
             if (compare == 0)
@@ -314,13 +317,15 @@ void yearMatchTitleSearchKeyLookup(struct titleSearchRec *tchain)
                 {
                 (void)findSOL(indexFp, mid);
                 mid = ftell(indexFp) - 1;
-                (void)fgets(line, MXLINELEN, indexFp);
+                if (NULL == fgets(line, MXLINELEN, indexFp))
+                    line[0] = 0;
                 found = (yearFieldCaseCompare(line, trec->title) == 0);
                 }
             if (!found)
                 {
                 found = TRUE;
-                (void)fgets(line, MXLINELEN, indexFp);
+                if (NULL == fgets(line, MXLINELEN, indexFp))
+                    line[0] = 0;
                 }
             if ((keyptr = strchr(line, FSEP)) != NULL)
                 {
@@ -389,7 +394,8 @@ void straightTitleSearchKeyLookup(struct titleSearchRec *tchain)
             if (fgets(line, MXLINELEN, indexFp) == NULL)
                 {
                 (void)findSOL(indexFp, mid);
-                (void)fgets(line, MXLINELEN, indexFp);
+                //(void)fgets(line, MXLINELEN, indexFp);
+                line[0] = 0;
                 }
             compare = fieldCaseCompare(line, trec->title);
             if (compare == 0)
@@ -401,6 +407,7 @@ void straightTitleSearchKeyLookup(struct titleSearchRec *tchain)
             }
 
         if (found)
+            {
             if ((keyptr = strchr(line, FSEP)) != NULL)
                 {
                 *keyptr++ = '\0';
@@ -409,6 +416,7 @@ void straightTitleSearchKeyLookup(struct titleSearchRec *tchain)
                 }
             else
                 trec->titleKey = NOTITLE;
+            }
         }
 
     (void)fclose(indexFp);
@@ -830,14 +838,18 @@ struct titleSearchRec *makeTitleChain(struct nameSearchRec *nrec, struct titleSe
     int i, j, found;
 
     for (i = 0; i < NO_OF_FILMOGRAPHY_LISTS; i++)
+        {
         if (nrec->lists[i] != NULL)
+            {
             for (j = 0; j < nrec->lists[i]->count; j++)
+                {
                 if (!noptions.mvsonly || nrec->lists[i]->entries[j].title[0] != '"')
                     {
                     for (found = FALSE, r = rrec; r != NULL; r = r->next)
                         if (strcmp(r->title, nrec->lists[i]->entries[j].title) == 0)
                             found = TRUE;
                     if (found == FALSE)
+                        {
                         if (noptions.searchall)
                             {
                             prev = NULL;
@@ -871,7 +883,11 @@ struct titleSearchRec *makeTitleChain(struct nameSearchRec *nrec, struct titleSe
                             }
                         else
                             rrec = addTitleSearchRec(rrec, nrec->lists[i]->entries[j].title);
+                        }
                     }
+                }
+            }
+        }
     addTitleChainOpts(rrec, options);
     addTitleChainTrivOpts(rrec, trivopts);
     addTitleChainTitleInfoOpts(rrec, titleInfoOpts);

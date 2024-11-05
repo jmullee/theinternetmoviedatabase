@@ -21,12 +21,47 @@ all :
 # ----------------------------------------------------------------
 #
 
+SANIFLAGS = -fsanitize=address \
+	-fsanitize=alignment \
+	-fsanitize=bool \
+	-fsanitize=bounds \
+	-fsanitize=bounds-strict \
+	-fsanitize=builtin \
+	-fsanitize=enum \
+	-fsanitize=float-cast-overflow \
+	-fsanitize=float-divide-by-zero \
+	-fsanitize=integer-divide-by-zero \
+	-fsanitize=nonnull-attribute \
+	-fsanitize=null \
+	-fsanitize=object-size \
+	-fsanitize=pointer-compare \
+	-fsanitize=pointer-overflow \
+	-fsanitize=pointer-subtract \
+	-fsanitize=return \
+	-fsanitize=returns-nonnull-attribute \
+	-fsanitize=shift \
+	-fsanitize=shift-base \
+	-fsanitize=shift-exponent \
+	-fsanitize=signed-integer-overflow \
+	-fsanitize=undefined \
+	-fsanitize=unreachable \
+	-fsanitize=vla-bound \
+	-fsanitize=vptr
 CAUXFLAGS = -DZLISTCAT=\"$(ZLISTCAT)\" -DZLISTEXT=\"$(ZLISTEXT)\" \
             -DZDBSCAT=\"$(ZDBSCAT)\" -DZDBSEXT=\"$(ZDBSEXT)\" \
 	    -DZDBSCATOPTS=\"$(ZDBSCATOPTS)\" \
 	    -DZLISTCATOPTS=\"$(ZLISTCATOPTS)\" \
-	    -DRAWDIR="\"$(RAWDIR)\"" -DDBDIR="\"$(DBDIR)\"" \
-	    -DETCDIR="\"$(ETCDIR)\"" -DLOGFILENAME="\"$(LOGFILENAME)\""
+	-DRAWDIR=\"$(RAWDIR)\" -DDBDIR=\"$(DBDIR)\" \
+	-DETCDIR=\"$(ETCDIR)\" -DLOGFILENAME=\"$(LOGFILENAME)\"
+
+GCC_SAFETY = -pie -fPIE -D_FORTIFY_SOURCE=2 -fstack-protector-all
+LD_DEBUG = -fsanitize=undefined
+GCC_DEBUG = -g3 -Og $(SANIFLAGS) -ftrapv -Wall -Wextra -Wformat-security -Werror
+GCC_IGNORE = -Wno-pointer-sign
+CFLAGS = -DCOMPRESS $(GCC_SAFETY) $(GCC_DEBUG) $(GCC_IGNORE)
+LDFLAGS = $(CFLAGS) $(LD_DEBUG)
+LD = $(CC)
+YYFLAGS = -Wno-unused-function -Wno-implicit-int -Wno-unused-value -Wno-format-security -Wno-array-bounds
 
 #
 # ----------------------------------------------------------------
@@ -34,8 +69,25 @@ CAUXFLAGS = -DZLISTCAT=\"$(ZLISTCAT)\" -DZLISTEXT=\"$(ZLISTEXT)\" \
 # Compilation rules.
 #
 
-compile : $(EXE)
+compile : dirdb dirraw $(EXE)
 	@echo 'All is compiled.'
+dirbin :
+	@if [ ! -d "$(BINDIR)" ] ; then echo "BINDIR '$(BINDIR)' not found" ; fi
+
+dirdb :
+	@if [ ! -d "$(DBDIR)" ] ; then echo "DBDIR '$(DBDIR)' not found" ; fi
+
+diretc :
+	@if [ ! -d "$(ETCDIR)" ] ; then echo "ETCDIR '$(ETCDIR)' not found" ; fi
+
+dirraw :
+	@if [ ! -d "$(RAWDIR)" ] ; then echo "RAWDIR '$(RAWDIR)' not found" ; fi
+
+objs: aka.o alist.o biographies.o business.o castcomp.o dbutils.o \
+	display.o filmography.o laserdisc.o lcs.o lformat.o lguide.o \
+	lindex.o list.o listall.o literature.o log.o lseen.o ltrace.o \
+	mkballot.o mkdb.o movielinks.o plot.o ratings.o template.o \
+	templist.o title.o titleinfo.o titlesearch.o trivia.o years.o
 
 mkdb : mkdb.o dbutils.o
 	$(LD) $(LDFLAGS) -o mkdb mkdb.o dbutils.o
@@ -98,10 +150,16 @@ alist : alist.o dbutils.o years.o  log.o
 	$(LD) $(LDFLAGS) -o alist alist.o dbutils.o years.o log.o
 
 template : template.o
-	$(LD) $(LDFLAGS) -o template template.o
+	$(LD) $(LDFLAGS) $(YYFLAGS) -o template template.o
 
 templist : templist.o
-	$(LD) $(LDFLAGS) -o templist templist.o
+	$(LD) $(LDFLAGS) $(YYFLAGS) -o templist templist.o
+
+template.o:
+	$(CC) $(CFLAGS) $(YYFLAGS) $(CAUXFLAGS) -c template.c
+
+templist.o:
+	$(CC) $(CFLAGS) $(YYFLAGS) $(CAUXFLAGS) -c templist.c
 
 .c.o:
 	$(CC) $(CFLAGS) $(CAUXFLAGS) -c $<
@@ -110,15 +168,17 @@ templist : templist.o
 # ----------------------------------------------------------------
 #
 
-installbin :
+installbin : dirbin diretc
 	cp $(EXEBIN) $(BINDIR)
 	cp $(EXEETC) $(ETCDIR)
+
+clean: cleanobj cleanbin
 
 cleanobj :
 	rm -f $(OBJ) $(EXE)
 	rm -f Makefile.bak
 
-cleanbin :
+cleanbin : dirbin diretc
 	cd $(BINDIR); rm -f $(EXEBIN)
 	cd $(ETCDIR); rm -f $(EXEETC)
 

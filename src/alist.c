@@ -104,6 +104,7 @@ int alistAttrTest(struct attrSearchOptRec attrFlags, char *attr, int substring, 
         return (FALSE);
 
     if (attrFlags.string)
+        {
         if (substring)
             {
             if (casesen)
@@ -124,6 +125,7 @@ int alistAttrTest(struct attrSearchOptRec attrFlags, char *attr, int substring, 
             else if (caseCompare(listAttr, attr) == 0)
                 return (TRUE);
             }
+        }
 
     if (attrFlags.aa)
         if (strstr(listAttr, "AA)") != NULL)
@@ -180,16 +182,17 @@ int alistMoviesOnlyTest(int mvsonly, char *title)
 void alistNames(int listId, char *attr, int substring, int casesen, struct attrSearchOptRec attrFlags, int mvsonly,
                 int yr, int yrf, int yrt, TitleID nyears, struct titleDbRec *years)
     {
-    FILE *dbFp, *nameKeyFp, *nameIndexFp, *titleKeyFp, *titleIndexFp, *attrKeyFp, *attrIndexFp;
+    FILE *dbFp = NULL, *nameKeyFp = NULL, *nameIndexFp = NULL, *titleKeyFp = NULL, *titleIndexFp = NULL,
+         *attrKeyFp = NULL, *attrIndexFp = NULL;
     struct formatRec listData[MAXFILMOGRAPHIES];
     struct alistResult results[MAXALISTRESULTS];
-    int i, count, len, noWithAttr, noWithoutAttr, rcount = 0;
+    int i = 0, count = 0, len = 0, noWithAttr = 0, noWithoutAttr = 0, rcount = 0;
     char fn[MAXPATHLEN];
-    char *name;
-    NameID nameKey;
-    TitleID titleKey;
-    AttributeID attrKey;
-    int yearValue, keepFlag;
+    char *name = NULL;
+    NameID nameKey = 0;
+    TitleID titleKey = 0;
+    AttributeID attrKey = 0;
+    int yearValue = 0, keepFlag = 0;
 
     (void)constructFilename(fn, filmographyDefs[listId].stem, DBSEXT);
     dbFp = openFile(fn);

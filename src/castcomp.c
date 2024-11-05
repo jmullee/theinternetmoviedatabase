@@ -26,7 +26,7 @@
 
 enum compCastStatus findCompletionStatus(FILE *dbFp, TitleID titleKey)
     {
-    long upper, lower, mid, offset;
+    long upper, lower, mid;
     int found = FALSE;
     TitleID indexKey;
 

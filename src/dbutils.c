@@ -960,8 +960,9 @@ char *mapNameKeyToText(NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp)
     (void)fseek(nameIndexFp, 4 * nameKey, SEEK_SET);
     offset = getFullOffset(nameIndexFp);
     (void)fseek(nameKeyFp, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, nameKeyFp);
-    return (duplicateField(line));
+    if (NULL != fgets(line, MXLINELEN, nameKeyFp))
+        return (duplicateField(line));
+    return NULL;
     }
 
 char *mapTitleKeyToText(TitleID titleKey, FILE *titleKeyFp, FILE *titleIndexFp)
@@ -972,8 +973,9 @@ char *mapTitleKeyToText(TitleID titleKey, FILE *titleKeyFp, FILE *titleIndexFp)
     (void)fseek(titleIndexFp, 4 * titleKey, SEEK_SET);
     offset = getFullOffset(titleIndexFp);
     (void)fseek(titleKeyFp, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, titleKeyFp);
-    return (duplicateField(line));
+    if (NULL != fgets(line, MXLINELEN, titleKeyFp))
+        return (duplicateField(line));
+    return NULL;
     }
 
 char *mapAttrKeyToText(AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp)
@@ -986,11 +988,10 @@ char *mapAttrKeyToText(AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp)
         (void)fseek(attrIndexFp, 4 * attrKey, SEEK_SET);
         offset = getFullOffset(attrIndexFp);
         (void)fseek(attrKeyFp, offset, SEEK_SET);
-        (void)fgets(line, MXLINELEN, attrKeyFp);
-        return (duplicateField(line));
+        if (NULL != fgets(line, MXLINELEN, attrKeyFp))
+            return (duplicateField(line));
         }
-    else
-        return (NULL);
+    return (NULL);
     }
 
 char *mapfastNameKeyToText(NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp)
@@ -1002,11 +1003,15 @@ char *mapfastNameKeyToText(NameID nameKey, FILE *nameKeyFp, FILE *nameIndexFp)
     (void)fseek(nameIndexFp, 4 * nameKey, SEEK_SET);
     offset = getFullOffset(nameIndexFp);
     (void)fseek(nameKeyFp, offset, SEEK_SET);
-    (void)fgets(line, MXLINELEN, nameKeyFp);
-    if ((p = strchr(line, FSEP)) == NULL)
-        return (NULL);
-    *p = '\0';
-    return (line);
+    if (NULL != fgets(line, MXLINELEN, nameKeyFp))
+        {
+        if ((p = strchr(line, FSEP)) != NULL)
+            {
+            *p = '\0';
+            return (line);
+            }
+        }
+    return (NULL);
     }
 
 char *mapfastAttrKeyToText(AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndexFp)
@@ -1020,14 +1025,16 @@ char *mapfastAttrKeyToText(AttributeID attrKey, FILE *attrKeyFp, FILE *attrIndex
         (void)fseek(attrIndexFp, 4 * attrKey, SEEK_SET);
         offset = getFullOffset(attrIndexFp);
         (void)fseek(attrKeyFp, offset, SEEK_SET);
-        (void)fgets(line, MXLINELEN, attrKeyFp);
-        if ((p = strchr(line, FSEP)) == NULL)
-            return (NULL);
-        *p = '\0';
-        return (line);
+        if (NULL != fgets(line, MXLINELEN, attrKeyFp))
+            {
+            if ((p = strchr(line, FSEP)) != NULL)
+                {
+                *p = '\0';
+                return (line);
+                }
+            }
         }
-    else
-        return (NULL);
+    return (NULL);
     }
 
 void displayFormatPlain(struct formatRec listData[], int count)

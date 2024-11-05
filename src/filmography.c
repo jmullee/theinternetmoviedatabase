@@ -189,9 +189,11 @@ void swapAkaNames(struct nameSearchRec *nchain)
             (void)fseek(indexFp, 4 * nrec->nameKey, SEEK_SET);
             offset = getFullOffset(indexFp);
             (void)fseek(keyFp, offset, SEEK_SET);
-            (void)fgets(line, MXLINELEN, keyFp);
-            (void)free((void *)nrec->name);
-            nrec->name = duplicateField(line);
+            if (NULL != fgets(line, MXLINELEN, keyFp))
+                {
+                (void)free((void *)nrec->name);
+                nrec->name = duplicateField(line);
+                }
             }
         }
     if (keyFp != NULL)
@@ -233,7 +235,8 @@ void approxFilmographySearchKeyLookup(struct nameSearchRec *chain)
                 (void)fseek(nameIndexFp, 4 * nameKey, SEEK_SET);
                 offset = getFullOffset(nameIndexFp);
                 (void)fseek(nameKeyFp, offset, SEEK_SET);
-                (void)fgets(line, MXLINELEN, nameKeyFp);
+                if (NULL == fgets(line, MXLINELEN, nameKeyFp))
+                    continue;
                 stripSep(line);
                 if (minimal_distance(line, substring, casesen) <= approx)
                     matched = TRUE;
@@ -297,7 +300,8 @@ void substringFilmographySearchKeyLookup(struct nameSearchRec *chain)
                 (void)fseek(nameIndexFp, 4 * nameKey, SEEK_SET);
                 offset = getFullOffset(nameIndexFp);
                 (void)fseek(nameKeyFp, offset, SEEK_SET);
-                (void)fgets(line, MXLINELEN, nameKeyFp);
+                if (NULL == fgets(line, MXLINELEN, nameKeyFp))
+                    continue;
                 if (casesen)
                     {
                     if (strstr(line, substring) != NULL)
@@ -368,7 +372,7 @@ void straightFilmographySearchKeyLookup(struct nameSearchRec *chain)
             if (fgets(line, MXLINELEN, indexFp) == NULL)
                 {
                 (void)findSOL(indexFp, mid);
-                (void)fgets(line, MXLINELEN, indexFp);
+                line[0] = 0;
                 }
             compare = fieldCaseCompare(line, nrec->name);
             if (compare == 0)
@@ -380,6 +384,7 @@ void straightFilmographySearchKeyLookup(struct nameSearchRec *chain)
             }
 
         if (found)
+            {
             if ((keyptr = strchr(line, FSEP)) != NULL)
                 {
                 *keyptr++ = '\0';
@@ -388,6 +393,7 @@ void straightFilmographySearchKeyLookup(struct nameSearchRec *chain)
                 }
             else
                 nrec->nameKey = NONAME;
+            }
         }
 
     (void)fclose(indexFp);
@@ -485,7 +491,7 @@ int listRecTitleKeySort(struct listEntry *e1, struct listEntry *e2)
         return (-1);
     }
 
-int readFilmographyToListRec(FILE *dbFp, long offset, long nameKey, struct listRec *lrec, int listId)
+int readFilmographyToListRec(FILE *dbFp, long offset, struct listRec *lrec, int listId)
     {
     int i, len, noWithAttr, noWithoutAttr, count = 0;
 
@@ -588,7 +594,7 @@ struct listRec *lookupFilmography(FILE *dbFp, FILE *indexFp, struct nameSearchRe
         if ((offset = lookupNamesIndex(indexFp, nrec->nameKey)) >= 0)
             {
             retval = newListRec();
-            if (readFilmographyToListRec(dbFp, offset, nrec->nameKey, retval, listId))
+            if (readFilmographyToListRec(dbFp, offset, retval, listId))
                 return (retval);
             }
     return (NULL);

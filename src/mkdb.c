@@ -105,6 +105,7 @@ TitleID readMoviesList(struct titleIndexRec *titles)
 
     listFp = openFile(MOVIELIST);
     while (fgets(line, MXLINELEN, listFp) != NULL)
+        {
         if (inMovie && (strncmp(line, "-------", 5) == 0))
             break;
         else if (inMovie && *line == '"')
@@ -119,13 +120,15 @@ TitleID readMoviesList(struct titleIndexRec *titles)
             }
         else if (strncmp(line, "MOVIES LIST", 11) == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
+        }
 
     (void)fseek(listFp, 0L, SEEK_SET);
     inMovie = FALSE;
     while (fgets(line, MXLINELEN, listFp) != NULL)
+        {
         if (inMovie && *line == '"')
             break;
         else if (inMovie)
@@ -140,9 +143,10 @@ TitleID readMoviesList(struct titleIndexRec *titles)
             }
         else if (strncmp(line, "MOVIES LIST", 11) == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
+        }
 
     (void)fclose(listFp);
 
@@ -195,6 +199,7 @@ void writeTitleIndexKey(TitleID titleCount)
     (void)fclose(indexFp);
 
     free((void *)titleIndex);
+    titleIndex = NULL;
     }
 
 void writeAttrIndexKey(AttributeID attrCount)
@@ -231,13 +236,15 @@ void writeAttrIndexKey(AttributeID attrCount)
     for (i = 0; i < count; i++)
         putFullOffset(attrIndex[i].offset, indexFp);
 
+    free(attrIndex);
+    attrIndex = NULL;
     (void)fclose(keyFp);
     (void)fclose(indexFp);
     }
 
 void writeNameIndexKey(NameID nameCount)
     {
-    NameID i, count = 0;
+    NameID i, count = 0, skipped = 0;
     FILE *indexFp, *keyFp;
     struct nameKeyOffset *namesIndex;
     long lastOffset = 0;
@@ -253,12 +260,20 @@ void writeNameIndexKey(NameID nameCount)
 
     while (fgets(line, MXLINELEN, keyFp) != NULL)
         {
+        if (count > nameCount)
+            {
+            // didn't allocate enough memory
+            skipped++;
+            continue;
+            }
         if ((p = strchr(line, FSEP)) == NULL)
             moviedbError("mkdb: key file corrupt");
         namesIndex[count].nameKey = strtol(++p, (char **)NULL, 16);
         namesIndex[count++].offset = lastOffset;
         lastOffset = ftell(keyFp);
         }
+    if (0 < skipped)
+        printf("writeNameIndexKey(%u) processed %u lines, skipped %u\n", nameCount, count, skipped);
 
     (void)qsort((void *)namesIndex, (size_t)count, sizeof(struct nameKeyOffset),
                 (int (*)(const void *, const void *))nameKeyOffsetSort);
@@ -269,6 +284,7 @@ void writeNameIndexKey(NameID nameCount)
     (void)fclose(keyFp);
     (void)fclose(indexFp);
     free((void *)namesIndex);
+    namesIndex = NULL;
     }
 
 void writeTitleAlphaKey(TitleID titleCount, struct titleIndexRec *titles)
@@ -292,7 +308,7 @@ void writeAttrAlphaKey(AttributeID attrCount)
     indexFp = writeFile(ATTRKEY);
 
     for (i = 0; i < attrCount; i++)
-        (void)fprintf(indexFp, "%s|%lx\n", attributeIndex[i].attr, attributeIndex[i].attrKey);
+        (void)fprintf(indexFp, "%s|%X\n", attributeIndex[i].attr, attributeIndex[i].attrKey);
 
     (void)fclose(indexFp);
     }
@@ -346,6 +362,7 @@ AttributeID readAttrAlphaKey(void)
                 attributes = realloc(attributeIndex, sizeof(struct attrIndexRec) * attributeIndexSize);
                 if (attributes == NULL)
                     moviedbError("mkdb: not enough memory to generate attributes index");
+                memset(&(attributes[attributeIndexSize - ATTRGROW]), 0, sizeof(struct attrIndexRec) * ATTRGROW);
                 attributeIndex = attributes;
                 }
             }
@@ -422,7 +439,7 @@ TitleID titleKeyLookup(char *str, struct titleIndexRec *titles, TitleID *titleCo
 TitleID titleKeyLookupReadOnly(char *str, struct titleIndexRec *titles, TitleID titleCount)
     {
     struct titleIndexRec *matched;
-    TitleID dummy, i;
+    TitleID dummy;
     char *ptr;
 
     if ((ptr = strchr(str, FSEP)) != NULL)
@@ -505,6 +522,7 @@ AttributeID attrKeyLookup(char *attr, AttributeID *attrCount)
             attributes = realloc(attributeIndex, sizeof(struct attrIndexRec) * attributeIndexSize);
             if (attributes == NULL)
                 moviedbError("mkdb: not enough memory to generate attributes index");
+            memset(&(attributes[attributeIndexSize - ATTRGROW]), 0, sizeof(struct attrIndexRec) * ATTRGROW);
             attributeIndex = attributes;
             }
         return (attrKey);
@@ -522,7 +540,7 @@ TitleID processMoviesList(struct titleIndexRec *titles, TitleID *titleCount, Att
     int inMovie = FALSE;
     TitleID count = 0, i;
 
-    years = malloc(MAXTITLES * sizeof(struct yearData));
+    years = calloc(MAXTITLES, sizeof(struct yearData));
     if (!years)
         moviedbError("mkdb: cannot allocate years structure");
 
@@ -577,8 +595,8 @@ TitleID processMoviesList(struct titleIndexRec *titles, TitleID *titleCount, Att
             }
         else if (strncmp(line, "MOVIES LIST", 11) == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
 
     (void)fclose(listFp);
@@ -595,6 +613,8 @@ TitleID processMoviesList(struct titleIndexRec *titles, TitleID *titleCount, Att
         putInt(years[i].yrto, dbFp);
         putAttr(years[i].attrKey, dbFp);
         }
+    free(years);
+    years = NULL;
     (void)fclose(dbFp);
     return (count);
     }
@@ -602,7 +622,6 @@ TitleID processMoviesList(struct titleIndexRec *titles, TitleID *titleCount, Att
 char *splitAttribute(char *title)
     {
     char *attr = NULL;
-    char *bracketptr;
     char *akaptr;
     int nest;
 
@@ -753,6 +772,7 @@ void makeCastDatabaseNamesIndex(int listId, NameID namesOnList)
     (void)fclose(dbFp);
     (void)fclose(ndxFp);
     free((void *)namesIndex);
+    namesIndex = NULL;
     }
 
 void makeCastDatabaseTitlesIndex(int listId, long nentries)
@@ -803,6 +823,7 @@ void makeCastDatabaseTitlesIndex(int listId, long nentries)
     (void)fclose(dbFp);
     (void)fclose(tdxFp);
     free((void *)titlesIndex);
+    titlesIndex = NULL;
     }
 
 void writeCastEntry(struct castFilmography *currentEntry, FILE *stream)
@@ -826,6 +847,7 @@ void writeCastEntry(struct castFilmography *currentEntry, FILE *stream)
                 putByte(strlen(currentEntry->withAttrs[i].cname), stream);
                 putString(currentEntry->withAttrs[i].cname, stream);
                 free((void *)currentEntry->withAttrs[i].cname);
+                currentEntry->withAttrs[i].cname = NULL;
                 }
             putPosition(currentEntry->withAttrs[i].position, stream);
             }
@@ -839,6 +861,7 @@ void writeCastEntry(struct castFilmography *currentEntry, FILE *stream)
                 putByte(strlen(currentEntry->withoutAttrs[i].cname), stream);
                 putString(currentEntry->withoutAttrs[i].cname, stream);
                 free((void *)currentEntry->withoutAttrs[i].cname);
+                currentEntry->withoutAttrs[i].cname = NULL;
                 }
             putPosition(currentEntry->withoutAttrs[i].position, stream);
             }
@@ -870,9 +893,9 @@ long processCastList(NameID *nameCount, struct titleIndexRec *titles, TitleID *t
     if (isReadable(NAMEKEY))
         {
         tmpFp = copyFile(NAMEKEY);
-        (void)fgets(keyFileData, MXLINELEN, tmpFp);
-        if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
-            *keyPtr++ = '\0';
+        if (NULL != fgets(keyFileData, MXLINELEN, tmpFp))
+            if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
+                *keyPtr++ = '\0';
         }
     else
         tmpFp = NULL;
@@ -910,7 +933,7 @@ long processCastList(NameID *nameCount, struct titleIndexRec *titles, TitleID *t
                         if (tmpFp == NULL)
                             {
                             currentEntry.nameKey = (*nameCount)++;
-                            (void)fprintf(nameKeyFp, "%s|%lx\n", line, currentEntry.nameKey);
+                            (void)fprintf(nameKeyFp, "%s|%X\n", line, currentEntry.nameKey);
                             }
                         else
                             {
@@ -949,7 +972,7 @@ long processCastList(NameID *nameCount, struct titleIndexRec *titles, TitleID *t
                             else
                                 {
                                 currentEntry.nameKey = (*nameCount)++;
-                                (void)fprintf(nameKeyFp, "%s|%lx\n", line, currentEntry.nameKey);
+                                (void)fprintf(nameKeyFp, "%s|%X\n", line, currentEntry.nameKey);
                                 }
                             }
                         currentEntry.noWithAttr = 0;
@@ -1012,6 +1035,7 @@ long processCastList(NameID *nameCount, struct titleIndexRec *titles, TitleID *t
         while (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
             (void)fprintf(nameKeyFp, "%s", keyFileData);
         (void)fclose(tmpFp);
+        tmpFp = NULL;
         }
     (void)fclose(nameKeyFp);
 
@@ -1078,6 +1102,7 @@ void makeDatabaseNamesIndex(int listId, NameID namesOnList)
     (void)fclose(dbFp);
     (void)fclose(ndxFp);
     free((void *)namesIndex);
+    namesIndex = NULL;
     }
 
 void makeDatabaseTitlesIndex(int listId, long nentries)
@@ -1128,12 +1153,15 @@ void makeDatabaseTitlesIndex(int listId, long nentries)
     (void)fclose(dbFp);
     (void)fclose(tdxFp);
     free((void *)titlesIndex);
+    titlesIndex = NULL;
     }
 
 void writeFilmographyEntry(struct filmography *currentEntry, FILE *stream)
     {
     int i;
 
+    if (NULL == currentEntry)
+        return;
     if (currentEntry->noWithAttr == 0 && currentEntry->noWithoutAttr == 0)
         return;
     else
@@ -1164,6 +1192,7 @@ long processFilmographyList(NameID *nameCount, struct titleIndexRec *titles, Tit
     int foundMark = FALSE, inList = FALSE, skipMode = FALSE, compare;
     struct filmography currentEntry;
 
+    currentEntry.nameKey = 0;
     currentEntry.noWithAttr = 0;
     currentEntry.noWithoutAttr = 0;
 
@@ -1174,9 +1203,9 @@ long processFilmographyList(NameID *nameCount, struct titleIndexRec *titles, Tit
     if (isReadable(NAMEKEY))
         {
         tmpFp = copyFile(NAMEKEY);
-        (void)fgets(keyFileData, MXLINELEN, tmpFp);
-        if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
-            *keyPtr++ = '\0';
+        if (NULL != fgets(keyFileData, MXLINELEN, tmpFp))
+            if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
+                *keyPtr++ = '\0';
         }
     else
         tmpFp = NULL;
@@ -1214,7 +1243,7 @@ long processFilmographyList(NameID *nameCount, struct titleIndexRec *titles, Tit
                         if (tmpFp == NULL)
                             {
                             currentEntry.nameKey = (*nameCount)++;
-                            (void)fprintf(nameKeyFp, "%s|%lx\n", line, currentEntry.nameKey);
+                            (void)fprintf(nameKeyFp, "%s|%X\n", line, currentEntry.nameKey);
                             }
                         else
                             {
@@ -1253,7 +1282,7 @@ long processFilmographyList(NameID *nameCount, struct titleIndexRec *titles, Tit
                             else
                                 {
                                 currentEntry.nameKey = (*nameCount)++;
-                                (void)fprintf(nameKeyFp, "%s|%lx\n", line, currentEntry.nameKey);
+                                (void)fprintf(nameKeyFp, "%s|%X\n", line, currentEntry.nameKey);
                                 }
                             }
                         currentEntry.noWithAttr = 0;
@@ -1304,6 +1333,7 @@ long processFilmographyList(NameID *nameCount, struct titleIndexRec *titles, Tit
         while (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
             (void)fprintf(nameKeyFp, "%s", keyFileData);
         (void)fclose(tmpFp);
+        tmpFp = NULL;
         }
     (void)fclose(nameKeyFp);
 
@@ -1401,6 +1431,7 @@ void makeWriterDatabaseNamesIndex(int listId, NameID namesOnList)
     (void)fclose(dbFp);
     (void)fclose(ndxFp);
     free((void *)namesIndex);
+    namesIndex = NULL;
     }
 
 void makeWriterDatabaseTitlesIndex(int listId, long nentries)
@@ -1451,6 +1482,7 @@ void makeWriterDatabaseTitlesIndex(int listId, long nentries)
     (void)fclose(dbFp);
     (void)fclose(tdxFp);
     free((void *)titlesIndex);
+    titlesIndex = NULL;
     }
 
 void writeWriterFilmographyEntry(struct writerFilmography *currentEntry, FILE *stream)
@@ -1506,9 +1538,9 @@ long processWriterFilmographyList(NameID *nameCount, struct titleIndexRec *title
     if (isReadable(NAMEKEY))
         {
         tmpFp = copyFile(NAMEKEY);
-        (void)fgets(keyFileData, MXLINELEN, tmpFp);
-        if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
-            *keyPtr++ = '\0';
+        if (NULL != fgets(keyFileData, MXLINELEN, tmpFp))
+            if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
+                *keyPtr++ = '\0';
         }
     else
         tmpFp = NULL;
@@ -1546,7 +1578,7 @@ long processWriterFilmographyList(NameID *nameCount, struct titleIndexRec *title
                         if (tmpFp == NULL)
                             {
                             currentEntry.nameKey = (*nameCount)++;
-                            (void)fprintf(nameKeyFp, "%s|%lx\n", line, currentEntry.nameKey);
+                            (void)fprintf(nameKeyFp, "%s|%X\n", line, currentEntry.nameKey);
                             }
                         else
                             {
@@ -1585,7 +1617,7 @@ long processWriterFilmographyList(NameID *nameCount, struct titleIndexRec *title
                             else
                                 {
                                 currentEntry.nameKey = (*nameCount)++;
-                                (void)fprintf(nameKeyFp, "%s|%lx\n", line, currentEntry.nameKey);
+                                (void)fprintf(nameKeyFp, "%s|%X\n", line, currentEntry.nameKey);
                                 }
                             }
                         currentEntry.noWithAttr = 0;
@@ -1643,6 +1675,7 @@ long processWriterFilmographyList(NameID *nameCount, struct titleIndexRec *title
         while (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
             (void)fprintf(nameKeyFp, "%s", keyFileData);
         (void)fclose(tmpFp);
+        tmpFp = NULL;
         }
     (void)fclose(nameKeyFp);
 
@@ -1688,6 +1721,8 @@ TitleID processTriviaList(struct titleIndexRec *titles, TitleID *titleCount, int
                         titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                         if (titlesIndex == NULL)
                             moviedbError("mkdb: not enough memory to generate trivia index");
+                        memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0,
+                               sizeof(struct titleKeyOffset) * TIGROW);
                         sharedTitleIndex = titlesIndex;
                         }
                     }
@@ -1755,6 +1790,8 @@ TitleID processPlotList(struct titleIndexRec *titles, TitleID *titleCount)
                         titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                         if (titlesIndex == NULL)
                             moviedbError("mkdb: not enough memory to generate plot index");
+                        memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0,
+                               sizeof(struct titleKeyOffset) * TIGROW);
                         sharedTitleIndex = titlesIndex;
                         }
                     }
@@ -1818,6 +1855,8 @@ TitleID processOutlineList(struct titleIndexRec *titles, TitleID *titleCount)
                         titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                         if (titlesIndex == NULL)
                             moviedbError("mkdb: not enough memory to generate outline index");
+                        memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0,
+                               sizeof(struct titleKeyOffset) * TIGROW);
                         sharedTitleIndex = titlesIndex;
                         }
                     }
@@ -1856,7 +1895,7 @@ NameID processBiographiesList(NameID *nameCount)
     char keyFileData[MXLINELEN];
     char prevName[MXLINELEN];
     char *keyPtr = NULL;
-    int inbio = FALSE, skipMode = FALSE, compare;
+    int inbio = FALSE, compare;
     NameID count = 0, i;
     long currentOffset;
 
@@ -1870,9 +1909,9 @@ NameID processBiographiesList(NameID *nameCount)
     if (isReadable(NAMEKEY))
         {
         tmpFp = copyFile(NAMEKEY);
-        (void)fgets(keyFileData, MXLINELEN, tmpFp);
-        if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
-            *keyPtr++ = '\0';
+        if (NULL != fgets(keyFileData, MXLINELEN, tmpFp))
+            if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
+                *keyPtr++ = '\0';
         }
     else
         tmpFp = NULL;
@@ -1897,19 +1936,17 @@ NameID processBiographiesList(NameID *nameCount)
                         (void)printf("%s\n", line + 4);
                     if (caseCompare(prevName, line + 4) >= 0)
                         {
-                        skipMode = TRUE;
                         if (debugFlag)
                             printf("skipped: %s\n", line + 4);
                         continue;
                         }
                     else
                         (void)strcpy(prevName, line + 4);
-                    skipMode = FALSE;
 
                     if (tmpFp == NULL)
                         {
                         namesIndex[count].nameKey = (*nameCount)++;
-                        (void)fprintf(nameKeyFp, "%s|%lx\n", line + 4, namesIndex[count].nameKey);
+                        (void)fprintf(nameKeyFp, "%s|%X\n", line + 4, namesIndex[count].nameKey);
                         }
                     else
                         {
@@ -1948,7 +1985,7 @@ NameID processBiographiesList(NameID *nameCount)
                         else
                             {
                             namesIndex[count].nameKey = (*nameCount)++;
-                            (void)fprintf(nameKeyFp, "%s|%lx\n", line + 4, namesIndex[count].nameKey);
+                            (void)fprintf(nameKeyFp, "%s|%X\n", line + 4, namesIndex[count].nameKey);
                             }
                         }
                     namesIndex[count].offset = currentOffset;
@@ -1972,6 +2009,7 @@ NameID processBiographiesList(NameID *nameCount)
         while (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
             (void)fprintf(nameKeyFp, "%s", keyFileData);
         (void)fclose(tmpFp);
+        tmpFp = NULL;
         }
     (void)fclose(nameKeyFp);
 
@@ -1988,6 +2026,7 @@ NameID processBiographiesList(NameID *nameCount)
 
     (void)fclose(indexFp);
     free((void *)namesIndex);
+    namesIndex = NULL;
     return (count);
     }
 
@@ -2076,6 +2115,8 @@ TitleID processMovieRatings(struct titleIndexRec *titles, TitleID *titleCount)
         putByte(ratingsReport[i].rating, dbFp);
         }
 
+    free(ratingsReport);
+    ratingsReport = NULL;
     (void)fclose(dbFp);
     (void)fclose(listFp);
     return (count);
@@ -2150,6 +2191,7 @@ TitleID processVotesList(struct titleIndexRec *titles, TitleID *titleCount)
     (void)fclose(dbFp);
     (void)fclose(listFp);
     free((void *)votes);
+    votes = NULL;
     return (count);
     }
 
@@ -2170,7 +2212,7 @@ TitleID processAkaList(struct titleIndexRec *titles, TitleID *titleCount, Attrib
     size_t akaIndexSize = AKASTART;
     char line[MXLINELEN];
     int inaka = FALSE, enddata = FALSE;
-    TitleID count = 0, processed = 0, sortedTo = 0, i;
+    TitleID count = 0, processed = 0, sortedTo = 0, i, numPrimaryNotFound = 0;
     TitleID primaryKey = NOTITLE;
     char *ptr;
 
@@ -2178,7 +2220,7 @@ TitleID processAkaList(struct titleIndexRec *titles, TitleID *titleCount, Attrib
     TitleID titleCountValid = *titleCount;
     TitleID startSearchTitle = *titleCount;
 
-    aka = malloc(sizeof(struct akaData) * akaIndexSize);
+    aka = calloc(akaIndexSize, sizeof(struct akaData));
     if (isReadable(AKADB))
         {
         dbFp = openFile(AKADB);
@@ -2196,6 +2238,7 @@ TitleID processAkaList(struct titleIndexRec *titles, TitleID *titleCount, Attrib
                 aka = realloc(akaIndex, sizeof(struct akaData) * akaIndexSize);
                 if (aka == NULL)
                     moviedbError("mkdb: not enough memory to generate aka index");
+                memset(&(aka[akaIndexSize - AKAGROW]), 0, sizeof(struct akaData) * AKAGROW);
                 }
             }
         count--;
@@ -2273,6 +2316,7 @@ TitleID processAkaList(struct titleIndexRec *titles, TitleID *titleCount, Attrib
                     aka = realloc(akaIndex, sizeof(struct akaData) * akaIndexSize);
                     if (aka == NULL)
                         moviedbError("mkdb: not enough memory to generate aka index");
+                    memset(&(aka[akaIndexSize - AKAGROW]), 0, sizeof(struct akaData) * AKAGROW);
                     }
                 }
             else
@@ -2280,16 +2324,18 @@ TitleID processAkaList(struct titleIndexRec *titles, TitleID *titleCount, Attrib
                 stripEOL(line);
                 primaryKey = titleKeyLookupReadOnly(line, titles, titleCountValid);
                 if (NOTITLE == primaryKey)
-                    printf("WARNING: %s not in movies.list\n", line);
+                    numPrimaryNotFound++;
                 startSearchTitle = *titleCount;
                 }
             }
         else if (strncmp(line, "AKA", 3) == 0)
             {
-            (void)fgets(line, MXLINELEN, listFp);
-            if (strncmp(line, "===", 3) == 0)
-                inaka = TRUE;
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                if (strncmp(line, "===", 3) == 0)
+                    inaka = TRUE;
             }
+    if (0 < numPrimaryNotFound)
+        printf("WARNING: %u titles not in movies.list\n", numPrimaryNotFound);
 
     (void)fclose(listFp);
 
@@ -2327,8 +2373,10 @@ TitleID processAkaList(struct titleIndexRec *titles, TitleID *titleCount, Attrib
         putTitle(aka[i].aka, dbFp);
         putTitle(aka[i].primary, dbFp);
         }
-    (void)fclose(dbFp);
 
+    free(aka);
+    aka = NULL;
+    (void)fclose(dbFp);
     return (processed);
     }
 
@@ -2355,7 +2403,7 @@ NameID processAkaNamesList(NameID *nameCount)
     char keyFileData[MXLINELEN];
     char prevName[MXLINELEN];
     char *keyPtr = NULL;
-    int inaka = FALSE, enddata = FALSE, skipMode, compare;
+    int inaka = FALSE, enddata = FALSE, compare;
     NameID count = 0, i;
     NameID primaryKey = NONAME;
     char *ptr;
@@ -2369,9 +2417,9 @@ NameID processAkaNamesList(NameID *nameCount)
     if (isReadable(NAMEKEY))
         {
         tmpFp = copyFile(NAMEKEY);
-        (void)fgets(keyFileData, MXLINELEN, tmpFp);
-        if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
-            *keyPtr++ = '\0';
+        if (NULL != fgets(keyFileData, MXLINELEN, tmpFp))
+            if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
+                *keyPtr++ = '\0';
         }
     else
         tmpFp = NULL;
@@ -2393,19 +2441,17 @@ NameID processAkaNamesList(NameID *nameCount)
                     (void)printf("%s\n", line);
                 if (caseCompare(prevName, line) >= 0)
                     {
-                    skipMode = TRUE;
                     if (debugFlag)
                         printf("skipped: %s\n", line);
                     continue;
                     }
                 else
                     (void)strcpy(prevName, line);
-                skipMode = FALSE;
 
                 if (tmpFp == NULL)
                     {
                     primaryKey = (*nameCount)++;
-                    (void)fprintf(nameKeyFp, "%s|%lx\n", line, primaryKey);
+                    (void)fprintf(nameKeyFp, "%s|%X\n", line, primaryKey);
                     }
                 else
                     {
@@ -2444,7 +2490,7 @@ NameID processAkaNamesList(NameID *nameCount)
                     else
                         {
                         primaryKey = (*nameCount)++;
-                        (void)fprintf(nameKeyFp, "%s|%lx\n", line, primaryKey);
+                        (void)fprintf(nameKeyFp, "%s|%X\n", line, primaryKey);
                         }
                     }
                 }
@@ -2463,9 +2509,9 @@ NameID processAkaNamesList(NameID *nameCount)
             }
         else if (strncmp(line, "AKA", 3) == 0)
             {
-            (void)fgets(line, MXLINELEN, listFp);
-            if (strncmp(line, "===", 3) == 0)
-                inaka = TRUE;
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                if (strncmp(line, "===", 3) == 0)
+                    inaka = TRUE;
             }
 
     (void)fclose(listFp);
@@ -2475,6 +2521,7 @@ NameID processAkaNamesList(NameID *nameCount)
         while (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
             (void)fprintf(nameKeyFp, "%s", keyFileData);
         (void)fclose(tmpFp);
+        tmpFp = NULL;
         }
     (void)fclose(nameKeyFp);
 
@@ -2483,9 +2530,9 @@ NameID processAkaNamesList(NameID *nameCount)
 
     prevName[0] = '\0';
     tmpFp = copyFile(NAMEKEY);
-    (void)fgets(keyFileData, MXLINELEN, tmpFp);
-    if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
-        *keyPtr++ = '\0';
+    if (NULL != fgets(keyFileData, MXLINELEN, tmpFp))
+        if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
+            *keyPtr++ = '\0';
 
     nameKeyFp = writeFile(NAMEKEY);
 
@@ -2496,7 +2543,7 @@ NameID processAkaNamesList(NameID *nameCount)
         while (compare < 0)
             {
             (void)fprintf(nameKeyFp, "%s|%s", keyFileData, keyPtr);
-            if (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
+            if ((tmpFp != NULL) && fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
                 {
                 if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
                     *keyPtr++ = '\0';
@@ -2505,7 +2552,8 @@ NameID processAkaNamesList(NameID *nameCount)
             else
                 {
                 compare = 1;
-                (void)fclose(tmpFp);
+                if (tmpFp != NULL)
+                    (void)fclose(tmpFp);
                 tmpFp = NULL;
                 }
             }
@@ -2513,21 +2561,24 @@ NameID processAkaNamesList(NameID *nameCount)
             {
             naka[i].aka = strtol(keyPtr, (char **)NULL, 16);
             (void)fprintf(nameKeyFp, "%s|%s", keyFileData, keyPtr);
-            if (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
+            if ((tmpFp != NULL) && fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
                 {
                 if ((keyPtr = strchr(keyFileData, FSEP)) != NULL)
                     *keyPtr++ = '\0';
                 }
             else
                 {
-                (void)fclose(tmpFp);
+                if (tmpFp != NULL)
+                    (void)fclose(tmpFp);
                 tmpFp = NULL;
                 }
             }
         else
             {
             naka[i].aka = (*nameCount)++;
-            (void)fprintf(nameKeyFp, "%s|%lx\n", naka[i].akaString, naka[i].aka);
+            (void)fprintf(nameKeyFp, "%s|%X\n", naka[i].akaString, naka[i].aka);
+            free(naka[i].akaString);
+            naka[i].akaString = NULL;
             }
         }
     if (tmpFp != NULL)
@@ -2536,6 +2587,7 @@ NameID processAkaNamesList(NameID *nameCount)
         while (fgets(keyFileData, MXLINELEN, tmpFp) != NULL)
             (void)fprintf(nameKeyFp, "%s", keyFileData);
         (void)fclose(tmpFp);
+        tmpFp = NULL;
         }
     (void)fclose(nameKeyFp);
 
@@ -2562,7 +2614,13 @@ NameID processAkaNamesList(NameID *nameCount)
         putName(naka[i].primary, dbFp);
         }
     (void)fclose(dbFp);
+    for (i = 0; i < count; i++)
+        {
+        free(naka[i].akaString);
+        naka[i].akaString = NULL;
+        }
     free((void *)naka);
+    naka = NULL;
 
     return (count);
     }
@@ -2620,14 +2678,15 @@ TitleID processTitleInfoList(struct titleIndexRec *titles, TitleID *titleCount, 
                     titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                     if (titlesIndex == NULL)
                         moviedbError("mkdb: not enough memory to generate title info index");
+                    memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0, sizeof(struct titleKeyOffset) * TIGROW);
                     sharedTitleIndex = titlesIndex;
                     }
                 }
             }
         else if (strcmp(line, titleInfoDefs[listId].start) == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
 
     (void)fclose(listFp);
@@ -2679,6 +2738,8 @@ TitleID processBusinessList(struct titleIndexRec *titles, TitleID *titleCount)
                         titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                         if (titlesIndex == NULL)
                             moviedbError("mkdb: not enough memory to generate business index");
+                        memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0,
+                               sizeof(struct titleKeyOffset) * TIGROW);
                         sharedTitleIndex = titlesIndex;
                         }
                     }
@@ -2740,6 +2801,8 @@ TitleID processLaserDiscList(struct titleIndexRec *titles, TitleID *titleCount)
                         titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                         if (titlesIndex == NULL)
                             moviedbError("mkdb: not enough memory to generate laser index");
+                        memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0,
+                               sizeof(struct titleKeyOffset) * TIGROW);
                         sharedTitleIndex = titlesIndex;
                         }
                     }
@@ -2747,7 +2810,7 @@ TitleID processLaserDiscList(struct titleIndexRec *titles, TitleID *titleCount)
             else
                 {
                 currentOffset = ftell(dbFp);
-                (void)fprintf(dbFp, "--\n", line);
+                (void)fprintf(dbFp, "--\n");
                 }
             }
         else if (strncmp(line, "LASERDISC LIST", 14) == 0)
@@ -2807,6 +2870,8 @@ TitleID processLiteratureList(struct titleIndexRec *titles, TitleID *titleCount)
                         titlesIndex = realloc(sharedTitleIndex, sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
                         if (titlesIndex == NULL)
                             moviedbError("mkdb: not enough memory to generate lit index");
+                        memset(&(titlesIndex[sharedTitleIndexSize - TIGROW]), 0,
+                               sizeof(struct titleKeyOffset) * TIGROW);
                         sharedTitleIndex = titlesIndex;
                         }
                     }
@@ -2878,8 +2943,8 @@ TitleID processCompleteCastList(struct titleIndexRec *titles, TitleID *titleCoun
             }
         else if (strcmp(line, "CAST COVERAGE TRACKING LIST\n") == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
 
     (void)fclose(listFp);
@@ -2894,6 +2959,7 @@ TitleID processCompleteCastList(struct titleIndexRec *titles, TitleID *titleCoun
         }
     (void)fclose(dbFp);
     free((void *)list);
+    list = NULL;
 
     return (count);
     }
@@ -2938,8 +3004,8 @@ TitleID processCompleteCrewList(struct titleIndexRec *titles, TitleID *titleCoun
             }
         else if (strcmp(line, "CREW COVERAGE TRACKING LIST\n") == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
 
     (void)fclose(listFp);
@@ -2954,6 +3020,7 @@ TitleID processCompleteCrewList(struct titleIndexRec *titles, TitleID *titleCoun
         }
     (void)fclose(dbFp);
     free((void *)list);
+    list = NULL;
 
     return (count);
     }
@@ -2973,8 +3040,8 @@ TitleID processMovieLinksList(struct titleIndexRec *titles, TitleID *titleCount)
     size_t linkSize = LINKSTART;
     char line[MXLINELEN];
     char *ptr;
-    int inMovie = FALSE, i, position = 0;
-    TitleID count = 0, currentTitleKey = NOTITLE;
+    int inMovie = FALSE, position = 0;
+    TitleID count = 0, currentTitleKey = NOTITLE, i;
 
     list = (struct movieLinkDbRec *)calloc(LINKSTART, sizeof(struct movieLinkDbRec));
     if (list == NULL)
@@ -3013,12 +3080,13 @@ TitleID processMovieLinksList(struct titleIndexRec *titles, TitleID *titleCount)
                             count++;
                             if (count >= linkSize)
                                 {
-                                struct movieLinkDbRec *links;
+                                struct movieLinkDbRec *links = list;
 
                                 linkSize += LINKGROW;
-                                links = realloc(list, sizeof(struct movieLinkDbRec) * linkSize);
-                                if (links == NULL)
+                                list = realloc(links, sizeof(struct movieLinkDbRec) * linkSize);
+                                if (list == NULL)
                                     moviedbError("mkdb: not enough memory to generate link index");
+                                memset(&(list[linkSize - LINKGROW]), 0, sizeof(struct movieLinkDbRec) * LINKGROW);
                                 }
                             }
                         break;
@@ -3027,8 +3095,8 @@ TitleID processMovieLinksList(struct titleIndexRec *titles, TitleID *titleCount)
             }
         else if (strcmp(line, "MOVIE LINKS LIST\n") == 0)
             {
-            inMovie = TRUE;
-            (void)fgets(line, MXLINELEN, listFp);
+            if (NULL != fgets(line, MXLINELEN, listFp))
+                inMovie = TRUE;
             }
 
     (void)fclose(listFp);
@@ -3044,11 +3112,12 @@ TitleID processMovieLinksList(struct titleIndexRec *titles, TitleID *titleCount)
         }
     (void)fclose(dbFp);
     free((void *)list);
+    list = NULL;
 
     return (count);
     }
 
-void touchFile(char *filename)
+void touchFile(const char *filename)
     {
     FILE *fp;
 
@@ -3179,12 +3248,12 @@ int main(int argc, char **argv)
     NameID nameCount = 0;
 
     sharedTitleIndexSize = TISTART;
-    sharedTitleIndex = malloc(sizeof(struct titleKeyOffset) * sharedTitleIndexSize);
+    sharedTitleIndex = calloc(sharedTitleIndexSize, sizeof(struct titleKeyOffset));
     if (sharedTitleIndex == NULL)
         moviedbError("mkdb: not enough memory to generate titles index");
 
     attributeIndexSize = ATTRSTART;
-    attributeIndex = malloc(sizeof(struct attrIndexRec) * attributeIndexSize);
+    attributeIndex = calloc(attributeIndexSize, sizeof(struct attrIndexRec));
     if (attributeIndex == NULL)
         moviedbError("mkdb: not enough memory to generate attribute index");
 
@@ -3541,6 +3610,30 @@ int main(int argc, char **argv)
 
     if (createFlag)
         touchDatabases(nameCount, titleCount, attrCount);
+    if (NULL != titles)
+        {
+        for (TitleID i = 0; i < titleCount; ++i)
+            {
+            free(titles[i].title);
+            titles[i].title = NULL;
+            }
+        }
+    // free(titles); // is statically allocated
+    if (NULL != sharedTitleIndex)
+        {
+        free(sharedTitleIndex);
+        sharedTitleIndex = NULL;
+        }
+    if (NULL != attributeIndex)
+        {
+        for (AttributeID i = 0; i < attrCount; ++i)
+            {
+            free(attributeIndex[i].attr);
+            attributeIndex[i].attr = NULL;
+            }
+        free(attributeIndex);
+        attributeIndex = NULL;
+        }
 
     writeKeyCounts(nameCount, titleCount, attrCount);
 
