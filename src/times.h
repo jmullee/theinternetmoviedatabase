@@ -1,1 +1,1 @@
-void addTimesToTitleSearch (struct titleSearchRec *tchain) ;
+void addTimesToTitleSearch(struct titleSearchRec *tchain);

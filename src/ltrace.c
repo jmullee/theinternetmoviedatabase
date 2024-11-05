@@ -57,124 +57,125 @@
 #define LTRACE_USAGE2 "              -prdcr|-misc|-name <name>] [-mrr -aka -pl -chr -yr -trivia]"
 #define LTRACE_USAGE3 "              [-full] [-m]"
 
-int main ( int argc, char **argv )
-{
-  struct nameSearchRec  *nrec = NULL ;
-  struct titleSearchRec *tchain = NULL ;
-  struct nameSearchOptRec  noptions = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
-  struct titleSearchOptRec  toptions = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
-  int    trivopts [ NO_OF_TRIV_LISTS ] ;
-  int    titleInfoOpts [ NO_OF_TITLE_INFO_LISTS ] ;
-  int    i, j, okopt, err = FALSE ;
+int main(int argc, char **argv)
+    {
+    struct nameSearchRec *nrec = NULL;
+    struct titleSearchRec *tchain = NULL;
+    struct nameSearchOptRec noptions = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    struct titleSearchOptRec toptions = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int trivopts[NO_OF_TRIV_LISTS];
+    int titleInfoOpts[NO_OF_TITLE_INFO_LISTS];
+    int i, j, okopt, err = FALSE;
 
-  logProgram ( argv [ 0 ] ) ;
+    logProgram(argv[0]);
 
-  if ( argc == 1 )
-    err = TRUE ;
+    if (argc == 1)
+        err = TRUE;
 
-  for ( i = 0 ; i < NO_OF_TRIV_LISTS ; i++ )
-    trivopts [ i ] = FALSE ;
+    for (i = 0; i < NO_OF_TRIV_LISTS; i++)
+        trivopts[i] = FALSE;
 
-  for ( i = 0 ; i < NO_OF_TITLE_INFO_LISTS ; i++ )
-    titleInfoOpts [ i ] = FALSE ;
+    for (i = 0; i < NO_OF_TITLE_INFO_LISTS; i++)
+        titleInfoOpts[i] = FALSE;
 
-  for ( i = 1; i < argc; i++ )
-    if ( strcmp ( "-m", argv[i] ) == 0 )
-      noptions . mvsonly = TRUE ;
-    else if ( strcmp ( "-yr", argv[i] ) == 0 )
-    {
-      toptions . yropt = YR ;
-      noptions . yropt = YR ;
-    }
-    else if ( strcmp ( "-aka", argv[i] ) == 0 )
-    {
-      toptions . akaopt = TRUE ;
-      noptions . akaopt = TRUE ;
-    }
-    else if ( strcmp ( "-chr", argv[i] ) == 0 )
-    {
-      toptions . chopt = TRUE ;
-      noptions . chopt = TRUE ;
-    }
-    else if ( strcmp ( "-mrr", argv[i] ) == 0 )
-      toptions . mrropt = MRR ;
-    else if ( strcmp ( "-pl", argv[i] ) == 0 )
-      toptions . plotopt = TRUE ;
-    else if ( strcmp ( "-bus", argv[i] ) == 0 )
-      toptions . businessopt = TRUE ;
-    else if ( strcmp ( "-ld", argv[i] ) == 0 )
-      toptions . ldopt = TRUE ;
-    else if ( strcmp ( "-trivia", argv[i] ) == 0 )
-    {
-      for ( j = 0 ; j < NO_OF_TRIV_LISTS ; j++ )
-        trivopts [ j ] = TRUE ;
-      for ( j = 0 ; j < NO_OF_TITLE_INFO_LISTS ; j++ )
-        titleInfoOpts [ j ] = TRUE ;
-    }
-    else if ( strcmp ( "-full", argv[i] ) == 0 )
-    {
-      for ( j = 0 ; j < NO_OF_TRIV_LISTS ; j++ )
-        trivopts [ j ] = TRUE ;
-      for ( j = 0 ; j < NO_OF_TITLE_INFO_LISTS ; j++ )
-        titleInfoOpts [ j ] = TRUE ;
-      toptions . yropt = TRUE ;
-      toptions . chopt = TRUE ;
-      toptions . mrropt = TRUE ;
-      toptions . akaopt = TRUE ;
-      toptions . plotopt = TRUE ;
-      toptions . businessopt = TRUE ;
-      toptions . ldopt = TRUE ;
-      toptions . litopt = TRUE ;
-      toptions . linkopt = TRUE ;
-      noptions . yropt = YR ;
-      noptions . akaopt = TRUE ;
-      noptions . chopt = TRUE ;
-      noptions . biopt = TRUE ;
-    }
-    else
-    {
-      okopt = FALSE ;
-      for ( j = 0 ; j < NO_OF_SEARCH_OPTS ; j++ )
-	if ( strcmp ( filmographyOptions [ j ] . option, argv [ i ] ) == 0 || strcmp ( filmographyOptions [ j ] . oldOption, argv [ i ] ) == 0 )
+    for (i = 1; i < argc; i++)
+        if (strcmp("-m", argv[i]) == 0)
+            noptions.mvsonly = TRUE;
+        else if (strcmp("-yr", argv[i]) == 0)
+            {
+            toptions.yropt = YR;
+            noptions.yropt = YR;
+            }
+        else if (strcmp("-aka", argv[i]) == 0)
+            {
+            toptions.akaopt = TRUE;
+            noptions.akaopt = TRUE;
+            }
+        else if (strcmp("-chr", argv[i]) == 0)
+            {
+            toptions.chopt = TRUE;
+            noptions.chopt = TRUE;
+            }
+        else if (strcmp("-mrr", argv[i]) == 0)
+            toptions.mrropt = MRR;
+        else if (strcmp("-pl", argv[i]) == 0)
+            toptions.plotopt = TRUE;
+        else if (strcmp("-bus", argv[i]) == 0)
+            toptions.businessopt = TRUE;
+        else if (strcmp("-ld", argv[i]) == 0)
+            toptions.ldopt = TRUE;
+        else if (strcmp("-trivia", argv[i]) == 0)
+            {
+            for (j = 0; j < NO_OF_TRIV_LISTS; j++)
+                trivopts[j] = TRUE;
+            for (j = 0; j < NO_OF_TITLE_INFO_LISTS; j++)
+                titleInfoOpts[j] = TRUE;
+            }
+        else if (strcmp("-full", argv[i]) == 0)
+            {
+            for (j = 0; j < NO_OF_TRIV_LISTS; j++)
+                trivopts[j] = TRUE;
+            for (j = 0; j < NO_OF_TITLE_INFO_LISTS; j++)
+                titleInfoOpts[j] = TRUE;
+            toptions.yropt = TRUE;
+            toptions.chopt = TRUE;
+            toptions.mrropt = TRUE;
+            toptions.akaopt = TRUE;
+            toptions.plotopt = TRUE;
+            toptions.businessopt = TRUE;
+            toptions.ldopt = TRUE;
+            toptions.litopt = TRUE;
+            toptions.linkopt = TRUE;
+            noptions.yropt = YR;
+            noptions.akaopt = TRUE;
+            noptions.chopt = TRUE;
+            noptions.biopt = TRUE;
+            }
+        else
+            {
+            okopt = FALSE;
+            for (j = 0; j < NO_OF_SEARCH_OPTS; j++)
+                if (strcmp(filmographyOptions[j].option, argv[i]) == 0 ||
+                    strcmp(filmographyOptions[j].oldOption, argv[i]) == 0)
+                    {
+                    okopt = TRUE;
+                    if (++i < argc)
+                        {
+                        nrec = addNameSearchRec(nrec, argv[i], j);
+                        if (j == GLOBAL_NAME_SEARCH)
+                            noptions.searchall = TRUE;
+                        }
+                    else
+                        {
+                        err = TRUE;
+                        break;
+                        }
+                    }
+            if (!okopt)
+                {
+                (void)fprintf(stderr, "ltrace: unrecognised option %s\n", argv[i]);
+                err = TRUE;
+                }
+            }
+
+    if (err || nrec == NULL)
+        moviedbUsage(LTRACE_USAGE1, LTRACE_USAGE2, LTRACE_USAGE3, NULL, NULL, NULL);
+
+    if (nrec->next != NULL)
+        moviedbError("ltrace: only one name allowed");
+
+    addNameChainOpts(nrec, noptions);
+    processFilmographySearch(nrec);
+    sortListResults(nrec);
+    tchain = makeTitleChain(nrec, toptions, trivopts, noptions, titleInfoOpts);
+    if (tchain != NULL)
         {
-	  okopt = TRUE ;
-          if ( ++i < argc )
-          {
-            nrec = addNameSearchRec ( nrec, argv [ i ], j ) ;
-            if ( j == GLOBAL_NAME_SEARCH )
-              noptions . searchall = TRUE ;
-          }
-          else
-          {
-            err = TRUE ;
-	    break ;
-          }
-	}
-      if ( ! okopt )
-      {
-         (void) fprintf ( stderr, "ltrace: unrecognised option %s\n", argv[i] ) ;
-         err = TRUE ;
-      }
+        processTitleSearch(tchain);
+        displayNameSearchResults(nrec, TRUE);
+        displayTitleSearchResults(tchain, TRUE);
+        freeTitleChain(tchain);
+        }
+    freeNameSearchChain(nrec);
+
+    return (0);
     }
-
-  if ( err || nrec == NULL )
-    moviedbUsage ( LTRACE_USAGE1, LTRACE_USAGE2, LTRACE_USAGE3, NULL, NULL, NULL ) ;
-
-  if ( nrec -> next != NULL )
-    moviedbError ( "ltrace: only one name allowed" ) ;
-
-  addNameChainOpts ( nrec, noptions ) ;
-  processFilmographySearch ( nrec ) ;
-  sortListResults ( nrec ) ;
-  tchain = makeTitleChain ( nrec, toptions, trivopts, noptions, titleInfoOpts ) ;
-  if ( tchain != NULL )
-  {
-    processTitleSearch ( tchain ) ;
-    displayNameSearchResults ( nrec, TRUE ) ;
-    displayTitleSearchResults ( tchain, TRUE ) ;
-    freeTitleChain ( tchain ) ;
-  }
-  freeNameSearchChain ( nrec ) ;
-
-  return ( 0 ) ;
-}

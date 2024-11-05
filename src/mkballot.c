@@ -43,50 +43,50 @@
 #define MKBALLOT_USAGE1 "usage: mkballot -cast|-acr|-acs|-dir|-write|-comp|-cine|-edit|-prodes|-costdes|"
 #define MKBALLOT_USAGE2 "                -prdcr|-misc <name>"
 
-int main ( int argc, char **argv )
-{
-  struct nameSearchRec *nchain = NULL ;
-  struct nameSearchOptRec options = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
-  int    err = FALSE ;
-  int    i, j, okopt ;
-
-  logProgram ( argv [ 0 ] ) ;
-
-  if ( argc == 1 )
-    err = TRUE ;
-
-  for ( i = 1 ; i < argc ; i++ )
-  {
-    okopt = FALSE ;
-    for ( j = 0 ; j < NO_OF_SEARCH_OPTS - 1 ; j++ )
-      if ( strcmp ( filmographyOptions [ j ] . option, argv [ i ] ) == 0 )
-      {
-        okopt = TRUE ;
-        if ( ++i < argc )
-          nchain = addNameSearchRec ( nchain, argv [ i ], j ) ;
-        else
-        {
-          err = TRUE ;
-          break ;
-        }
-      }
-    if ( ! okopt )
+int main(int argc, char **argv)
     {
-       (void) fprintf ( stderr, "mkballot: unrecognised option %s\n", argv[i] ) ;
-       err = TRUE ;
+    struct nameSearchRec *nchain = NULL;
+    struct nameSearchOptRec options = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int err = FALSE;
+    int i, j, okopt;
+
+    logProgram(argv[0]);
+
+    if (argc == 1)
+        err = TRUE;
+
+    for (i = 1; i < argc; i++)
+        {
+        okopt = FALSE;
+        for (j = 0; j < NO_OF_SEARCH_OPTS - 1; j++)
+            if (strcmp(filmographyOptions[j].option, argv[i]) == 0)
+                {
+                okopt = TRUE;
+                if (++i < argc)
+                    nchain = addNameSearchRec(nchain, argv[i], j);
+                else
+                    {
+                    err = TRUE;
+                    break;
+                    }
+                }
+        if (!okopt)
+            {
+            (void)fprintf(stderr, "mkballot: unrecognised option %s\n", argv[i]);
+            err = TRUE;
+            }
+        }
+
+    if (err || nchain == NULL)
+        moviedbUsage(MKBALLOT_USAGE1, MKBALLOT_USAGE2, NULL, NULL, NULL, NULL);
+
+    if (nchain->next != NULL)
+        moviedbError("mkballot: only one name allowed");
+
+    addNameChainOpts(nchain, options);
+    processFilmographySearch(nchain);
+    sortListResults(nchain);
+    displayNameSearchResultsAsBallot(nchain);
+    freeNameSearchChain(nchain);
+    return (0);
     }
-  }
-
-  if ( err || nchain == NULL )
-    moviedbUsage ( MKBALLOT_USAGE1, MKBALLOT_USAGE2, NULL, NULL, NULL, NULL ) ;
-
-  if ( nchain -> next != NULL )
-    moviedbError ( "mkballot: only one name allowed" ) ;
-
-  addNameChainOpts ( nchain, options ) ;
-  processFilmographySearch ( nchain ) ;
-  sortListResults ( nchain ) ;
-  displayNameSearchResultsAsBallot ( nchain ) ;
-  freeNameSearchChain ( nchain ) ;
-  return ( 0 ) ;
-}

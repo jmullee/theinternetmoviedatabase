@@ -24,58 +24,56 @@
 #include "moviedb.h"
 #include "dbutils.h"
 
-enum compCastStatus findCompletionStatus ( FILE *dbFp, TitleID titleKey )
-{
-  long upper, lower, mid, offset ;
-  int found = FALSE ;
-  TitleID indexKey ;
+enum compCastStatus findCompletionStatus(FILE *dbFp, TitleID titleKey)
+    {
+    long upper, lower, mid, offset;
+    int found = FALSE;
+    TitleID indexKey;
 
-  (void) fseek ( dbFp, 0, SEEK_END ) ;
-  upper = ftell ( dbFp ) / 4 ;
-  lower = 0 ;
-  found = FALSE ;
-  while ( !found && upper >= lower )
-  {
-    mid = ( upper + lower ) / 2 ;
-    (void) fseek ( dbFp, mid * 4, SEEK_SET ) ;
-    indexKey = getTitle ( dbFp ) ;
-    if ( titleKey == indexKey )
-      found = TRUE ;
-    else if ( indexKey < titleKey )
-      lower = mid + 1 ;
+    (void)fseek(dbFp, 0, SEEK_END);
+    upper = ftell(dbFp) / 4;
+    lower = 0;
+    found = FALSE;
+    while (!found && upper >= lower)
+        {
+        mid = (upper + lower) / 2;
+        (void)fseek(dbFp, mid * 4, SEEK_SET);
+        indexKey = getTitle(dbFp);
+        if (titleKey == indexKey)
+            found = TRUE;
+        else if (indexKey < titleKey)
+            lower = mid + 1;
+        else
+            upper = mid - 1;
+        }
+    if (found)
+        return (getByte(dbFp));
     else
-      upper = mid - 1 ;
-  }
-  if ( found )
-    return ( getByte ( dbFp ) ) ;
-  else
-    return ( unknown ) ;
-}
+        return (unknown);
+    }
 
+void addCastCompleteStatusToTitleSearch(struct titleSearchRec *tchain)
+    {
+    FILE *dbFp;
+    struct titleSearchRec *trec;
 
-void addCastCompleteStatusToTitleSearch ( struct titleSearchRec *tchain )
-{
-  FILE  *dbFp ;
-  struct titleSearchRec *trec ;
+    dbFp = openFile(CASTCOMDB);
 
-  dbFp = openFile ( CASTCOMDB ) ;
+    for (trec = tchain; trec != NULL; trec = trec->next)
+        trec->castStatus = findCompletionStatus(dbFp, trec->titleKey);
 
-  for ( trec = tchain ; trec != NULL ; trec = trec -> next )
-    trec -> castStatus = findCompletionStatus ( dbFp, trec -> titleKey ) ;
+    (void)fclose(dbFp);
+    }
 
-  (void) fclose ( dbFp ) ;
-}
+void addCrewCompleteStatusToTitleSearch(struct titleSearchRec *tchain)
+    {
+    FILE *dbFp;
+    struct titleSearchRec *trec;
 
+    dbFp = openFile(CREWCOMDB);
 
-void addCrewCompleteStatusToTitleSearch ( struct titleSearchRec *tchain )
-{
-  FILE  *dbFp ;
-  struct titleSearchRec *trec ;
+    for (trec = tchain; trec != NULL; trec = trec->next)
+        trec->crewStatus = findCompletionStatus(dbFp, trec->titleKey);
 
-  dbFp = openFile ( CREWCOMDB ) ;
-
-  for ( trec = tchain ; trec != NULL ; trec = trec -> next )
-    trec -> crewStatus = findCompletionStatus ( dbFp, trec -> titleKey ) ;
-
-  (void) fclose ( dbFp ) ;
-}
+    (void)fclose(dbFp);
+    }

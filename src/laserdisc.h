@@ -1,2 +1,2 @@
-void freeLaserRec ( struct laserRec *rec ) ;
-void addLaserDiscToTitleSearch (struct titleSearchRec *tchain) ;
+void freeLaserRec(struct laserRec *rec);
+void addLaserDiscToTitleSearch(struct titleSearchRec *tchain);

@@ -1,1 +1,1 @@
-void logProgram ( char *progName ) ;
+void logProgram(char *progName);

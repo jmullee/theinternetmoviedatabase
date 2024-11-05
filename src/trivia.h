@@ -1,2 +1,2 @@
-void freeTrivia ( struct lineRec *rec ) ;
-void addTriviaToTitleSearch (struct titleSearchRec *tchain) ;
+void freeTrivia(struct lineRec *rec);
+void addTriviaToTitleSearch(struct titleSearchRec *tchain);
